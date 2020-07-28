@@ -8,14 +8,14 @@ import os
 
 # Default setting for file
 default_config_contents = '''\
-#################################
-# A List of Sorts v2 config.yml #
-#################################
+#########################
+# Ratventure config.yml #
+#########################
 
 # NOTE: Change only if you know what you are doing!
 
 # Window caption
-title: 'A List of Sorts v2'
+title: 'Ratventure'
 
 # Application icon file location
 icon_file: './icon.png'

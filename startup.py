@@ -1,10 +1,14 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-import logging
-import sys
 import os
 import pkg_resources
+
+
+########################
+# Environment Settings #
+########################
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 
 ##########################
@@ -32,8 +36,24 @@ with open('requirements.txt', 'r') as requirements:
 ###############
 # Import code #
 ###############
+from code.api.core import log, pg
+from code.api.events import *
+from code.screens.mainmenu import mainmenu
+
+
+#################
+# Setup logging #
+#################
+filename = os.path.basename(__file__).split('.')[0]
+logger = log.get_logger(filename)
+logger.info('Loading up {}...'.format(filename))
+logger.debug('[config] {}'.format(pg.config))
 
 
 ##############
 # Start Game #
 ##############
+mainmenu.run()
+
+# End program
+pg.quit()
