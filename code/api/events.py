@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os
+from code.api.core import log, coreFunc, os, pg, pygame
 
 
 #################
@@ -58,7 +58,7 @@ class actionResult(coreFunc):
         # There is a error
         except Exception as e: logger.error(e, exc_info=True)
 
-    def isItem(self, name = None) -> bool: return self.name == name
+    def isName(self, name = None) -> bool: return self.name == name
 
     def isType(self, type = None) -> bool: return self.type == type
 
@@ -67,8 +67,8 @@ class actionResult(coreFunc):
 
 class event(coreFunc):
 
-    def __init__(self, screen):
-        self.__screen__ = screen
+    def __init__(self, thing):
+        self.thing = thing
 
     def Event(self, events:list):
         # init event result
@@ -81,57 +81,58 @@ class event(coreFunc):
                 # Get and store result if any
                 if event_result != None: result[event_run.action] = event_result
 
-        pygame.display.update()
-        clock.tick(config.framerate)
+        pg.updateDisplay()
         
         return result
 
-    def action(self, actions:list = [],  directToScreen:bool = False):
-        onItem = None
-        # Loop through items in opposite order
-        for index,name in enumerate(list(self.__screen__.objects.__dict__.keys())[1:]):
-            # Get item
-            item = self.__screen__.objects[name]
-            # Check if has a runclass
-            if item.hasRunclass():
-                # Check of mouse in hovering over it
-                if item.frame.box.mouseIn(self.__screen__.surface.frame.coord()):
-                    # Load hover state
-                    item.switchState('Hover', directToScreen) 
-                    onItem = item
-                # Change back to normal state
-                elif item.state in ('Hover', 'Selected'): item.switchState('', directToScreen)
+    def get(self, frame_coord:tuple = None):
+        if frame_coord == None: frame_coord = self.thing.frame.coord()
+        onThing = None
 
-        # Run actions
-        for actionMethod in actions:
-            if hasattr(self.__screen__.actions, actionMethod): self.__screen__.actions[actionMethod]()
+        # Loop through loaded things
+        for loaded_thing in self.thing.loaded:
+            thing_object = self.thing[loaded_thing]
+
+            # Check if thing can be selected
+            if hasattr(thing_object, 'selectable') and thing_object.selectable:
+
+                # Check if object is to do an action
+                if hasattr(thing_object, 'action') and thing_object.action != None:
+                    # Check if mouse over object
+                    if thing_object.frame.mouseIn(frame_coord):
+                        thing_object.switchState('Hover')
+                        onThing = thing_object
+                    else: thing_object.switchState('')
+
+                # Look for things in the object
+                elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
+                    event_result = event(thing_object).get(frame_coord=thing_object.frame.coord(frame_coord))
+                    if event_result != None: return event_result
 
         # Run events
         event_result = self.Event([
-            eventRun(action='click', event=self.click, parameters=[onItem, directToScreen]),
-            eventRun(action='keydown', event=self.keydown),
-            eventRun(action='keyup', event=self.keyup),
-            eventRun(action='scroll', event=self.scroll),
-            eventRun(action='resize', event=self.resize),
+            eventRun(action='click', event=self.click, parameters=[onThing]),
+            #eventRun(action='keydown', event=self.keydown),
+            #eventRun(action='keyup', event=self.keyup),
             eventRun(action='quit', event=self.quit)
-        ])
+        ])       
         
         # Output event's result if any
         if event_result.didAction(): 
-            logger.debug('[{}] {}'.format(self.__screen__.name, event_result))
+            logger.debug('[{}] {}'.format(self.thing.name, event_result))
             return event_result
 
-    def click(self, event, item, directToScreen:bool = False):
+    def click(self, event, object_thing):
         # Check if item is valid
-        if item == None: return
+        if object_thing == None: return
 
         # Check if mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Set state to clicked
-            click_result = actionResult(name=item.name, type=item.type, outcome='clicked')
+            click_result = actionResult(name=object_thing.name, type=object_thing.type, outcome='clicked')
             
             # Get the outcome of running
-            click_result.getOutcome(item)
+            click_result.getOutcome(object_thing)
 
             # Output result
             return click_result
@@ -173,4 +174,4 @@ class event(coreFunc):
 
     def quit(self, event):
         if event.type == pygame.QUIT: 
-            return actionResult(name='quit', type='quit', outcome='__quit__')
+            return actionResult(name='quit', type='quit', outcome='quit')

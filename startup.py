@@ -36,9 +36,9 @@ with open('requirements.txt', 'r') as requirements:
 ###############
 # Import code #
 ###############
-from code.api.core import log, pg
-from code.api.events import *
-from code.screens.mainmenu import mainmenu
+from code.api.core import log, pg, screens
+import code.screens.mainmenu
+import code.screens.new_game
 
 
 #################
@@ -53,7 +53,7 @@ logger.debug('[config] {}'.format(pg.config))
 ##############
 # Start Game #
 ##############
-mainmenu.run()
+screens.mainloop(startScreen='new_game')
 
 # End program
 pg.quit()

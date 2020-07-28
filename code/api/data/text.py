@@ -2,13 +2,18 @@
 # Import and initialize the librarys #
 ######################################
 import textwrap
-import random
-import math
-import time
 import re
-import glob
-from code.api.core import log, coreFunc, os, screens, pg, pygame
+from code.api.core import os, log, coreFunc, pg, pygame
 from code.api.objects import Frame
+
+
+#################
+# Setup logging #
+#################
+filename = os.path.basename(__file__).split('.')[0]
+logger = log.get_logger(filename)
+logger.info('Loading up {}...'.format(filename))
+logger.debug('[config] {}'.format(pg.config))
 
 
 class textFormat(coreFunc):

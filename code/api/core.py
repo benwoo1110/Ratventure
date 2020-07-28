@@ -66,13 +66,33 @@ class pg:
 ##########
 # Screen #
 ##########
-class screens(coreFunc):
-    screenList = {}
-    loaded = []
+class Screens(coreFunc):
+
+    def __init__(self):
+        self.containerList = []
+        self.layers = []
     
-    def add(name, screen):
-        screens.screenList[name] = screen
+    def add(self, name, screen):
+        self.__dict__[name] = screen
+        self.containerList.append(name)
         logger.debug('Added screen {}'.format(name))
+
+    def mainloop(self, startScreen:str):
+        # Set starting screen
+        self.layers.append(startScreen)
+
+        while True:
+            # Run init steps for the screen
+            self.__dict__[self.layers[-1]].main.init()
+            
+            # Main loop for screen
+            while True:
+                action_result = self.__dict__[self.layers[-1]].main.run()
+
+                if action_result == 'quit':
+                    return
+
+screens = Screens()
 
 
 ###########

@@ -1,7 +1,6 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-import textwrap
 import random
 import math
 import time
@@ -41,8 +40,9 @@ class Frame(coreFunc):
         mousePos = pygame.mouse.get_pos()
         # Save surface coord to seperate variables
         s_x, s_y = surfaceCoord
+        scale = pg.config.scale
         # Return if in box
-        return self.x + s_x < mousePos[0] < self.x + self.w + s_x and self.y + s_y < mousePos[1] < self.y + self.h + s_y
+        return int((self.x + s_x)*scale) < mousePos[0] < int((self.x + self.w + s_x)*scale) and int((self.y + s_y)*scale) < mousePos[1] < int((self.y + self.h + s_y)*scale)
 
 
 class images(coreFunc):
@@ -73,9 +73,10 @@ class images(coreFunc):
 
 
 class screen(coreFunc):
-    def __init__(self, name: str, surfaces:dict = {}, keyboard:dict = {}, 
+    def __init__(self, name: str, main, surfaces:dict = {}, keyboard:dict = {}, 
     addToScreens = True, bg_colour:tuple = None, selectable:bool = True):
         self.name = name
+        self.main = main
         self.addToScreens = addToScreens
         self.bg_colour = bg_colour
         self.selectable = selectable
@@ -121,6 +122,8 @@ class screen(coreFunc):
 
         for surface in toLoad: self.__dict__[surface].load()
 
+        self.loaded = toLoad
+
     def display(self, surfaces:list = None, withLoad:bool = False):
         if withLoad: self.load(surfaces)
 
@@ -142,6 +145,7 @@ class surface(coreFunc):
         self.Surface = pygame.surface.Surface(self.frame.size())
         
         # Store items
+        self.loaded = []
         self.containerList = []
         for name, itemData in items.items():
             self.addItem(name, itemData)
@@ -170,6 +174,8 @@ class surface(coreFunc):
 
         for item in toLoad: self.__dict__[item].load()
 
+        self.loaded = toLoad
+
     def display(self, items:list = None, withLoad:bool = False):
         if withLoad: self.load(items)
 
@@ -180,14 +186,14 @@ class surface(coreFunc):
 
 class item(coreFunc):
     def __init__(self, surface, name:str, type:str, frame:Frame, imageData:dict, 
-    data:dict = {}, selectable: bool = True, state:str = '', runclass:runclass = None):
+    data:dict = {}, selectable: bool = True, state:str = '', action:any = None):
         self.surface = surface
         self.name = name
         self.selectable = selectable
         self.type = str(type)
         self.frame = frame
         self.state = state
-        self.runclass = runclass
+        self.action = action
 
         # Get images
         self.images = images(**imageData, imagePage=[surface.screen.name, surface.name, name])
@@ -196,6 +202,7 @@ class item(coreFunc):
             logger.warn('[{}] No image found for {} item.'.format(self.surface.name, self.name))
         
         # Store data
+        self.loaded = []
         self.containerList = []
         for name, dataData in data.items():
             self.addData(name, dataData)
@@ -207,9 +214,6 @@ class item(coreFunc):
         dataData.item = self
         self.__dict__[name] = dataData
         self.containerList.append(name)
-
-    def hasRunclass(self):
-        return isinstance(self.runclass, runclass)
         
     def hasState(self, state:str): 
         # If not state define
@@ -239,6 +243,8 @@ class item(coreFunc):
 
         for data in self.containerList:
             if hasattr(self.__dict__[data], 'load'): self.__dict__[data].load()
+
+        self.loaded = toLoad
 
     def display(self, datas:list = None):
         self.load(datas)
