@@ -7,7 +7,7 @@ import math
 import time
 import re
 import glob
-from code.api.core import log, coreFunc, os, screens, pg, pygame, Window
+from code.api.core import log, coreFunc, os, screens, pg, pygame, window
 from code.api.events import runclass
 
 
@@ -122,10 +122,10 @@ class screen(coreFunc):
         if withLoad: self.load()
 
         # Resize surface
-        resizedSurface = pygame.transform.smoothscale(self.Surface, (500, 500))
+        resizedSurface = pygame.transform.smoothscale(self.Surface, pg.scaled_size())
         
         # Output to screen
-        Window.blit(resizedSurface, (0, 0))
+        window.blit(resizedSurface, (0, 0))
 
         pg.updateDisplay()
 

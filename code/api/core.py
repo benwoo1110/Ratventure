@@ -32,7 +32,6 @@ class pg:
     scaled_height = int(height * config.scale)
     keypressed = []
     clock = pygame.time.Clock()
-    window = None
 
     class font:
         '''fonts found in fonts folder'''
@@ -145,11 +144,7 @@ elif pg.config.icon_file != '':
 # Set title
 pygame.display.set_caption(pg.config.title)
 
-# Set scaling
-pg.width = int(pg.width * pg.config.scale)
-pg.height = int(pg.height * pg.config.scale)
-
 # Set display
-Window = pygame.display.set_mode(pg.scaled_size())
+window = pygame.display.set_mode(pg.scaled_size())
 
 logger.debug(pygame.display.Info())
