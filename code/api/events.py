@@ -1,7 +1,8 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pg, pygame, screens
+from code.api.core import log, coreFunc, os, pg, pygame
+from code.api.actions import Info, Runclass, Switchscreen, actionResult
 
 
 #################
@@ -10,52 +11,6 @@ from code.api.core import log, coreFunc, os, pg, pygame, screens
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
-
-
-##################
-# Action classes #
-##################
-class Info(coreFunc):
-    def __init__(self, text:str):
-        self.text = text
-
-
-class Runclass(coreFunc):
-    def __init__(self, run:any, parameters:dict = {}):
-        self.run = run
-        self.parameters = parameters
-
-
-class Switchscreen(coreFunc):
-    def __init__(self, type:str, screen:str = None):
-        self.type = type
-        self.screen = screen
-
-
-class actionResult(coreFunc):
-    def __init__(self, name:str, type:str, outcome:any = None): 
-        self.name = name
-        self.type = str(type)
-        self.outcome = outcome
-
-    def getOutcome(self, object_thing):
-        action = object_thing.action
-        try:
-            # Just passing of information
-            if isinstance(action, Info): self.outcome = action.text
-            # Run a method
-            elif isinstance(action, Runclass): self.outcome = action.run(**action.parameters)
-            # Change of screen
-            elif isinstance(action, Switchscreen): self.outcome = screens.changeStack(action.type, action.screen)
-        
-        # There is a error
-        except Exception as e: logger.error(e, exc_info=True)
-
-    def isName(self, name = None) -> bool: return self.name == name
-
-    def isType(self, type = None) -> bool: return self.type == type
-
-    def withOutcome(self, outcome = None) -> bool: return self.outcome == outcome
 
 
 #################
@@ -82,17 +37,17 @@ class eventResults(coreFunc):
         return any(result[key] == value for result in self.__dict__.values())
 
 
-class event(coreFunc):
+class events(coreFunc):
 
     def __init__(self, thing):
         self.thing = thing
 
-    def Event(self, events:list):
+    def Event(self, run_events:list):
         # init event result
         result = eventResults()
         # check events
         for event in pygame.event.get():
-            for event_run in events: 
+            for event_run in run_events: 
                 # Run events
                 event_result = event_run.event(event, *event_run.parameters)
                 # Get and store result if any
@@ -123,7 +78,7 @@ class event(coreFunc):
 
                 # Look for things in the object
                 elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
-                    on_thing = event(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
+                    on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
 
         return on_thing
 
@@ -134,8 +89,8 @@ class event(coreFunc):
         # Run events
         event_result = self.Event([
             eventRun(action='click', event=self.click, parameters=[on_thing]),
-            #eventRun(action='keydown', event=self.keydown),
-            #eventRun(action='keyup', event=self.keyup),
+            eventRun(action='keydown', event=self.keydown),
+            eventRun(action='keyup', event=self.keyup),
             eventRun(action='quit', event=self.quit)
         ])       
         
@@ -164,7 +119,8 @@ class event(coreFunc):
         # When key is pressed
         if event.type == pygame.KEYDOWN:
             keyboard_result = actionResult(name=event.key, type='down', outcome='pressed')
-            keypressed.append(event)
+            # Add to keypressed
+            pg.keypressed.append(event)
 
         return self.keyEvent(event, keyboard_result)
         
@@ -173,17 +129,21 @@ class event(coreFunc):
         # When key is released
         if event.type == pygame.KEYUP:
             keyboard_result = actionResult(name=event.key, type='up', outcome='released')
-            for index, pressed in enumerate(keypressed):
-                if pressed.key == event.key: keypressed.pop(index)
+            # Remove from keypressed
+            for index, pressed in enumerate(pg.keypressed):
+                if pressed.key == event.key: 
+                    pg.keypressed.pop(index)
+                    break
         
         return self.keyEvent(event, keyboard_result)
 
     def keyEvent(self, event, keyboard_result):
         # When there was an action
-        if keyboard_result != None:
+        if keyboard_result != None and hasattr(self.thing, 'keyboard'):
+            keyboard = self.thing.keyboard
             # Check if key that was pressed have action to run
-            for name in list(self.__screen__.keyboardActions.__dict__.keys())[1:]:
-                key = self.__screen__.keyboardActions[name]
+            for name in keyboard.containerList:
+                key = keyboard[name]
 
                 # On match key state and match key
                 if key.onKey == keyboard_result.type and event.key in key.keys:

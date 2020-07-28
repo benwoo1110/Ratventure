@@ -2,7 +2,8 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import log, coreFunc, os, pygame, pg, screens, window
-from code.api.events import event
+from code.api.events import events
+from code.api.actions import keyboardActions
 from code.api.data.Frame import Frame
 from code.api.data.Images import Images
 
@@ -15,6 +16,9 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
+##################
+# Object classes #
+##################
 class screen(coreFunc):
     def __init__(self, name: str, main, surfaces:dict = {}, keyboard:dict = {}, 
     addToScreens = True, bg_colour:tuple = None, selectable:bool = True):
@@ -26,9 +30,10 @@ class screen(coreFunc):
         self.frame = Frame(x=0, y=0, w=pg.width, h=pg.height)
 
         # Event setup
-        self.event = event(self)
+        self.events = events(self)
+
         # Keyboard actions
-        self.keyboard = keyboard
+        self.keyboard = keyboardActions(self, keyboard)
     
         # Store surfaces
         self.loaded = []

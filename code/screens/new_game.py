@@ -3,8 +3,7 @@
 ######################################
 from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.data.Text import text, textFormat
-from code.api.events import event, Runclass, Switchscreen
+from code.api.actions import Runclass, Switchscreen, Info
 
 
 #################
@@ -28,7 +27,7 @@ class new_game:
     @staticmethod
     def run():
         # Get action
-        event_result = event(new_game_screen).get()
+        event_result = new_game_screen.events.get()
 
         # No action
         if event_result == None: return
@@ -42,6 +41,12 @@ class new_game:
 new_game_screen = screen (
     name = 'new_game',
     main = new_game,
+    keyboard = {
+        'back': {
+            'keys': [27],
+            'action': Switchscreen(type='back')
+        }
+    },
     surfaces = {
         'options': {
             'frame': Frame(x=0, y=0, w=1800, h=1080),

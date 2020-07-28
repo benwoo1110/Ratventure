@@ -3,7 +3,7 @@
 ######################################
 from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.events import event, Runclass, Switchscreen, Info
+from code.api.actions import Runclass, Switchscreen, Info
 
 
 #################
@@ -21,7 +21,7 @@ logger.debug('[config] {}'.format(pg.config))
 class mainmenu:
 
     @staticmethod
-    def test(data): print(data)
+    def test(data): logger.info(data)
 
     @staticmethod
     def init():
@@ -30,7 +30,7 @@ class mainmenu:
     @staticmethod
     def run():
         # Get action
-        event_result = mainmenu_screen.event.get()
+        event_result = mainmenu_screen.events.get()
 
         # No action
         if event_result == None: return
@@ -63,7 +63,7 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=665, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=665, w=529, h=140)},
-                'action': Runclass(run=mainmenu.test, parameters={'data': 'hmm'})
+                'action': Runclass(run=mainmenu.test, parameters={'data': 'Testing Runclass'})
             },
             'quit': {
                 'type': 'button',
