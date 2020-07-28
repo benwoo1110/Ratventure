@@ -119,6 +119,10 @@ class surface(coreFunc):
         self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
         if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0,0))
 
+    def unload(self):
+        if self.name in self.screen.loaded: self.screen.loaded.remove(self.name)
+        else: logger.warn('Surface {} already unloaded.'.format(self.name))
+
     def load(self, items:list = None):
         # Load background
         self.loadBackground()
@@ -130,6 +134,8 @@ class surface(coreFunc):
         for item in toLoad: self.__dict__[item].load()
 
         self.loaded = toLoad
+
+        if not self.name in self.screen.loaded: self.screen.loaded.append(self.name)
 
     def display(self, items:list = None, withLoad:bool = False):
         if withLoad: self.load(items)
@@ -181,6 +187,10 @@ class item(coreFunc):
             self.state = toState
             if withDisplay: self.display()
             else: self.load()
+
+    def unload(self):
+        if self.name in self.surface.loaded: self.surface.loaded.remove(self.name)
+        else: logger.warn('Item {} already unloaded.'.format(self.name))
 
     def load(self, datas:list = None):
         # Get surface
