@@ -4,6 +4,7 @@
 from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
+from code.api.data.Text import Text, textFormat
 
 
 #################
@@ -74,20 +75,3 @@ mainmenu_screen = screen (
         }
     }
 )
-
-
-'''
-                'data': {
-                    'testing': text(
-                        frame = Frame(x=983, y=665, w=529, h=140),
-                        text = 'Very cool',
-                        format = textFormat (
-                            fontSize = 56,
-                            align = 'left',
-                            pos = 'center',
-                            warpText = 19,
-                            lineSpacing=0.7
-                        )
-                    )
-                },
-''' 

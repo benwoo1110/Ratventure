@@ -46,7 +46,7 @@ class textValidate(coreFunc):
         self.defaultText = defaultText
         self.customMethod = customMethod
 
-class text(coreFunc):
+class Text(coreFunc):
     def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '',
     format:textFormat = textFormat(), validation:textValidate = textValidate(), editable:bool = True):
         self.frame = frame

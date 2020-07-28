@@ -21,10 +21,9 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class screen(coreFunc):
     def __init__(self, name: str, main, surfaces:dict = {}, keyboard:dict = {}, 
-    addToScreens = True, bg_colour:tuple = None, selectable:bool = True):
+    bg_colour:tuple = None, selectable:bool = True, firstLoad:list = None):
         self.name = name
         self.main = main
-        self.addToScreens = addToScreens
         self.bg_colour = bg_colour
         self.selectable = selectable
         self.frame = Frame(x=0, y=0, w=pg.width, h=pg.height)
@@ -42,11 +41,11 @@ class screen(coreFunc):
             self.addSurface(name, surfaceData)
 
         # Adding to data of all screen
-        if addToScreens: screens.add(self.name, self)
+        screens.add(self.name, self)
 
         # Setting up screen
         self.Surface = pygame.surface.Surface(pg.size())
-        self.load()
+        self.load(surfaces=firstLoad)
 
         # Log the content of the screen
         logger.debug('[{}] {}'.format(self.name, self.__repr__()))
@@ -77,6 +76,15 @@ class screen(coreFunc):
     def display(self, surfaces:list = None, withLoad:bool = False):
         if withLoad: self.load(surfaces)
 
+        # Load all surfaces defined
+        if surfaces == None: toLoad = self.containerList
+        else: toLoad = surfaces
+
+        for surface in toLoad:
+            # load to screen
+            Surface = self.Surface
+            Surface.blit(self.__dict__[surface].Surface, self.__dict__[surface].frame.coord())
+
         # Resize surface
         resizedSurface = pygame.transform.smoothscale(self.Surface, pg.scaled_size())
         
@@ -100,9 +108,6 @@ class surface(coreFunc):
         for name, itemData in items.items():
             self.addItem(name, itemData)
 
-        # Setting up surface
-        self.load()
-
     def addItem(self, name, itemData:dict):
         self.__dict__[name] = item(**itemData, surface=self, name=name)
         self.containerList.append(name)
@@ -112,7 +117,7 @@ class surface(coreFunc):
         if self.bg_colour != None: self.Surface.fill(self.bg_colour)
         # Load image
         self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
-        if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0, 0))
+        if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0,0))
 
     def load(self, items:list = None):
         # Load background
@@ -129,9 +134,7 @@ class surface(coreFunc):
     def display(self, items:list = None, withLoad:bool = False):
         if withLoad: self.load(items)
 
-        Surface = self.screen.Surface
-        Surface.blit(self.Surface, self.frame.coord())
-        self.screen.display()
+        self.screen.display(surfaces=[self.name])
 
 
 class item(coreFunc):

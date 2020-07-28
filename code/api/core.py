@@ -89,10 +89,13 @@ class Screens(coreFunc):
             elif screen in self.containerList: 
                 self.screensStack = self.screensStack[:self.screensStack.index(screen)+1]
             #Error
-            else: logger.error('{} is not a screen.'.format(screen))
+            else: logger.error('"{}" is not a screen.'.format(screen))
         
         # Load a new screen
-        elif type == 'load' and screen in self.containerList:  self.screensStack.append(screen)
+        elif type == 'load':  
+            if screen in self.containerList: self.screensStack.append(screen)
+            # Error
+            else: logger.error('"{}" is not a screen.'.format(screen))
 
         # Error
         else: logger.error('{} type not recognised.'.format(type))

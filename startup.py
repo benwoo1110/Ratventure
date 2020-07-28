@@ -39,6 +39,7 @@ with open('requirements.txt', 'r') as requirements:
 from code.api.core import log, pg, screens
 import code.screens.mainmenu
 import code.screens.new_game
+import code.screens.game
 
 
 #################

@@ -72,7 +72,7 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1188, y=881, w=559, h=140),
                 'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
-                'action': Runclass(run='info')
+                'action': Switchscreen(type='load', screen='game')
             },
         },
     }
