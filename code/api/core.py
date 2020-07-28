@@ -35,7 +35,7 @@ class pg:
 
     class font:
         '''fonts found in fonts folder'''
-        knigqst = './fonts/Knigqst.ttc'
+        knigqst = './fonts/Knigqst.ttf'
 
     class colour:
         '''Common colour types in RGB tuple format'''

@@ -8,6 +8,7 @@ import time
 import re
 import glob
 from code.api.core import log, coreFunc, os, screens, pg, pygame
+from code.api.objects import Frame
 
 
 class textFormat(coreFunc):
@@ -33,7 +34,7 @@ class textValidate(coreFunc):
         self.customMethod = customMethod
 
 class text(coreFunc):
-    def __init__(self, item, name, frame:coord, text:str = '', prefix:str = '', suffix:str = '',
+    def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '', item = None, name = None,
     format:textFormat = textFormat(), validation:textValidate = textValidate(), editable:bool = True):
         self.item = item
         self.name = name
@@ -81,7 +82,7 @@ class text(coreFunc):
 
     def renderText(self):
         # Generate surface for text
-        text_surface = pygame.surface.Surface(self.item.frame.text.size(), pygame.SRCALPHA)
+        text_surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
         # Get text with prefix and suffix
         text = self.getText()
 
@@ -107,3 +108,14 @@ class text(coreFunc):
                 h += self.format.font.size(line)[1] * self.format.lineSpacing
             
         return text_surface
+
+    def load(self):
+        # Get the text
+        text_surface = self.renderText()
+        # Output to surface
+        Surface = self.item.surface.Surface
+        Surface.blit(text_surface, self.frame.coord())
+
+    def display(self):
+        self.load()
+        self.item.surface.display()
