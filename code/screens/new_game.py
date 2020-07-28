@@ -1,10 +1,10 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, pygame
+from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.data.text import text, textFormat
-from code.api.events import event, runclass
+from code.api.data.Text import text, textFormat
+from code.api.events import event, Runclass, Switchscreen
 
 
 #################
@@ -49,25 +49,25 @@ new_game_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=760, y=347, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=347, w=987, h=140)},
-                #'action': runclass(action='info')
+                #'action': Runclass(run='info')
             },
             'difficulty': {
                 'type': 'text',
                 'frame': Frame(x=760, y=642, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=642, w=987, h=140)},
-                #'action': runclass(action='info')
+                #'action': Runclass(run='info')
             },
             'back': {
                 'type': 'button',
                 'frame': Frame(x=760, y=881, w=271, h=140),
                 'imageData': {'frame': Frame(x=760, y=881, w=271, h=140)},
-                'action': runclass(action='info')
+                'action': Switchscreen(type='back')
             },
             'play': {
                 'type': 'button',
                 'frame': Frame(x=1188, y=881, w=559, h=140),
                 'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
-                'action': runclass(action='info')
+                'action': Runclass(run='info')
             },
         },
     }

@@ -21,7 +21,7 @@ title: 'Ratventure'
 icon_file: './icon.png'
 
 # Size of pygame window in pixel
-scale: 1
+scale: 0.5
 
 # Level of output shown
 # CRITICAL -> 50

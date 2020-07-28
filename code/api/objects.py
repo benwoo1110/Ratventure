@@ -1,13 +1,10 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-import random
-import math
-import time
-import re
-import glob
-from code.api.core import log, coreFunc, os, screens, pg, pygame, window
-from code.api.events import runclass
+from code.api.core import log, coreFunc, os, pygame, pg, screens, window
+from code.api.events import event
+from code.api.data.Frame import Frame
+from code.api.data.Images import Images
 
 
 #################
@@ -16,60 +13,6 @@ from code.api.events import runclass
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
-
-
-class Frame(coreFunc):
-    def __init__(self, x:int = 0, y:int = 0, w:int = 0, h:int = 0):
-        self.x:int = x
-        self.y:int = y
-        self.w:int = w
-        self.h:int = h
-
-    def size(self) -> tuple: return (self.w, self.h)
-
-    def coord(self, surfaceCoord:tuple = (0, 0)) -> tuple: return (self.x + surfaceCoord[0], self.y + surfaceCoord[1])
-    
-    def rect(self): return (self.x, self.y, self.w, self.h)
-
-    def move(self, x, y):
-        self.x += x
-        self.y += y
-
-    def mouseIn(self, surfaceCoord:tuple = (0, 0)) -> bool:
-        # Get current mouse position
-        mousePos = pygame.mouse.get_pos()
-        # Save surface coord to seperate variables
-        s_x, s_y = surfaceCoord
-        scale = pg.config.scale
-        # Return if in box
-        return int((self.x + s_x)*scale) < mousePos[0] < int((self.x + self.w + s_x)*scale) and int((self.y + s_y)*scale) < mousePos[1] < int((self.y + self.h + s_y)*scale)
-
-
-class images(coreFunc):
-    def __init__(self, imagePage:list, frame:Frame, fileType:str = '.png'):
-        self.imagePage = imagePage
-        self.fileType = fileType
-        self.frame = frame
-        self.containerList = []
-        self.get()
-
-    def getFilesList(self) -> list:
-        # Define variables
-        image_dir = os.path.join('surfaces', *self.imagePage, '*'+self.fileType)
-        # Get list of image from dir
-        return glob.glob(image_dir)
-
-    def get(self):
-        self.image_dir_list = self.getFilesList()
-        # get the image
-        for image in self.image_dir_list:
-            # Get name
-            image_name = os.path.basename(image).split('.')[0]
-            # Load image
-            image_surface = pygame.image.load(image).convert_alpha()
-            # Store image
-            self.__dict__[image_name] = image_surface
-            self.containerList.append(image_name)
 
 
 class screen(coreFunc):
@@ -82,6 +25,8 @@ class screen(coreFunc):
         self.selectable = selectable
         self.frame = Frame(x=0, y=0, w=pg.width, h=pg.height)
 
+        # Event setup
+        self.event = event(self)
         # Keyboard actions
         self.keyboard = keyboard
     
@@ -109,7 +54,7 @@ class screen(coreFunc):
         # Fill colour
         if self.bg_colour != None: self.Surface.fill(self.bg_colour)
         # Load image
-        self.bg_image = images([self.name], frame=self.frame)
+        self.bg_image = Images([self.name], frame=self.frame)
         if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0, 0))
 
     def load(self, surfaces:list = None):
@@ -161,7 +106,7 @@ class surface(coreFunc):
         # Fill colour
         if self.bg_colour != None: self.Surface.fill(self.bg_colour)
         # Load image
-        self.bg_image = images([self.screen.name, self.name], frame=self.frame)
+        self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
         if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0, 0))
 
     def load(self, items:list = None):
@@ -196,7 +141,7 @@ class item(coreFunc):
         self.action = action
 
         # Get images
-        self.images = images(**imageData, imagePage=[surface.screen.name, surface.name, name])
+        self.images = Images(**imageData, imagePage=[surface.screen.name, surface.name, name])
         # If no image loaded
         if self.images.containerList == []: 
             logger.warn('[{}] No image found for {} item.'.format(self.surface.name, self.name))

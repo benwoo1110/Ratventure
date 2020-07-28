@@ -70,28 +70,63 @@ class Screens(coreFunc):
 
     def __init__(self):
         self.containerList = []
-        self.layers = []
+        self.screensStack = []
+        self.stackChange = False
     
     def add(self, name, screen):
         self.__dict__[name] = screen
         self.containerList.append(name)
         logger.debug('Added screen {}'.format(name))
 
+    def changeStack(self, type, screen):
+        self.stackChange = True
+
+        # Go back to previous screen
+        if type == 'back':
+            # Go back one screen
+            if screen == None: self.screensStack.pop()
+            # Go back to screen specified
+            elif screen in self.containerList: 
+                self.screensStack = self.screensStack[:self.screensStack.index(screen)+1]
+            #Error
+            else: logger.error('{} is not a screen.'.format(screen))
+        
+        # Load a new screen
+        elif type == 'load' and screen in self.containerList:  self.screensStack.append(screen)
+
+        # Error
+        else: logger.error('{} type not recognised.'.format(type))
+
+        return True
+
     def mainloop(self, startScreen:str):
-        # Set starting screen
-        self.layers.append(startScreen)
+        # Start with startScreen
+        self.screensStack.append(startScreen)
 
         while True:
-            # Run init steps for the screen
-            self.__dict__[self.layers[-1]].main.init()
+            # fallback to startScreen
+            if self.screensStack == []: 
+                self.screensStack.append(startScreen)
+                logger.error('No screen in stack, falling back to startScreen.')
+
+            # Get screen
+            screen = self.__dict__[self.screensStack[-1]]
+
+            # Run init steps for the top screen
+            if hasattr(screen.main, 'init'): screen.main.init()
             
-            # Main loop for screen
-            while True:
-                action_result = self.__dict__[self.layers[-1]].main.run()
+            # Main loop for top screen
+            while not self.stackChange:
+                action_result = screen.main.run()
 
                 if action_result == 'quit':
                     return
 
+            # When screen ends
+            if hasattr(screen.main, 'end'): screen.main.end()
+            self.stackChange = False
+
+# Enable screen
 screens = Screens()
 
 

@@ -1,9 +1,9 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, pygame
+from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.events import event, runclass
+from code.api.events import event, Runclass, Switchscreen, Info
 
 
 #################
@@ -21,13 +21,16 @@ logger.debug('[config] {}'.format(pg.config))
 class mainmenu:
 
     @staticmethod
+    def test(data): print(data)
+
+    @staticmethod
     def init():
         mainmenu_screen.display()
     
     @staticmethod
     def run():
         # Get action
-        event_result = event(mainmenu_screen).get()
+        event_result = mainmenu_screen.event.get()
 
         # No action
         if event_result == None: return
@@ -48,25 +51,25 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=253, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=253, w=529, h=140)},
-                'action': runclass(action='info')
+                'action': Switchscreen(type='load', screen='new_game')
             },
             'load_saved': {
                 'type': 'button',
                 'frame': Frame(x=983, y=459, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=459, w=529, h=140)},
-                'action': runclass(action='info')
+                'action': Info(text='This is an info')
             },
             'leaderboard':{ 
                 'type': 'button',
                 'frame': Frame(x=983, y=665, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=665, w=529, h=140)},
-                'action': runclass(action='info')
+                'action': Runclass(run=mainmenu.test, parameters={'data': 'hmm'})
             },
             'quit': {
                 'type': 'button',
                 'frame': Frame(x=983, y=870, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=870, w=529, h=140)},
-                'action': runclass(action='info')
+                'action': Info(text='quit')
             },
         }
     }

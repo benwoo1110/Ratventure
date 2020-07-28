@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pg, pygame
+from code.api.core import log, coreFunc, os, pg, pygame, screens
 
 
 #################
@@ -12,13 +12,55 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
-class runclass(coreFunc):
-    def __init__(self, action:any, parameters:dict = {}, includeScreen: bool = True):
-        self.action = action
+##################
+# Action classes #
+##################
+class Info(coreFunc):
+    def __init__(self, text:str):
+        self.text = text
+
+
+class Runclass(coreFunc):
+    def __init__(self, run:any, parameters:dict = {}):
+        self.run = run
         self.parameters = parameters
-        self.includeScreen = includeScreen
 
 
+class Switchscreen(coreFunc):
+    def __init__(self, type:str, screen:str = None):
+        self.type = type
+        self.screen = screen
+
+
+class actionResult(coreFunc):
+    def __init__(self, name:str, type:str, outcome:any = None): 
+        self.name = name
+        self.type = str(type)
+        self.outcome = outcome
+
+    def getOutcome(self, object_thing):
+        action = object_thing.action
+        try:
+            # Just passing of information
+            if isinstance(action, Info): self.outcome = action.text
+            # Run a method
+            elif isinstance(action, Runclass): self.outcome = action.run(**action.parameters)
+            # Change of screen
+            elif isinstance(action, Switchscreen): self.outcome = screens.changeStack(action.type, action.screen)
+        
+        # There is a error
+        except Exception as e: logger.error(e, exc_info=True)
+
+    def isName(self, name = None) -> bool: return self.name == name
+
+    def isType(self, type = None) -> bool: return self.type == type
+
+    def withOutcome(self, outcome = None) -> bool: return self.outcome == outcome
+
+
+#################
+# Event classes #
+#################
 class eventRun(coreFunc):
     def __init__(self, action:str, event:any, parameters:list = []): 
         self.action = action
@@ -38,31 +80,6 @@ class eventResults(coreFunc):
 
     def contains(self, key:str, value:any) -> bool: 
         return any(result[key] == value for result in self.__dict__.values())
-
-
-class actionResult(coreFunc):
-    def __init__(self, name:str, type:str, outcome:any = None): 
-        self.name = name
-        self.type = str(type)
-        self.outcome = outcome
-
-    def getOutcome(self, item):
-        try:
-            # Runclass is just a string
-            if not callable(item.runclass.action): self.outcome = item.runclass.action
-            # Runclass is a method
-            elif item.runclass.includeScreen: self.outcome = item.runclass.action(item.__screen__, **item.runclass.parameters)
-            # Do not add screen
-            else: self.outcome = item.runclass.action(**item.runclass.parameters)
-        
-        # There is a error
-        except Exception as e: logger.error(e, exc_info=True)
-
-    def isName(self, name = None) -> bool: return self.name == name
-
-    def isType(self, type = None) -> bool: return self.type == type
-
-    def withOutcome(self, outcome = None) -> bool: return self.outcome == outcome
 
 
 class event(coreFunc):
@@ -85,9 +102,9 @@ class event(coreFunc):
         
         return result
 
-    def get(self, frame_coord:tuple = None):
+    def onThing(self, frame_coord:tuple = None):
         if frame_coord == None: frame_coord = self.thing.frame.coord()
-        onThing = None
+        on_thing = None
 
         # Loop through loaded things
         for loaded_thing in self.thing.loaded:
@@ -101,17 +118,22 @@ class event(coreFunc):
                     # Check if mouse over object
                     if thing_object.frame.mouseIn(frame_coord):
                         thing_object.switchState('Hover')
-                        onThing = thing_object
+                        on_thing = thing_object
                     else: thing_object.switchState('')
 
                 # Look for things in the object
                 elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
-                    event_result = event(thing_object).get(frame_coord=thing_object.frame.coord(frame_coord))
-                    if event_result != None: return event_result
+                    on_thing = event(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
+
+        return on_thing
+
+    def get(self):
+        # Check if mouse is an object
+        on_thing = self.onThing()
 
         # Run events
         event_result = self.Event([
-            eventRun(action='click', event=self.click, parameters=[onThing]),
+            eventRun(action='click', event=self.click, parameters=[on_thing]),
             #eventRun(action='keydown', event=self.keydown),
             #eventRun(action='keyup', event=self.keyup),
             eventRun(action='quit', event=self.quit)

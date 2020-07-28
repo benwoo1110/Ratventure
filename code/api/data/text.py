@@ -4,7 +4,15 @@
 import textwrap
 import re
 from code.api.core import os, log, coreFunc, pg, pygame
-from code.api.objects import Frame
+from code.api.data.Frame import Frame
+
+
+#################
+# Setup logging #
+#################
+filename = os.path.basename(__file__).split('.')[0]
+logger = log.get_logger(filename)
+logger.info('Loading up {}...'.format(filename))
 
 
 #################

@@ -33,9 +33,9 @@ with open('requirements.txt', 'r') as requirements:
             os.system('pip3 install --no-cache-dir {}'.format(dependency))
 
 
-###############
-# Import code #
-###############
+#############
+# Load code #
+#############
 from code.api.core import log, pg, screens
 import code.screens.mainmenu
 import code.screens.new_game
@@ -53,7 +53,7 @@ logger.debug('[config] {}'.format(pg.config))
 ##############
 # Start Game #
 ##############
-screens.mainloop(startScreen='new_game')
+screens.mainloop(startScreen='mainmenu')
 
 # End program
 pg.quit()
