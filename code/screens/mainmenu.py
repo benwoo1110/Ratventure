@@ -27,10 +27,14 @@ mainmenu_screen = screen (
                 'imageData': {'frame': Frame(x=983, y=665, w=529, h=140)},
                 'data': {
                     'testing': text(
-                        frame = Frame(x=1000, y=665, w=529, h=140),
-                        text = 'hsgadjhmfjn,',
+                        frame = Frame(x=983, y=665, w=529, h=140),
+                        text = 'Very cool',
                         format = textFormat (
-                            fontSize = 96,
+                            fontSize = 56,
+                            align = 'left',
+                            pos = 'center',
+                            warpText = 19,
+                            lineSpacing=0.7
                         )
                     )
                 },
@@ -50,6 +54,8 @@ class mainmenu:
     def run():
         mainmenu_screen.menu.new_game.switchState('Hover')
         mainmenu_screen.display()
+
+        mainmenu_screen.menu.leaderboard.testing.setText('This is a test to see. With more lines now')
 
         while True:
             pg.updateDisplay()

@@ -34,10 +34,8 @@ class textValidate(coreFunc):
         self.customMethod = customMethod
 
 class text(coreFunc):
-    def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '', item = None, name = None,
+    def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '',
     format:textFormat = textFormat(), validation:textValidate = textValidate(), editable:bool = True):
-        self.item = item
-        self.name = name
         self.frame = frame
         self.text = text
         self.prefix = prefix
@@ -85,36 +83,44 @@ class text(coreFunc):
         text_surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
         # Get text with prefix and suffix
         text = self.getText()
-
-        '''
-        To add alignment and position
-        '''
         
         # No warpText
-        if self.format.warpText == None:
-            text_surface.blit(self.format.font.render(text, True, self.format.colour), (0, 0))
+        if self.format.warpText == None:warpped_text = [text]
 
-        # Output multi-line text
-        else:
-            # Warp the text
-            warpped_text = textwrap.wrap(text, width=self.format.warpText)
-            # Print text to surface
-            h = 0
-            for line in warpped_text:
-                # Render the text line and store to text surface
-                rendered_text = self.format.font.render(line, True, self.format.colour)
-                text_surface.blit(rendered_text, (0, h))
-                # Set hight of next line
-                h += self.format.font.size(line)[1] * self.format.lineSpacing
+        # Warp the text
+        else: warpped_text = textwrap.wrap(text, width=self.format.warpText)
+        # Print text to surface
+        h = 0
+        for line in warpped_text:
+            # Size of text line
+            text_w, text_h = self.format.font.size(line)
+
+            # Render the text line and store to text surface
+            rendered_text = self.format.font.render(line, True, self.format.colour)
+
+            # Render line based on alignment
+            if self.format.align == 'left': text_surface.blit(rendered_text, (0, h))
+            elif self.format.align == 'right': text_surface.blit(rendered_text, (self.frame.w - text_w, h))
+            elif self.format.align == 'center': text_surface.blit(rendered_text, (int((self.frame.w - text_w)/2), h))
+
+            self.textHeight = h
+            # Set hight of next line
+            h += text_h * self.format.lineSpacing
+
+        self.textHeight += text_h
             
         return text_surface
 
     def load(self):
         # Get the text
         text_surface = self.renderText()
-        # Output to surface
+        # Get surface
         Surface = self.item.surface.Surface
-        Surface.blit(text_surface, self.frame.coord())
+
+        # Output to surface with postion
+        if self.format.pos == 'top': Surface.blit(text_surface, self.frame.coord())
+        elif self.format.pos == 'bottom': Surface.blit(text_surface, (self.frame.x, self.frame.y + (self.frame.h - self.textHeight)))
+        elif self.format.pos == 'center': Surface.blit(text_surface, (self.frame.x, self.frame.y + int((self.frame.h - self.textHeight)/2)))
 
     def display(self):
         self.load()
