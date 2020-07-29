@@ -6,6 +6,9 @@ from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
 from code.api.data.Grid import Grid
+from code.logic.stats import stats
+from code.logic.playerData import playerData
+
 
 
 #################
@@ -21,9 +24,9 @@ logger.info('Loading up {}...'.format(filename))
 ############################
 class game:
 
-    @staticmethod
-    def init():
-        game_screen.display(surfaces=['map', 'info', 'attack'], withLoad=True)
+    # @staticmethod
+    # def init():
+        # game_screen.display(surfaces=['map', 'info', 'in_town'])
     
     @staticmethod
     def run():
@@ -42,7 +45,6 @@ class game:
 game_screen = screen (
     name = 'game',
     main = game,
-    firstLoad = ['map', 'info'],
 
     keyboard = {
         'back': {
@@ -83,8 +85,8 @@ game_screen = screen (
             },
             'stats': { 
                 'type': 'text',
-                'frame': Frame(x=323, y=111, w=307, h=236),
-                'imageData': {'frame': Frame(x=364, y=0, w=376, h=345)},
+                'frame': Frame(x=323, y=111, w=417, h=350),
+                'imageData': {'frame': Frame(x=323, y=0, w=417, h=350)},
                 'selectable': False,
                 'data': {
                     'damage': Text (
@@ -102,12 +104,12 @@ game_screen = screen (
                     'health': Text (
                         frame = Frame(x=323, y=229, w=307, h=59),
                         prefix = 'Health: ',
-                        text = '20',
+                        text = '20/20',
                         format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.green)
                     ),
                     'power': Text (
                         frame = Frame(x=323, y=288, w=307, h=59),
-                        text = 'Orb of power',
+                        text = '',
                         format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.purple)
                     ),
                 },
@@ -133,13 +135,13 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=20, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=20, w=542, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=playerData.save)
             },
             'rest': {
                 'type': 'button',
                 'frame': Frame(x=88, y=155, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=playerData.load)
             },
             'save': {
                 'type': 'button',
@@ -151,7 +153,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=385, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Info(text='Test')
+                'action': Switchscreen(type='back', screen='mainmenu')
             },
         },
 
@@ -179,7 +181,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=385, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Info(text='Test')
+                'action': Switchscreen(type='back', screen='mainmenu')
             },
         },
 

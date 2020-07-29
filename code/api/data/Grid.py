@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, coreFunc
+from code.api.core import os, log, coreFunc
 from code.api.data.Images import Images
 from code.api.data.Frame import Frame
 
@@ -48,36 +48,48 @@ class Grid(coreFunc):
         self.spacing = 3
         self.size = 101
         
-        # Generate grid
-        if gridData == None:
-            # Create grid list
-            self.tiles = [[None] * columns] * rows
+        # Get tiles
+        self.generate()
 
-            # Create grid of tiles
-            for row in range(rows):
-                for column in range(columns):
-                    self.tiles[row][column] = Tile(row, column)
-        
-        else: self.tiles = gridData
+    def generate(self, gridData:list = None):
+        # Generate grid
+        self.tiles = []
+
+        # Create grid of tiles
+        for row in range(self.rows):
+            self.tiles.append([])
+            for column in range(self.columns):
+                if gridData == None: self.tiles[row].append(Tile(row, column))
+                else: self.tiles[row].append(Tile(row, column, gridData[row][column]))
+
+    def clear(self): self.generate()
+    
+    def find(self, Sprite) -> tuple:
+        for row in range(self.rows):
+            for column in range(self.columns):
+                if self.tiles[row][column].hasSprite(Sprite): return (row, column, [])
 
     def load(self):
         # Get surface
         Surface = self.item.surface.Surface
+
         # Load up the grid with sprites
         for row in range(self.rows):
             for column in range(self.columns):
                 tile = self.tiles[row][column]
                 x = self.size * column + self.spacing * column
                 y = self.size * row + self.spacing * row
-                if tile.hasSprite(): Surface.blit(sprite.get(tile.sprites[0]), (self.frame.coord((x, y))))
+                for tile_sprite in tile.sprites:
+                     Surface.blit(sprite.get(tile_sprite), (self.frame.coord((x, y))))
 
 
 class Tile(coreFunc):
-    def __init__(self, row:int, column:int, sprites:list = ['orb']):
+    def __init__(self, row:int, column:int, sprites:list = []):
         self.row = row
         self.column = column
+        
         self.sprites = sprites
 
-    def hasSprite(self, sprite:str = None): 
-        if sprite == None: return self.sprites != []
-        else: return sprite in self.sprites
+    def hasSprite(self, tile_sprite:str = None): 
+        if tile_sprite == None: return self.sprites != []
+        else: return tile_sprite in self.sprites

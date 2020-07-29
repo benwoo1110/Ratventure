@@ -69,6 +69,9 @@ class events(coreFunc):
             # If thing is not loaded or selectable, dont check
             if not (thing_object.loaded and hasattr(thing_object, 'selectable') and thing_object.selectable): continue
 
+            # Check if thing_object is disabled
+            if hasattr(thing_object, 'state') and thing_object.isState('Disabled'): continue
+
             # Check if object is to do an action
             if hasattr(thing_object, 'action') and thing_object.action != None:
                 # Check if mouse over object

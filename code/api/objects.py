@@ -69,19 +69,20 @@ class screen(coreFunc):
         if surfaces == None: toLoad = self.containerList
         else: toLoad = surfaces
 
-        for surface in toLoad: self.__dict__[surface].load()
+        for surface in toLoad: getattr(self, surface).load()
 
     def display(self, surfaces:list = None, withLoad:bool = False):
         if withLoad: self.load(surfaces)
 
         # Load all surfaces defined
-        if surfaces == None: toLoad = self.loaded
+        if surfaces == None: toLoad = self.containerList
         else: toLoad = surfaces
 
         for surface in toLoad:
             # load to screen
-            Surface = self.Surface
-            Surface.blit(self.__dict__[surface].Surface, self.__dict__[surface].frame.coord())
+            surface_toLoad = getattr(self, surface)
+            self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
+            surface_toLoad.loaded = True
 
         # Resize surface
         resizedSurface = pygame.transform.smoothscale(self.Surface, pg.scaled_size())
@@ -119,7 +120,7 @@ class surface(coreFunc):
         if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0,0))
 
     def unload(self):
-        if self.name in self.screen.loaded: self.loaded = False
+        if self.loaded: self.loaded = False
         else: logger.warn('Surface {} already unloaded.'.format(self.name))
 
     def load(self, items:list = None):
@@ -132,14 +133,10 @@ class surface(coreFunc):
 
         for item in toLoad: self.__dict__[item].load()
 
-        self.loaded = True
-
     def display(self, items:list = None, withLoad:bool = False):
         if withLoad: self.load(items)
         # Output to window
         self.screen.display(surfaces=[self.name])
-        # Set as loaded
-        if not self.name in self.screen.loaded: self.screen.loaded.append(self.name)
 
 
 class item(coreFunc):
@@ -176,6 +173,8 @@ class item(coreFunc):
         dataData.item = self
         self.__dict__[name] = dataData
         self.containerList.append(name)
+
+    def isState(self, state:str): return state == self.state
         
     def hasState(self, state:str): 
         # If not state define
@@ -192,7 +191,7 @@ class item(coreFunc):
             else: self.load()
 
     def unload(self):
-        if self.name in self.surface.loaded: self.loaded = False
+        if self.loaded: self.loaded = False
         else: logger.warn('Item {} already unloaded.'.format(self.name))
 
     def load(self, datas:list = None):

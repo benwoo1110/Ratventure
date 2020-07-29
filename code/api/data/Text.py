@@ -83,7 +83,7 @@ class Text(coreFunc):
         if suffix != None: self.suffix = suffix
 
         if withDisplay: self.item.display()
-        else: self.item.load()
+        # else: self.item.load()
 
     def renderText(self):
         # Generate surface for text

@@ -1,9 +1,10 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg
+from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
+from code.logic.playerData import playerData
 
 
 #################
@@ -32,6 +33,11 @@ class new_game:
         if event_result == None: return
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
+
+    @staticmethod
+    def loadGame():
+        playerData.new()
+        screens.changeStack('load', 'game')
 
 
 ##################
@@ -71,7 +77,7 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1188, y=881, w=559, h=140),
                 'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
-                'action': Switchscreen(type='load', screen='game')
+                'action': Runclass(run=new_game.loadGame)
             },
         },
     }
