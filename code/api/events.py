@@ -62,23 +62,24 @@ class events(coreFunc):
         on_thing = None
 
         # Loop through loaded things
-        for loaded_thing in self.thing.loaded:
+        for loaded_thing in self.thing.containerList:
+            # Get the object
             thing_object = self.thing[loaded_thing]
+            
+            # If thing is not loaded or selectable, dont check
+            if not (thing_object.loaded and hasattr(thing_object, 'selectable') and thing_object.selectable): continue
 
-            # Check if thing can be selected
-            if hasattr(thing_object, 'selectable') and thing_object.selectable:
+            # Check if object is to do an action
+            if hasattr(thing_object, 'action') and thing_object.action != None:
+                # Check if mouse over object
+                if thing_object.frame.mouseIn(frame_coord):
+                    thing_object.switchState('Hover')
+                    on_thing = thing_object
+                else: thing_object.switchState('')
 
-                # Check if object is to do an action
-                if hasattr(thing_object, 'action') and thing_object.action != None:
-                    # Check if mouse over object
-                    if thing_object.frame.mouseIn(frame_coord):
-                        thing_object.switchState('Hover')
-                        on_thing = thing_object
-                    else: thing_object.switchState('')
-
-                # Look for things in the object
-                elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
-                    on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
+            # Look for things in the object
+            elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
+                on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
 
         return on_thing
 

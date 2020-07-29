@@ -14,12 +14,12 @@ logger.info('Loading up {}...'.format(filename))
 
 
 class Images(coreFunc):
-    def __init__(self, imagePage:list, frame:Frame, fileType:str = '.png'):
+    def __init__(self, imagePage:list, frame:Frame, fileType:str = '.png', scale:bool = False):
         self.imagePage = imagePage
         self.fileType = fileType
         self.frame = frame
         self.containerList = []
-        self.get()
+        self.get(scale)
 
     def getFilesList(self) -> list:
         # Define variables
@@ -27,14 +27,31 @@ class Images(coreFunc):
         # Get list of image from dir
         return glob.glob(image_dir)
 
-    def get(self):
+    def get(self, scale:bool = False):
         self.image_dir_list = self.getFilesList()
         # get the image
         for image in self.image_dir_list:
             # Get name
             image_name = os.path.basename(image).split('.')[0]
+
             # Load image
-            image_surface = pygame.image.load(image).convert_alpha()
+            if scale:
+                # Load surface
+                image_surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
+                loaded_image = pygame.image.load(image).convert_alpha()
+                # Width or height is larger, get scale
+                w, h = loaded_image.get_size()
+                if w > h: scale_factor = self.frame.w / w
+                else: scale_factor = self.frame.h / h
+
+                # Scale surface
+                loaded_image = pygame.transform.smoothscale(loaded_image, (int(w * scale_factor), int(h * scale_factor)))
+                w, h = loaded_image.get_size()
+                # Load to image surface
+                image_surface.blit(loaded_image, ((int(self.frame.w-w)/2), (int(self.frame.h-h)/2)))
+            
+            else: image_surface = pygame.image.load(image).convert_alpha()
+
             # Store image
-            self.__dict__[image_name] = image_surface
+            setattr(self, image_name, image_surface)
             self.containerList.append(image_name)

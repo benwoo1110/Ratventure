@@ -133,3 +133,4 @@ dmypy.json
 *.json
 .DS_Store
 config.yml
+appdata/

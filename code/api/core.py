@@ -189,7 +189,14 @@ logger.debug('[config] {}'.format(pg.config))
 ################
 # Setup pygame #
 ################
-'''Startup pygame window'''
+# Ensure that appdata folder is created
+if not os.path.isdir('./appdata'):
+    # Create logs directory
+    try: os.mkdir('appdata')
+    except: traceback.print_stack()
+    else: print("Created ./appdata directory")
+
+# Startup pygame window
 pygame.init()
 
 # Set icon

@@ -5,6 +5,7 @@ from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
+from code.api.data.Grid import Grid
 
 
 #################
@@ -13,7 +14,6 @@ from code.api.data.Text import Text, textFormat
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
-logger.debug('[config] {}'.format(pg.config))
 
 
 ############################
@@ -42,16 +42,26 @@ class game:
 game_screen = screen (
     name = 'game',
     main = game,
+    firstLoad = ['map', 'info'],
+
     keyboard = {
         'back': {
             'keys': [27],
             'action': Switchscreen(type='back', screen='mainmenu')
         }
     },
+
     surfaces = {
         'map': {
             'frame': Frame(x=0, y=0, w=1055, h=1080),
             'selectable': False,
+            'grid': {
+                'frame': Frame(x=115, y=125, w=830, h=830),
+                'type': 'map',
+                'data': {
+                    'Grid': Grid (frame=Frame(x=115, y=125, w=830, h=830),rows=8, columns=8)
+                }
+            }
         },
 
         'info': {

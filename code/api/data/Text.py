@@ -15,15 +15,6 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
-#################
-# Setup logging #
-#################
-filename = os.path.basename(__file__).split('.')[0]
-logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
-logger.debug('[config] {}'.format(pg.config))
-
-
 class textFormat(coreFunc):
     def __init__(self, fontType:str = pg.font.knigqst, fontSize:int = 36, colour:tuple = pg.colour.black, 
     warpText:int = None, align:str = 'left', pos:str = 'top', lineSpacing:int = 1):
@@ -47,8 +38,10 @@ class textValidate(coreFunc):
         self.customMethod = customMethod
 
 class Text(coreFunc):
-    def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '',
+    def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '', name=None, item=None,
     format:textFormat = textFormat(), validation:textValidate = textValidate(), editable:bool = True):
+        self.name = name
+        self.item = item
         self.frame = frame
         self.text = text
         self.prefix = prefix
@@ -56,6 +49,7 @@ class Text(coreFunc):
         self.format = format
         self.validation = validation
         self.editable = editable
+        self.loaded = False
 
     def validateChar(self, char, inAscii = True):
         if self.validation.inAscii and not inAscii: char = ord(char)
@@ -124,6 +118,9 @@ class Text(coreFunc):
             
         return text_surface
 
+    def unload(self):
+        self.loaded = False
+
     def load(self):
         # Get the text
         text_surface = self.renderText()
@@ -134,7 +131,9 @@ class Text(coreFunc):
         if self.format.pos == 'top': Surface.blit(text_surface, self.frame.coord())
         elif self.format.pos == 'bottom': Surface.blit(text_surface, (self.frame.x, self.frame.y + (self.frame.h - self.textHeight)))
         elif self.format.pos == 'center': Surface.blit(text_surface, (self.frame.x, self.frame.y + int((self.frame.h - self.textHeight)/2)))
+        else: logger.error('Unknown text postion type: "{}"'.format(self.format.pos))
+
+        self.loaded = True
 
     def display(self):
-        self.load()
-        self.item.surface.display()
+        self.item.display(datas=[self.name])
