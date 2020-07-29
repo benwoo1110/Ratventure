@@ -67,7 +67,7 @@ class Grid(coreFunc):
     def find(self, Sprite) -> tuple:
         for row in range(self.rows):
             for column in range(self.columns):
-                if self.tiles[row][column].hasSprite(Sprite): return (row, column, [])
+                if self.tiles[row][column].hasSprite(Sprite): return (row, column)
 
     def load(self):
         # Get surface
@@ -89,6 +89,8 @@ class Tile(coreFunc):
         self.column = column
         
         self.sprites = sprites
+
+    def getPos(self): return (self.row, self.column)
 
     def hasSprite(self, tile_sprite:str = None): 
         if tile_sprite == None: return self.sprites != []

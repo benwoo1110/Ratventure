@@ -84,7 +84,8 @@ class playerData(coreFunc):
     @staticmethod
     def load():
         # Get saved file
-        with open('./appdata/saves/test.json', 'r') as savefile:
+        save_location = './appdata/saves/test.json'
+        with open(save_location, 'r') as savefile:
             raw_data = savefile.read()
         
         savedData = json.loads(raw_data)
@@ -100,6 +101,8 @@ class playerData(coreFunc):
 
         # Display screen
         screens.game.display(surfaces=['map', 'info', 'in_town'], withLoad=True)
+
+        logger.info('Loaded playerdata from "{}"'.format(save_location))
 
     @staticmethod
     def save():
@@ -123,5 +126,8 @@ class playerData(coreFunc):
         savedData['stats']['power'] = stats.power.hasOrb('info', 'stats')
 
         # Save to file
-        with open('./appdata/saves/test.json', 'w') as savefile:
+        save_location = './appdata/saves/test.json'
+        with open(save_location, 'w') as savefile:
             savefile.write(json.dumps(savedData))
+
+        logger.info('Saved playerdata to "{}"'.format(save_location)) 

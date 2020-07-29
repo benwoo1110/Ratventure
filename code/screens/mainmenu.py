@@ -1,10 +1,11 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg
+from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
+from code.logic.playerData import playerData
 
 
 #################
@@ -22,6 +23,11 @@ class mainmenu:
 
     @staticmethod
     def test(data): logger.info(data)
+
+    @staticmethod
+    def loadSave():
+        playerData.load()
+        screens.changeStack('load', 'game')
 
     @staticmethod
     def init():
@@ -57,7 +63,7 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=459, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=459, w=529, h=140)},
-                'action': Info(text='This is an info')
+                'action':Runclass(run=mainmenu.loadSave)
             },
             'leaderboard':{ 
                 'type': 'button',

@@ -6,7 +6,7 @@ from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
 from code.api.data.Grid import Grid
-from code.logic.stats import stats
+from code.logic.move import move
 from code.logic.playerData import playerData
 
 
@@ -135,19 +135,19 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=20, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=20, w=542, h=98)},
-                'action': Runclass(run=playerData.save)
+                'action': Runclass(run=move.initSurface)
             },
             'rest': {
                 'type': 'button',
                 'frame': Frame(x=88, y=155, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
-                'action': Runclass(run=playerData.load)
+                'action': Info(text='')
             },
             'save': {
                 'type': 'button',
                 'frame': Frame(x=88, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
-                'action': Info(text='Test')
+                'action': Runclass(run=playerData.save)
             },
             'exit': {
                 'type': 'button',
@@ -175,7 +175,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
-                'action': Info(text='Test')
+                'action': Runclass(run=playerData.save)
             },
             'exit': {
                 'type': 'button',
@@ -245,7 +245,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=166, y=377, w=378, h=75),
                 'imageData': {'frame': Frame(x=166, y=377, w=378, h=75)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.back)
             },
         },
 
