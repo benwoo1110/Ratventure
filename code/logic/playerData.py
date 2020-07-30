@@ -62,6 +62,7 @@ class playerData(coreFunc):
                 town_placed += 1
 
         # Create stats
+        stats.day.set(1, False)
         stats.damage.set('info', 'stats', 2, 4, False)
         stats.defence.set('info', 'stats', 1, False)
         stats.health.set('info', 'stats', 20, 20, False)
@@ -94,6 +95,7 @@ class playerData(coreFunc):
         screens.game.map.grid.Grid.generate(savedData['grid'])
 
         # Stats
+        stats.day.set(savedData['stats']['day'], False)
         stats.damage.set('info', 'stats', *savedData['stats']['damage'], False)
         stats.defence.set('info', 'stats', savedData['stats']['defence'], False)
         stats.health.set('info', 'stats', *savedData['stats']['health'], False)
@@ -120,6 +122,7 @@ class playerData(coreFunc):
         # Stats
         savedData['stats'] = {}
 
+        savedData['stats']['day'] = stats.day.get()
         savedData['stats']['damage'] = stats.damage.get('info', 'stats')
         savedData['stats']['defence'] = stats.defence.get('info', 'stats')
         savedData['stats']['health'] = stats.health.get('info', 'stats')

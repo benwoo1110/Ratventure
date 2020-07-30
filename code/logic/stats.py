@@ -14,6 +14,37 @@ logger.info('Loading up {}...'.format(filename))
 
 class stats:
 
+    class day:
+
+        @staticmethod
+        def update(by:int = 1, withDisplay:bool = True):
+            # Get day text
+            day_data = screens.game.info.day.number
+
+            # Set new value
+            day_text = str(stats.day.get() + by)
+
+            # Output text
+            day_data.setText(day_text, withDisplay=withDisplay)
+
+        @staticmethod
+        def set(day:int, withDisplay:bool = True):
+            # Get day text
+            day_data = screens.game.info.day.number
+
+            # Set new value
+            day_text = str(day)
+
+            # Output text
+            day_data.setText(day_text, withDisplay=withDisplay)
+
+        @staticmethod
+        def get() -> int:
+            # Get day text
+            day_data = screens.game.info.day.number
+
+            return int(day_data.text)
+
     class damage:
 
         @staticmethod
