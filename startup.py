@@ -54,6 +54,7 @@ logger.debug('[config] {}'.format(pg.config))
 ##############
 # Start Game #
 ##############
+logger.info('Program started!')
 screens.mainloop(startScreen='mainmenu')
 
 # End program

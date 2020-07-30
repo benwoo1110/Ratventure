@@ -81,7 +81,7 @@ class events(coreFunc):
                 else: thing_object.switchState('')
 
             # Look for things in the object
-            elif hasattr(thing_object, 'loaded') and thing_object.loaded != [] and thing_object.frame.mouseIn(frame_coord):
+            elif hasattr(thing_object, 'loaded') and thing_object.loaded:
                 on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
 
         return on_thing

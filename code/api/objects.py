@@ -20,7 +20,7 @@ logger.info('Loading up {}...'.format(filename))
 # Object classes #
 ##################
 class screen(coreFunc):
-    def __init__(self, name: str, main, surfaces:dict = {}, keyboard:dict = {}, 
+    def __init__(self, name: str, main:any, surfaces:dict = {}, keyboard:dict = {}, 
     bg_colour:tuple = None, selectable:bool = True, firstLoad:list = None):
         self.name = name
         self.main = main
@@ -47,8 +47,21 @@ class screen(coreFunc):
         self.Surface = pygame.surface.Surface(pg.size(), pygame.SRCALPHA)
         self.load(surfaces=firstLoad)
 
+        # Run init code if have
+        if hasattr(self.main, 'init'): self.main.init()
+
         # Log the content of the screen
         logger.debug('[{}] {}'.format(self.name, self.__repr__()))
+
+    def unload(self, surfaces:list = None):
+        # Get all surfaces defined
+        if surfaces == None: toUnload = self.containerList
+        else: toUnload = surfaces
+
+        # Unload them
+        for surface in toUnload: 
+            surface_toUnload = getattr(self, surface)
+            if surface_toUnload.loaded: surface_toUnload.unload()
 
     def addSurface(self, name, surfaceData:dict = {}):
         self.__dict__[name] = surface(screen=self, name=name, **surfaceData)
@@ -74,15 +87,21 @@ class screen(coreFunc):
     def display(self, surfaces:list = None, withLoad:bool = False):
         if withLoad: self.load(surfaces)
 
-        # Load all surfaces defined
-        if surfaces == None: toLoad = self.containerList
-        else: toLoad = surfaces
+        # Display those that are loaded
+        if surfaces == None:
+            for surface in self.containerList:
+                # load to screen
+                surface_toLoad = getattr(self, surface)
+                if surface_toLoad.loaded:
+                    self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
 
-        for surface in toLoad:
-            # load to screen
-            surface_toLoad = getattr(self, surface)
-            self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
-            surface_toLoad.loaded = True
+        # Display all surfaces defined
+        else: 
+            for surface in surfaces:
+                # load to screen
+                surface_toLoad = getattr(self, surface)
+                self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
+                surface_toLoad.loaded = True
 
         # Resize surface
         resizedSurface = pygame.transform.smoothscale(self.Surface, pg.scaled_size())
@@ -107,6 +126,9 @@ class surface(coreFunc):
         self.containerList = []
         for name, itemData in items.items():
             self.addItem(name, itemData)
+
+        # Just load the background
+        self.loadBackground()
 
     def addItem(self, name, itemData:dict):
         self.__dict__[name] = item(**itemData, surface=self, name=name)
@@ -133,10 +155,14 @@ class surface(coreFunc):
 
         for item in toLoad: self.__dict__[item].load()
 
+        self.loaded = True
+
     def display(self, items:list = None, withLoad:bool = False):
         if withLoad: self.load(items)
         # Output to window
         self.screen.display(surfaces=[self.name])
+
+        self.loaded = True
 
 
 class item(coreFunc):
@@ -184,11 +210,15 @@ class item(coreFunc):
         if not check: logger.warn('[{}] {} does not have state "{}"'.format(self.surface.name, self.name, state))
         return check
 
-    def switchState(self, toState:str, withDisplay:bool = True):
+    def switchState(self, toState:str, withLoad:bool = True, withDisplay:bool = True):
+        # Change the state
         if self.state != toState and self.hasState(toState): 
             self.state = toState
-            if withDisplay: self.display()
-            else: self.load()
+
+            # Load/display to screen
+            if withLoad:
+                if withDisplay: self.display()
+                else: self.load()
 
     def unload(self):
         if self.loaded: self.loaded = False

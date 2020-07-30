@@ -113,16 +113,16 @@ class Screens(coreFunc):
                 logger.error('No screen in stack, falling back to startScreen.')
 
             # Get screen
-            screen = self.__dict__[self.screensStack[-1]]
+            screen = getattr(self, self.screensStack[-1])
 
-            # Run init steps for the top screen
-            if hasattr(screen.main, 'init'): screen.main.init()
+            # Display the screen
+            screen.display()
             
             # Main loop for top screen
             while not self.stackChange:
-                action_result = screen.main.run()
+                screen_result = screen.main.run()
 
-                if action_result == 'quit':
+                if screen_result == 'quit':
                     return
 
             # When screen ends
@@ -137,11 +137,12 @@ screens = Screens()
 # Logging #
 ###########
 # Ensure that logs folder is created
-if not os.path.isdir('./logs'):
+filepath = './logs/'
+if not os.path.isdir(filepath):
     # Create logs directory
-    try: os.mkdir('logs')
+    try: os.mkdir(filepath)
     except: traceback.print_stack()
-    else: print("Created ./logs directory")
+    else: print('Created {} directory'.format(filepath))
 
 # Keep only certain number of log files 
 log_files = glob.glob("./logs/*.log")

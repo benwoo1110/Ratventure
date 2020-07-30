@@ -12,6 +12,9 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
+##################
+# Gameplay logic #
+##################
 class stats:
 
     class day:
@@ -176,36 +179,35 @@ class stats:
     class power:
 
         @staticmethod
-        def set(surface:str, item:str, haveOrb:bool, withDisplay:bool = True):
+        def set(haveOrb:bool, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
-            if haveOrb: stats.power.take(surface, item, withDisplay)
-            else: stats.power.remove(surface, item, withDisplay)
+            if haveOrb: stats.power.take(withDisplay)
+            else: stats.power.remove(withDisplay)
 
         @staticmethod
-        def take(surface:str, item:str, withDisplay:bool = True):
+        def take(withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
             # Display the text
             orb_text = 'Orb of power'
-            game_screen[surface][item].power.setText(orb_text, withDisplay=withDisplay)
+            game_screen.info.stats.power.setText(orb_text, withDisplay=withDisplay)
 
         @staticmethod
-        def remove(surface:str, item:str, withDisplay:bool = True):
+        def remove(withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
             # Display the text
             orb_text = ''
-            game_screen[surface][item].power.setText(orb_text, withDisplay=withDisplay)
+            game_screen.info.stats.power.setText(orb_text, withDisplay=withDisplay)
 
         @staticmethod
-        def hasOrb(surface:str, item:str) -> bool:
+        def hasOrb() -> bool:
             # Get game screen
             game_screen = screens.game
 
-            orb_text = game_screen[surface][item].power.text
-
-            return len(orb_text) == 'Orb of power'
+            # Output if player have orb of power
+            return game_screen.info.stats.power.text == 'Orb of power'

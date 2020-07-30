@@ -3,8 +3,9 @@
 ######################################
 from random import randint
 import json
-from code.api.core import os, log, coreFunc, screens
+from code.api.core import os, log, coreFunc, screens, traceback
 from code.logic.stats import stats
+from code.logic.power import power
 
 
 #################
@@ -16,13 +17,17 @@ logger.info('Loading up {}...'.format(filename))
 
 
 # Ensure that saves folder is created
-if not os.path.isdir('./appdata/saves'):
+filepath = './appdata/saves/'
+if not os.path.isdir(filepath):
     # Create logs directory
-    try: os.mkdir('./appdata/saves')
+    try: os.mkdir(filepath)
     except: traceback.print_stack()
-    else: print("Created ./appdata/saves directory")
+    else: print('Created {} directory'.format(filepath))
 
 
+##################
+# Gameplay logic #
+##################
 class playerData(coreFunc):
     
     @staticmethod
@@ -65,8 +70,8 @@ class playerData(coreFunc):
         stats.day.set(1, False)
         stats.damage.set('info', 'stats', 2, 4, False)
         stats.defence.set('info', 'stats', 1, False)
-        stats.health.set('info', 'stats', 20, 20, False)
-        stats.power.remove('info', 'stats', False)
+        stats.health.set('info', 'stats', 10, 20, False)
+        stats.power.set(False, False)
 
         # Calculate orb postion
         while True:
@@ -77,7 +82,12 @@ class playerData(coreFunc):
             if  (row >=4 or column >= 4) and (not Grid.tiles[row][column].hasSprite()):
                 # Save to grid for now
                 Grid.tiles[row][column].sprites = ['orb']
+                # Save orb pos
+                power.row, power.column = row, column
                 break
+
+        # Set if player can sense for orb
+        power.sense()
 
         # Display screen
         screens.game.display(surfaces=['map', 'info', 'in_town'], withLoad=True)
@@ -94,16 +104,26 @@ class playerData(coreFunc):
         # Map
         screens.game.map.grid.Grid.generate(savedData['grid'])
 
+        # Load orb location
+        power.row, power.column = savedData['orb']
+
         # Stats
         stats.day.set(savedData['stats']['day'], False)
         stats.damage.set('info', 'stats', *savedData['stats']['damage'], False)
         stats.defence.set('info', 'stats', savedData['stats']['defence'], False)
         stats.health.set('info', 'stats', *savedData['stats']['health'], False)
-        stats.power.set('info', 'stats', savedData['stats']['power'], False)
+        stats.power.set(savedData['stats']['power'], False)
+
+        # Set if player can sense for orb
+        power.sense()
+
+        # Check if player in town
+        if screens.game.map.grid.Grid.heroInTown(): surfaces_toLoad = ['map', 'info', 'in_town']
+        else: surfaces_toLoad = ['map', 'info', 'in_open']
 
         # Display screen
-        screens.game.display(surfaces=['map', 'info', 'in_town'], withLoad=True)
-
+        screens.game.display(surfaces=surfaces_toLoad, withLoad=True)
+        
         logger.info('Loaded playerdata from "{}"'.format(save_location))
 
     @staticmethod
@@ -119,6 +139,9 @@ class playerData(coreFunc):
             for tile in tile_row:
                 savedData['grid'][-1].append(tile.sprites)
 
+        # Save orb location
+        savedData['orb'] = [power.row, power.column]
+
         # Stats
         savedData['stats'] = {}
 
@@ -126,7 +149,7 @@ class playerData(coreFunc):
         savedData['stats']['damage'] = stats.damage.get('info', 'stats')
         savedData['stats']['defence'] = stats.defence.get('info', 'stats')
         savedData['stats']['health'] = stats.health.get('info', 'stats')
-        savedData['stats']['power'] = stats.power.hasOrb('info', 'stats')
+        savedData['stats']['power'] = stats.power.hasOrb()
 
         # Save to file
         save_location = './appdata/saves/test.json'

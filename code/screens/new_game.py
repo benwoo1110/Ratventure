@@ -19,10 +19,6 @@ logger.info('Loading up {}...'.format(filename))
 # Screen main action class #
 ############################
 class new_game:
-
-    @staticmethod
-    def init():
-        new_game_screen.display()
     
     @staticmethod
     def run():

@@ -28,10 +28,6 @@ class mainmenu:
     def loadSave():
         playerData.load()
         screens.changeStack('load', 'game')
-
-    @staticmethod
-    def init():
-        mainmenu_screen.display()
     
     @staticmethod
     def run():

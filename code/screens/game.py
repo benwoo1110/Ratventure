@@ -8,7 +8,8 @@ from code.api.data.Text import Text, textFormat
 from code.api.data.Grid import Grid
 from code.logic.move import move
 from code.logic.playerData import playerData
-
+from code.logic.rest import rest
+from code.logic.power import power
 
 
 #################
@@ -23,10 +24,6 @@ logger.info('Loading up {}...'.format(filename))
 # Screen main action class #
 ############################
 class game:
-
-    # @staticmethod
-    # def init():
-        # game_screen.display(surfaces=['map', 'info', 'in_town'])
     
     @staticmethod
     def run():
@@ -38,6 +35,10 @@ class game:
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
 
+    @staticmethod
+    def end():
+        game_screen.unload()
+
 
 ##################
 # Screen objects #
@@ -45,6 +46,7 @@ class game:
 game_screen = screen (
     name = 'game',
     main = game,
+    firstLoad=[],
 
     keyboard = {
         'back': {
@@ -141,7 +143,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=155, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
-                'action': Info(text='')
+                'action': Runclass(run=rest.initSurface)
             },
             'save': {
                 'type': 'button',
@@ -163,13 +165,13 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=20, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=20, w=542, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.initSurface)
             },
             'sense_orb': {
                 'type': 'button',
                 'frame': Frame(x=88, y=155, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=power.initSurface)
             },
             'save': {
                 'type': 'button',
@@ -205,13 +207,13 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=318, w=173, h=98),
                 'imageData': {'frame': Frame(x=88, y=318, w=173, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=rest.back)
             },
             'sleep': {
                 'type': 'button',
                 'frame': Frame(x=295, y=318, w=335, h=98),
                 'imageData': {'frame': Frame(x=295, y=318, w=335, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=rest.Rest)
             },
         },
 
@@ -221,25 +223,25 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=304, y=33-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=304, y=33-13, w=104, h=94)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.Move, parameters={'direction': 'up'})
             },
             'down': {
                 'type': 'button',
                 'frame': Frame(x=304, y=220-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=304, y=220-13, w=104, h=94)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.Move, parameters={'direction': 'down'})
             },
             'left': {
                 'type': 'button',
                 'frame': Frame(x=200, y=126-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=200, y=126-13, w=104, h=94)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.Move, parameters={'direction': 'left'})
             },
             'right': {
                 'type': 'button',
                 'frame': Frame(x=407, y=126-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=407, y=126-13, w=104, h=94)},
-                'action': Info(text='Test')
+                'action': Runclass(run=move.Move, parameters={'direction': 'right'})
             },
             'back': {
                 'type': 'button',
@@ -261,7 +263,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=166, y=364, w=378, h=75),
                 'imageData': {'frame': Frame(x=166, y=364, w=378, h=75)},
-                'action': Info(text='Test')
+                'action': Runclass(run=power.back)
             },
         },
 
@@ -291,7 +293,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=318, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=318, w=542, h=98)},
-                'action': Info(text='Test')
+                'action': Runclass(run=power.take)
             },
         },
 

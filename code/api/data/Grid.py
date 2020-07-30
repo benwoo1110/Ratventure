@@ -69,6 +69,13 @@ class Grid(coreFunc):
             for column in range(self.columns):
                 if self.tiles[row][column].hasSprite(Sprite): return (row, column)
 
+    def heroInTown(self):
+        # Get hero's position
+        hero_r, hero_c = self.find('hero')
+
+        # Check if hero in town or open
+        return self.tiles[hero_r][hero_c].hasSprite('town')
+
     def load(self):
         # Get surface
         Surface = self.item.surface.Surface
@@ -84,11 +91,12 @@ class Grid(coreFunc):
 
 
 class Tile(coreFunc):
-    def __init__(self, row:int, column:int, sprites:list = []):
+    def __init__(self, row:int, column:int, sprites:list = None):
         self.row = row
         self.column = column
         
-        self.sprites = sprites
+        if sprites == None: self.sprites = []
+        else: self.sprites = sprites
 
     def getPos(self): return (self.row, self.column)
 
