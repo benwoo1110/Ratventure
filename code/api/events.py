@@ -68,7 +68,7 @@ class events(coreFunc):
             if not (thing_object.loaded and hasattr(thing_object, 'selectable') and thing_object.selectable): continue
 
             # Check if thing_object is disabled
-            if hasattr(thing_object, 'state') and thing_object.isState('Disabled'): continue
+            if hasattr(thing_object, 'state') and (thing_object.isState('Disabled') or thing_object.isState('Selected')): continue
 
             # Check if object is to do an action
             if hasattr(thing_object, 'action') and thing_object.action != None:
@@ -79,7 +79,7 @@ class events(coreFunc):
                 else: thing_object.switchState('')
 
             # Look for things in the object
-            elif hasattr(thing_object, 'loaded') and thing_object.loaded:
+            elif hasattr(thing_object, 'containerList'):
                 on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
 
         return on_thing

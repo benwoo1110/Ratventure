@@ -115,6 +115,9 @@ class Screens(coreFunc):
             # Get screen
             screen = getattr(self, self.screensStack[-1])
 
+            # Run init code exist
+            if hasattr(screen.main, 'init'): screen.main.init()
+
             # Display the screen
             screen.display()
             

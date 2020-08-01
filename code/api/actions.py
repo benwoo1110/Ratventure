@@ -72,7 +72,9 @@ class actionResult(coreFunc):
         action = object_thing.action
         try:
             # Just passing of information
-            if isinstance(action, Info): self.outcome = action.text
+            if isinstance(action, Info): 
+                self.outcome = action.text
+                logger.info('[{}] {}'.format(object_thing.name, action.text))
             # Run a method
             elif isinstance(action, Runclass): self.outcome = action.run(**action.parameters)
             # Change of screen

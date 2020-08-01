@@ -52,9 +52,6 @@ class screen(coreFunc):
         # Adding to data of all screen
         screens.add(self.name, self)
 
-        # Run init code if have
-        if hasattr(self.main, 'init'): self.main.init()
-
         # Log the content of the screen
         logger.debug('[{}] {}'.format(self.name, self))
 
@@ -212,9 +209,7 @@ class item(coreFunc):
         # If not state define
         if state == None: return False
         # Check if state exist
-        check = hasattr(self.images, self.type+state)
-        if not check: logger.warn('[{}] {} does not have state "{}"'.format(self.surface.name, self.name, state))
-        return check
+        return hasattr(self.images, self.type+state)
 
     def switchState(self, toState:str, withLoad:bool = True, withDisplay:bool = True):
         # Change the state
