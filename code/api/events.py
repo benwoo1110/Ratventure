@@ -79,8 +79,9 @@ class events(coreFunc):
                 else: thing_object.switchState('')
 
             # Look for things in the object
-            elif hasattr(thing_object, 'containerList'):
-                on_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
+            elif hasattr(thing_object, 'containerList') and thing_object.containerList != []:
+                result_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
+                if result_thing != None: on_thing = result_thing
 
         return on_thing
 
