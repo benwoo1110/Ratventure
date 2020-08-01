@@ -136,6 +136,10 @@ class playerData(coreFunc):
     def save():
         savedData = {}
 
+        # Save nickname
+        nickname = screens.new_game.options.nickname.text.text
+        savedData['nickname'] = nickname
+
         # Map
         Grid = screens.game.map.grid.Grid
         savedData['grid'] = []
@@ -158,7 +162,7 @@ class playerData(coreFunc):
         savedData['stats']['power'] = stats.power.hasOrb()
 
         # Save to file
-        save_location = './appdata/saves/test.json'
+        save_location = './appdata/saves/{}.json'.format(nickname)
         with open(save_location, 'w') as savefile:
             savefile.write(json.dumps(savedData))
 

@@ -126,7 +126,7 @@ new_game_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=760, y=642, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=642, w=987, h=140)},
-                'action': Info(text='difficulty'),
+                # 'action': Info(text='difficulty'),
                 'data': {
                     'level': Text (
                         frame = Frame(x=760, y=642, w=987, h=140),
