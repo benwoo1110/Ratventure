@@ -29,7 +29,7 @@ class rest:
         stats.health.setBonus('rest', 'stats', add_health, False)
 
         # Load the rest surface
-        screens.game.rest.display(withLoad=True)
+        screens.game.rest.display(withItems=['stats'], refresh=True)
     
     @staticmethod
     def Rest():
@@ -47,6 +47,6 @@ class rest:
     def back():
         # Unload rest surface
         screens.game.rest.unload()
-
+        
         # Displau back town surface
         screens.game.in_town.display()

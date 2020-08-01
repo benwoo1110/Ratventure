@@ -59,19 +59,19 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=459, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=459, w=529, h=140)},
-                'action':Runclass(run=mainmenu.loadSave)
+                'action': Runclass(run=mainmenu.loadSave)# Switchscreen(type='load', screen='saves')
             },
             'leaderboard':{ 
                 'type': 'button',
                 'frame': Frame(x=983, y=665, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=665, w=529, h=140)},
-                'action': Runclass(run=mainmenu.test, parameters={'data': 'Testing Runclass'})
+                'action': Switchscreen(type='load', screen='leaderboard')
             },
             'quit': {
                 'type': 'button',
                 'frame': Frame(x=983, y=870, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=870, w=529, h=140)},
-                'action': Info(text='quit')
+                'action': Switchscreen(type='load', screen='alert')
             },
         }
     }

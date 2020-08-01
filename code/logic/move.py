@@ -31,20 +31,20 @@ class move:
         else: screens.game.in_open.unload()
 
         # Disable arrows for impossible directions
-        if not 0 <= hero_r-1 <= 7: move_surface.up.switchState('Disabled', withLoad=False)
-        else: move_surface.up.switchState('', withLoad=False)
+        if not 0 <= hero_r-1 <= 7: move_surface.up.switchState('Disabled', withDisplay=False)
+        else: move_surface.up.switchState('', withDisplay=False)
 
-        if not 0 <= hero_r+1 <= 7: move_surface.down.switchState('Disabled', withLoad=False)
-        else: move_surface.down.switchState('', withLoad=False)
+        if not 0 <= hero_r+1 <= 7: move_surface.down.switchState('Disabled', withDisplay=False)
+        else: move_surface.down.switchState('', withDisplay=False)
 
-        if not 0 <= hero_c-1 <= 7: move_surface.left.switchState('Disabled', withLoad=False)
-        else: move_surface.left.switchState('', withLoad=False)
+        if not 0 <= hero_c-1 <= 7: move_surface.left.switchState('Disabled', withDisplay=False)
+        else: move_surface.left.switchState('', withDisplay=False)
 
-        if not 0 <= hero_c+1 <= 7: move_surface.right.switchState('Disabled', withLoad=False)
-        else: move_surface.right.switchState('', withLoad=False)
+        if not 0 <= hero_c+1 <= 7: move_surface.right.switchState('Disabled', withDisplay=False)
+        else: move_surface.right.switchState('', withDisplay=False)
 
         # Display to screen
-        screens.game.move.display(withLoad=True)
+        screens.game.move.display()
 
     @staticmethod
     def Move(direction:str):
@@ -66,7 +66,7 @@ class move:
         Grid.tiles[hero_r][hero_c].sprites.append('hero')
 
         # Update map
-        screens.game.map.display(withLoad=True)
+        screens.game.map.display(withItems=['grid'], refresh=True)
 
         # Add a day
         stats.day.update()

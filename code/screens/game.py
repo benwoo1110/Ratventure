@@ -62,6 +62,7 @@ game_screen = screen (
             'grid': {
                 'frame': Frame(x=115, y=125, w=830, h=830),
                 'type': 'map',
+                'imageData': {'frame': Frame(x=0, y=0, w=1055, h=1080)},
                 'data': {
                     'Grid': Grid (frame=Frame(x=115, y=125, w=830, h=830),rows=8, columns=8)
                 }

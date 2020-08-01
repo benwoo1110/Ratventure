@@ -21,7 +21,7 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class screen(coreFunc):
     def __init__(self, name: str, main:any, surfaces:dict = {}, keyboard:dict = {}, 
-    bg_colour:tuple = None, selectable:bool = True, firstLoad:list = None):
+    bg_colour:tuple = None, selectable:bool = True, firstLoad:list = 'all'):
         self.name = name
         self.main = main
         self.bg_colour = bg_colour
@@ -33,85 +33,83 @@ class screen(coreFunc):
 
         # Keyboard actions
         self.keyboard = keyboardActions(self, keyboard)
+
+        # Setting up screen
+        self.Screen = pygame.surface.Surface(pg.size(), pygame.SRCALPHA)
+
+        # Get background image
+        self.bg_image = Images([self.name], frame=self.frame)
+        self.loadBackground()
     
-        # Store surfaces
+        # Load surfaces
         self.loaded = []
         self.containerList = []
         for name, surfaceData in surfaces.items():
             self.addSurface(name, surfaceData)
 
+        self.load(withSurfaces=firstLoad)
+
         # Adding to data of all screen
         screens.add(self.name, self)
-
-        # Setting up screen
-        self.Surface = pygame.surface.Surface(pg.size(), pygame.SRCALPHA)
-        self.load(surfaces=firstLoad)
 
         # Run init code if have
         if hasattr(self.main, 'init'): self.main.init()
 
         # Log the content of the screen
-        logger.debug('[{}] {}'.format(self.name, self.__repr__()))
+        logger.debug('[{}] {}'.format(self.name, self))
 
-    def unload(self, surfaces:list = None):
+    def addSurface(self, name, surfaceData:dict = {}):
+        setattr(self, name, surface(screen=self, name=name, **surfaceData))
+        self.containerList.append(name)
+
+    def unload(self, surfaces:list = 'all'):
         # Get all surfaces defined
-        if surfaces == None: toUnload = self.containerList
+        if surfaces == 'all': toUnload = self.containerList
         else: toUnload = surfaces
 
         # Unload them
-        for surface in toUnload: 
-            surface_toUnload = getattr(self, surface)
+        for Surface in toUnload: 
+            surface_toUnload = getattr(self, Surface)
             if surface_toUnload.loaded: surface_toUnload.unload()
 
-    def addSurface(self, name, surfaceData:dict = {}):
-        self.__dict__[name] = surface(screen=self, name=name, **surfaceData)
-        self.containerList.append(name)
+    def load(self, withSurfaces:list, refresh:bool = False):
+        # Get list of surface to load
+        if withSurfaces == None: 
+            logger.warn('[{}] No surfaces to load.'.format(self.name))
+            return
+        elif withSurfaces == 'all': toLoad = self.containerList
+        else: toLoad = withSurfaces
+
+        # Load all surfaces defined
+        for Surface in toLoad: 
+            if refresh: getattr(self, Surface).load()
+            else: getattr(self, Surface).load(withItems='all', refresh=refresh)
 
     def loadBackground(self):
         # Fill colour
-        if self.bg_colour != None: self.Surface.fill(self.bg_colour)
-        # Load image
-        self.bg_image = Images([self.name], frame=self.frame)
-        if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0, 0))
+        if self.bg_colour != None: self.Screen.fill(self.bg_colour)
+        # Load background image
+        if 'background' in self.bg_image.containerList: 
+            self.Screen.blit(self.bg_image.background, (0, 0))
 
-    def load(self, surfaces:list = None):
-        # Load background
-        self.loadBackground()
-
-        # Load all surfaces defined
-        if surfaces == None: toLoad = self.containerList
-        else: toLoad = surfaces
-
-        for surface in toLoad: getattr(self, surface).load()
-
-    def display(self, surfaces:list = None, withLoad:bool = False):
-        if withLoad: self.load(surfaces)
-
-        # Display those that are loaded
-        if surfaces == None:
-            for surface in self.containerList:
-                # load to screen
-                surface_toLoad = getattr(self, surface)
-                if surface_toLoad.loaded:
-                    self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
-
-        # Display all surfaces defined
-        else: 
-            for surface in surfaces:
-                # load to screen
-                surface_toLoad = getattr(self, surface)
-                self.Surface.blit(surface_toLoad.Surface, surface_toLoad.frame.coord())
-                surface_toLoad.loaded = True
-
-        # Resize surface
-        resizedSurface = pygame.transform.smoothscale(self.Surface, pg.scaled_size())
+    def display(self, withSurfaces:list = None, refresh:bool = False, withBackground:bool = True):
+        # Display background on window
+        # if withBackground: self.loadBackground()
         
-        # Output to screen
+        # Load surfaces
+        if withSurfaces != None: self.load(withSurfaces, refresh)
+        
+        # Resize surface
+        resizedSurface = pygame.transform.smoothscale(self.Screen, pg.scaled_size())
+        
+        # Output to window
         window.blit(resizedSurface, (0, 0))
+        pg.updateWindow()
 
 
 class surface(coreFunc):
-    def __init__(self, screen, name, frame:Frame, selectable:bool = True, bg_colour:tuple = None, **items):
+    def __init__(self, screen, name, frame:Frame, selectable:bool = True, 
+    bg_colour:tuple = None, **items):
         self.screen = screen
         self.name = name
         self.frame = frame
@@ -121,52 +119,59 @@ class surface(coreFunc):
         # Create surface
         self.Surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
         
+        # Get background image
+        self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
+        self.loadBackground()
+
         # Store items
         self.loaded = False
         self.containerList = []
-        for name, itemData in items.items():
-            self.addItem(name, itemData)
-
-        # Just load the background
-        self.loadBackground()
+        for name, itemData in items.items(): self.addItem(name, itemData)
 
     def addItem(self, name, itemData:dict):
-        self.__dict__[name] = item(**itemData, surface=self, name=name)
+        setattr(self, name, item(surface=self, name=name, **itemData))
         self.containerList.append(name)
-
-    def loadBackground(self):
-        # Fill colour
-        if self.bg_colour != None: self.Surface.fill(self.bg_colour)
-        # Load image
-        self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
-        if self.bg_image.containerList != []: self.Surface.blit(self.bg_image.background, (0,0))
 
     def unload(self):
         if self.loaded: self.loaded = False
         else: logger.warn('Surface {} already unloaded.'.format(self.name))
 
-    def load(self, items:list = None):
-        # Load background
-        self.loadBackground()
+    def load(self, withItems:list = None, refresh:bool = False):
+        # Display background
+        # if withBackground: self.loadBackground()
 
-        # Load all surfaces defined
-        if items == None: toLoad = self.containerList
-        else: toLoad = items
+        # Get item list to load
+        if withItems == None: toLoad = []
+        elif withItems == 'all': toLoad = self.containerList
+        else: toLoad = withItems
+        
+        # Load all items defined
+        for item in toLoad: 
+            if refresh: getattr(self, item).load(withData='all')
+            else: getattr(self, item).load()
 
-        for item in toLoad: self.__dict__[item].load()
+        # Load to screen
+        self.screen.Screen.blit(self.Surface, self.frame.coord())
 
         self.loaded = True
 
-    def display(self, items:list = None, withLoad:bool = False):
-        if withLoad: self.load(items)
-        # Output to window
-        self.screen.display(surfaces=[self.name])
+    def loadBackground(self):
+        # Fill colour
+        if self.bg_colour != None: self.Surface.fill(self.bg_colour)
+        # Display to screen
+        if 'background' in self.bg_image.containerList: 
+            self.Surface.blit(self.bg_image.background, (0, 0))
 
-        self.loaded = True
+    def display(self, withItems:list = None, refresh:bool = False):        
+        # Load the surface with items
+        self.load(withItems, refresh)
+        
+        # Load to screen
+        self.screen.display()
 
 
 class item(coreFunc):
-    def __init__(self, surface, name:str, type:str, frame:Frame, imageData:dict = None, 
+    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, 
     data:dict = {}, selectable: bool = True, state:str = '', action:any = None):
         self.surface = surface
         self.name = name
@@ -192,7 +197,8 @@ class item(coreFunc):
         for name, dataData in data.items():
             self.addData(name, dataData)
 
-        self.load()
+        # Load up item
+        self.load(withData='all')
 
     def addData(self, name, dataData):
         dataData.name = name
@@ -224,23 +230,23 @@ class item(coreFunc):
         if self.loaded: self.loaded = False
         else: logger.warn('Item {} already unloaded.'.format(self.name))
 
-    def load(self, datas:list = None):
-        # Get surface
-        Surface = self.surface.Surface
-
+    def load(self, withData:list = 'all'):
         # Load image
         if self.images != None and self.images.containerList != []: 
-            Surface.blit(self.images.__dict__[self.type+self.state], (self.images.frame.coord()))
-
-        # Load all data defined
-        if datas == None: toLoad = self.containerList
-        else: toLoad = datas
-
-        for data in toLoad:
-            if hasattr(self.__dict__[data], 'load'): self.__dict__[data].load()
+            self.surface.Surface.blit(self.images.__dict__[self.type+self.state], (self.images.frame.coord()))
 
         self.loaded = True
 
-    def display(self, datas:list = None, withLoad:bool = True):
-        if withLoad: self.load(datas)
+        # Load all data defined
+        if withData == None: return
+        elif withData == 'all': toLoad = self.containerList
+        else: toLoad = withData
+
+        for data in toLoad:
+            if hasattr(self.__dict__[data], 'load'): getattr(self, data).load()
+
+    def display(self, withData:list = 'all'):
+        # Load the item to surface
+        self.load(withData)
+        # Display to surface
         self.surface.display()

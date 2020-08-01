@@ -80,8 +80,6 @@ class playerData(coreFunc):
 
             # Ensure that pos is not a town or king
             if  (row >=4 or column >= 4) and (not Grid.tiles[row][column].hasSprite()):
-                # Save to grid for now
-                Grid.tiles[row][column].sprites = ['orb']
                 # Save orb pos
                 power.row, power.column = row, column
                 break
@@ -90,10 +88,16 @@ class playerData(coreFunc):
         power.sense()
 
         # Display screen
-        screens.game.display(surfaces=['map', 'info', 'in_town'], withLoad=True)
+        screens.game.map.load(withItems=['grid'])
+        screens.game.info.load(withItems='all')
+        screens.game.in_town.load()
+        screens.game.display()
+
+        logger.info('Created new playdata.')
 
     @staticmethod
     def load():
+        Grid = screens.game.map.grid.Grid
         # Get saved file
         save_location = './appdata/saves/test.json'
         with open(save_location, 'r') as savefile:
@@ -102,7 +106,7 @@ class playerData(coreFunc):
         savedData = json.loads(raw_data)
 
         # Map
-        screens.game.map.grid.Grid.generate(savedData['grid'])
+        Grid.generate(savedData['grid'])
 
         # Load orb location
         power.row, power.column = savedData['orb']
@@ -118,12 +122,14 @@ class playerData(coreFunc):
         power.sense()
 
         # Check if player in town
-        if screens.game.map.grid.Grid.heroInTown(): surfaces_toLoad = ['map', 'info', 'in_town']
-        else: surfaces_toLoad = ['map', 'info', 'in_open']
+        if Grid.heroInTown(): screens.game.in_town.load()
+        else: screens.game.in_open.load(withItems=['sense_orb'])
 
         # Display screen
-        screens.game.display(surfaces=surfaces_toLoad, withLoad=True)
-        
+        screens.game.map.load(withItems=['grid'])
+        screens.game.info.load(withItems='all')
+        screens.game.display()
+
         logger.info('Loaded playerdata from "{}"'.format(save_location))
 
     @staticmethod

@@ -53,8 +53,6 @@ class events(coreFunc):
                 # Get and store result if any
                 if event_result != None: result[event_run.action] = event_result
 
-        pg.updateDisplay()
-        
         return result
 
     def onThing(self, frame_coord:tuple = None):

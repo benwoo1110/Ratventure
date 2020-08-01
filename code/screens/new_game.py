@@ -4,6 +4,7 @@
 from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
+from code.api.data.Text import Text, textFormat
 from code.logic.playerData import playerData
 
 
@@ -42,26 +43,42 @@ class new_game:
 new_game_screen = screen (
     name = 'new_game',
     main = new_game,
+
     keyboard = {
         'back': {
             'keys': [27],
             'action': Switchscreen(type='back')
         }
     },
+
     surfaces = {
         'options': {
             'frame': Frame(x=0, y=0, w=1800, h=1080),
             'nickname': {
-                'type': 'text',
+                'type': 'textfield',
                 'frame': Frame(x=760, y=347, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=347, w=987, h=140)},
-                #'action': Runclass(run='info')
+                'action': Runclass(run='info'),
+                'data': {
+                    'text': Text (
+                        frame = Frame(x=760, y=347, w=987, h=140),
+                        text = 'Benedict',
+                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
+                    ),
+                },
             },
             'difficulty': {
                 'type': 'text',
                 'frame': Frame(x=760, y=642, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=642, w=987, h=140)},
-                #'action': Runclass(run='info')
+                # 'action': Info(text='difficulty'),
+                'data': {
+                    'name': Text (
+                        frame = Frame(x=760, y=642, w=987, h=140),
+                        text = 'Extreme',
+                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
+                    ),
+                },
             },
             'back': {
                 'type': 'button',

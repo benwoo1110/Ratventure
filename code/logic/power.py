@@ -22,15 +22,20 @@ class power:
 
     @staticmethod
     def initSurface():
+        Grid = screens.game.map.grid.Grid
         # Unload previous selection screen
         screens.game.in_open.unload()
 
         # Check if hero is at orb location
-        hero_r, hero_c = screens.game.map.grid.Grid.find('hero')
+        hero_r, hero_c = Grid.find('hero')
 
         # Orb is found
         if hero_r == power.row and hero_c == power.column:
-            screens.game.found_orb.display(withLoad=True)
+            # Show orb in map
+            Grid.tiles[power.row][power.column].sprites.insert(0, 'orb')
+
+            screens.game.map.load(withItems=['grid'], refresh=True)
+            screens.game.display(withSurfaces=['found_orb'])
 
         # Orb not found
         else:
@@ -49,20 +54,26 @@ class power:
             screens.game.no_orb.compass.switchState(direction, False)
 
             # Load screen
-            screens.game.no_orb.display(withLoad=True)
+            screens.game.no_orb.display(withItems=['compass'], refresh=True)
 
         # Add a day
         stats.day.update()
 
     @staticmethod
     def take():
+        Grid = screens.game.map.grid.Grid
+
         # Update stats upon taking orb
         stats.damage.update('info', 'stats', 5, 5, False)
         stats.defence.update('info', 'stats', 5)
         stats.power.take()
 
         # Disable sensing orb
-        screens.game.in_open.sense_orb.switchState('Disabled')
+        screens.game.in_open.sense_orb.switchState('Disabled', withDisplay=False)
+
+        # Remove orb from map
+        Grid.tiles[power.row][power.column].sprites.remove('orb')
+        screens.game.map.display(withItems=['grid'], refresh=True)
 
         # Return to selection menu
         power.back()

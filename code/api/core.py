@@ -53,7 +53,7 @@ class pg:
     def scaled_size(): return (pg.scaled_width, pg.scaled_height)
 
     @staticmethod
-    def updateDisplay():
+    def updateWindow():
         pygame.display.update()
         pg.clock.tick(pg.config.framerate)
 
@@ -211,6 +211,6 @@ elif pg.config.icon_file != '':
 pygame.display.set_caption(pg.config.title)
 
 # Set display
-window = pygame.display.set_mode(pg.scaled_size())
+window = pygame.display.set_mode(pg.scaled_size(), pygame.DOUBLEBUF)
 
 logger.debug(pygame.display.Info())
