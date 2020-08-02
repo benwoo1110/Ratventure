@@ -24,27 +24,27 @@ class attack:
             'chance': 0.6,
             'needOrb': False,
             'stats': {
-                'damage': [2, 10],
+                'damage': [2, 3],
                 'defence': 1,
                 'health': [8, 8]
             },
             'gains': {
-                'damage': [0, 1],
+                'damage': [0, 0],
                 'defence': 0,
                 'health': [0, 0]
             },
         },
         'moth': {
-            'chance': 0.4,
+            'chance': 0.3,
             'needOrb': False,
             'stats': {
-                'damage': [2, 10],
+                'damage': [1, 2],
                 'defence': 2,
-                'health': [12, 12]
+                'health': [10, 10]
             },
             'gains': {
                 'damage': [0, 0],
-                'defence': 1,
+                'defence': 0,
                 'health': [0, 0]
             },
         },
