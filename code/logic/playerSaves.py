@@ -119,10 +119,13 @@ class playerSaves:
     def deleteSaved(number:int):
         list_surface = screens.saves['list_{}'.format(number)]
 
-        # Delete the file
+        # get file to delete
         file_location = './appdata/saves/{}.json'.format(list_surface.file.fileid)
-        os.remove(file_location)
-        logger.info('Deleted playerdata "{}"'.format(file_location))
+        
+        # Delete the file
+        try: os.remove(file_location)
+        except Exception as e: logger.error(e, exc_info=True)
+        else: logger.info('Deleted playerdata "{}"'.format(file_location))
 
         # Reload list view
         playerSaves.showList(int(playerSaves.currentPage()))

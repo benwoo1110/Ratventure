@@ -15,9 +15,9 @@ logger.info('Loading up {}...'.format(filename))
 
 
 class Sprite(coreFunc):
-    def __init__(self):
+    def __init__(self, spritePage:list):
         # Get sprite images
-        images = Images(frame=Frame(x=0,y=0,w=101,h=101), imagePage=['game', 'map', 'sprites'], scale=True)
+        images = Images(frame=Frame(x=0,y=0,w=101,h=101), imagePage=spritePage, scale=True)
         self.containerList = images.containerList
 
         # Load them to attributes
@@ -33,7 +33,7 @@ class Sprite(coreFunc):
         else: logger.error('No such sprite: "{}"'.format(sprite))
 
 # Get sprites available
-sprite = Sprite()
+sprite = Sprite(spritePage=['game', 'map', 'sprites'])
 
 
 class Grid(coreFunc):

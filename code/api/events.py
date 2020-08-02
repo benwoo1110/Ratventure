@@ -76,7 +76,9 @@ class events(coreFunc):
                 if thing_object.frame.mouseIn(frame_coord):
                     thing_object.switchState('Hover')
                     on_thing = thing_object
-                else: thing_object.switchState('')
+                
+                elif thing_object.isState('Hover'): 
+                    thing_object.switchState('')
 
             # Look for things in the object
             elif hasattr(thing_object, 'containerList') and thing_object.containerList != []:

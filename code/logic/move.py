@@ -3,6 +3,7 @@
 ######################################
 from code.api.core import os, log, screens
 from code.logic.stats import stats
+from code.logic.attack import attack
 
 
 #################
@@ -27,7 +28,7 @@ class move:
         hero_r, hero_c = Grid.find('hero')
 
         # Check if hero in town or open
-        if Grid.tiles[hero_r][hero_c].hasSprite('town'): screens.game.in_town.unload()
+        if Grid.heroInTown(): screens.game.in_town.unload()
         else: screens.game.in_open.unload()
 
         # Disable arrows for impossible directions
@@ -53,6 +54,11 @@ class move:
         # Get hero's position
         hero_r, hero_c = Grid.find('hero')
 
+        # Check for enemy to remove
+        for enemy in attack.enemies:
+            if enemy != 'king' and enemy in Grid.tiles[hero_r][hero_c].sprites:
+                Grid.tiles[hero_r][hero_c].sprites.remove(enemy)
+
         # Remove hero from current location
         Grid.tiles[hero_r][hero_c].sprites.remove('hero')
 
@@ -70,6 +76,12 @@ class move:
 
         # Add a day
         stats.day.update()
+
+        # Check for attack
+        if attack.haveEnemy(): 
+            # Unload move
+            screens.game.move.unload()
+            return
 
         # Go make to selection menu
         move.back()

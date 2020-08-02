@@ -127,7 +127,7 @@ class stats:
 
         
         @staticmethod
-        def update(surface:str, item:str, current:int = 0, max:int = 0, withDisplay:bool = True):
+        def update(surface:str, item:str, current_h:int = 0, max_h:int = 0, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
@@ -135,8 +135,8 @@ class stats:
             current_health, max_health = stats.health.get(surface, item)
 
             # Set new value
-            current_health += current
-            max_health += max
+            current_health = max(0, current_health + current_h)
+            max_health += max_h
 
             # Display the text
             health_text = '{}/{}'.format(current_health, max_health)

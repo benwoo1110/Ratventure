@@ -3,6 +3,7 @@
 ######################################
 from code.api.core import os, log, screens
 from code.logic.stats import stats
+from code.logic.attack import attack
 
 
 #################
@@ -19,6 +20,11 @@ logger.info('Loading up {}...'.format(filename))
 class power:
     row = -1
     column = -1
+
+    @staticmethod
+    def sense():
+        if stats.power.hasOrb(): screens.game.in_open.sense_orb.switchState('Disabled', False)
+        else: screens.game.in_open.sense_orb.switchState('', False)
 
     @staticmethod
     def initSurface():
@@ -84,11 +90,9 @@ class power:
         if stats.power.hasOrb(): screens.game.found_orb.unload()
         else: screens.game.no_orb.unload()
 
+        # Check for attack
+        if attack.haveEnemy(): return
+
         # Load back selection screen
         screens.game.in_open.display()
-
-    @staticmethod
-    def sense():
-        if stats.power.hasOrb(): screens.game.in_open.sense_orb.switchState('Disabled', False)
-        else: screens.game.in_open.sense_orb.switchState('', False)
 

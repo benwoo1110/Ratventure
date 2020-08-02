@@ -10,6 +10,7 @@ from code.logic.move import move
 from code.logic.playerData import playerData
 from code.logic.rest import rest
 from code.logic.power import power
+from code.logic.attack import attack
 
 
 #################
@@ -300,6 +301,12 @@ game_screen = screen (
 
         'attack': {
             'frame': Frame(x=1060, y=520, w=740, h=560),
+            'enemy': {
+                'type': 'object',
+                'frame': Frame(x=88, y=15, w=207, h=217),
+                'imageData': {'frame': Frame(x=88, y=15, w=207, h=217)},
+                'selectable': False,
+            },
             'stats': { 
                 'type': 'text',
                 'frame': Frame(x=323, y=35, w=307, h=236),
@@ -330,13 +337,13 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=302, w=251, h=104),
                 'imageData': {'frame': Frame(x=88, y=302, w=251, h=104)},
-                'action': Info(text='Test')
+                'action': Runclass(run=attack.Attack)
             },
             'run': {
                 'type': 'button',
                 'frame': Frame(x=380, y=302, w=251, h=104),
                 'imageData': {'frame': Frame(x=380, y=302, w=251, h=104)},
-                'action': Info(text='Test')
+                'action': Runclass(run=attack.run)
             },
         }
         
