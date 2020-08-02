@@ -20,14 +20,6 @@ logger.info('Loading up {}...'.format(filename))
 # Screen main action class #
 ############################
 class mainmenu:
-
-    @staticmethod
-    def test(data): logger.info(data)
-
-    @staticmethod
-    def loadSave():
-        playerData.load()
-        screens.changeStack('load', 'game')
     
     @staticmethod
     def run():

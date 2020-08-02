@@ -17,9 +17,6 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
-
-
-
 ############################
 # Screen main action class #
 ############################
@@ -82,11 +79,6 @@ class new_game:
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
 
-    @staticmethod
-    def loadGame():
-        playerData.new()
-        screens.changeStack('load', 'game')
-
 
 ##################
 # Screen objects #
@@ -146,7 +138,7 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1188, y=881, w=559, h=140),
                 'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
-                'action': Runclass(run=new_game.loadGame)
+                'action': Runclass(run=playerData.new)
             },
         },
     }

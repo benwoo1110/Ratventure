@@ -40,6 +40,7 @@ from code.api.core import log, pg, screens
 import code.screens.mainmenu
 import code.screens.new_game
 import code.screens.game
+import code.screens.end_game
 import code.screens.saves
 import code.screens.leaderboard
 import code.screens.alert

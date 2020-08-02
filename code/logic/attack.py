@@ -24,7 +24,7 @@ class attack:
             'chance': 0.6,
             'needOrb': False,
             'stats': {
-                'damage': [1, 3],
+                'damage': [2, 10],
                 'defence': 1,
                 'health': [8, 8]
             },
@@ -38,7 +38,7 @@ class attack:
             'chance': 0.4,
             'needOrb': False,
             'stats': {
-                'damage': [1, 2],
+                'damage': [2, 10],
                 'defence': 2,
                 'health': [12, 12]
             },
@@ -52,9 +52,9 @@ class attack:
             'chance': 0,
             'needOrb': True,
             'stats': {
-                'damage': [8, 12],
-                'defence': 5,
-                'health': [25, 25]
+                'damage': [4, 8],
+                'defence': 4,
+                'health': [20, 20]
             },
         },
     }
@@ -142,7 +142,7 @@ class attack:
         damage_done = randint(*stats.damage.get(by, 'stats'))
 
         # Remove defence
-        damage_done -= stats.defence.get(to, 'stats')
+        damage_done = max(0, damage_done - stats.defence.get(to, 'stats'))
 
         # Deal damage to enemy
         stats.health.update(to, 'stats', -damage_done)
@@ -168,6 +168,9 @@ class attack:
         # When hero dies, game over
         if stats.health.get('info', 'stats')[0] == 0:
             # actions to do when hero dies
+            screens.end_game.unload()
+            screens.end_game.gameover.load()
+            screens.changeStack(type='load', screen='end_game')
             return
 
         # Check when enemy dies
@@ -176,6 +179,9 @@ class attack:
             # When the king is defeated, player wins
             if attack.current_enemy == 'king':
                 # Player won
+                screens.end_game.unload()
+                screens.end_game.win.load()
+                screens.changeStack(type='load', screen='end_game')
                 return
 
             Grid = screens.game.map.grid.Grid

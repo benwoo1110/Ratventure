@@ -88,10 +88,13 @@ class playerData:
         # Set if player can sense for orb
         power.sense()
 
-        # Display screen
+        # Load screen
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')
         screens.game.in_town.load()
+
+        # Switch to game screen
+        screens.changeStack(type='load', screen='game') 
 
         logger.info('Created new playdata.')
 
