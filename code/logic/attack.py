@@ -21,13 +21,32 @@ logger.info('Loading up {}...'.format(filename))
 class attack:
     enemies = {
         'rat': {
-            'chance': 0.7,
+            'chance': 0.6,
             'needOrb': False,
             'stats': {
                 'damage': [1, 3],
                 'defence': 1,
                 'health': [8, 8]
-            }
+            },
+            'gains': {
+                'damage': [0, 1],
+                'defence': 0,
+                'health': [0, 0]
+            },
+        },
+        'moth': {
+            'chance': 0.4,
+            'needOrb': False,
+            'stats': {
+                'damage': [1, 2],
+                'defence': 2,
+                'health': [12, 12]
+            },
+            'gains': {
+                'damage': [0, 0],
+                'defence': 1,
+                'health': [0, 0]
+            },
         },
         'king': {
             'chance': 0,
@@ -36,7 +55,7 @@ class attack:
                 'damage': [8, 12],
                 'defence': 5,
                 'health': [25, 25]
-            }
+            },
         },
     }
 
@@ -146,9 +165,26 @@ class attack:
         print('damage by enemy: ',end='')
         attack.doDamage(by='attack', to='info')
 
+        # When hero dies, game over
+        if stats.health.get('info', 'stats')[0] == 0:
+            # actions to do when hero dies
+            return
+
         # Check when enemy dies
         if stats.health.get('attack', 'stats')[0] == 0:
+            
+            # When the king is defeated, player wins
+            if attack.current_enemy == 'king':
+                # Player won
+                return
+
             Grid = screens.game.map.grid.Grid
+
+            # Gains from winning
+            gains = attack.enemies[attack.current_enemy]['gains']
+            stats.damage.update('info', 'stats', *gains['damage'], False)
+            stats.defence.update('info', 'stats', gains['defence'], False)
+            stats.health.update('info', 'stats', *gains['health'], False)
 
             # Reset
             attack.current_enemy = None
@@ -158,13 +194,10 @@ class attack:
 
             # Remove enemy from grid
             Grid.tiles[hero_r][hero_c].sprites.pop(0)
-            screens.game.map.display(withItems=['grid'], refresh=True)
 
             # Load back in open selection
             screens.game.attack.unload()
-            screens.game.in_open.display()
-
-        # When hero dies, gameover
-        if stats.health.get('info', 'stats')[0] == 0:
-            # actions to do when hero dies
-            pass
+            screens.game.map.load(withItems=['grid'], refresh=True)
+            screens.game.info.load(withItems=['stats'], refresh=True)
+            screens.game.in_open.load()
+            screens.game.display()
