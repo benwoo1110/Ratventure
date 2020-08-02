@@ -1,9 +1,10 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from random import randint
 import json
-from code.api.core import os, log, coreFunc, screens, traceback
+import uuid
+from random import randint
+from code.api.core import os, log, screens, traceback
 from code.logic.stats import stats
 from code.logic.power import power
 
@@ -28,7 +29,7 @@ if not os.path.isdir(filepath):
 ##################
 # Gameplay logic #
 ##################
-class playerData(coreFunc):
+class playerData:
     
     @staticmethod
     def new():
@@ -55,7 +56,7 @@ class playerData(coreFunc):
             for c in range(-2, 3):
                 for r in range(-(2-abs(c)), 2-abs(c)+1):
                     # Ensure there is such a tile and is not itself and not at king location
-                    if 0 <= row+r <= 7 and 0 <= column+c <= 7 and (r, c) != (0, 0):
+                    if 0 <= row+r <= 7 and 0 <= column+c <= 7 and (r, c) != (7, 7):
                         if Grid.tiles[row+r][column+c].hasSprite():
                             can_place = False 
                             break
@@ -63,14 +64,14 @@ class playerData(coreFunc):
             
             # Place down the town if checks pass
             if can_place: 
-                Grid.tiles[row][column].sprites = ['town']
+                Grid.tiles[row][column].sprites.append('town')
                 town_placed += 1
 
         # Create stats
         stats.day.set(1, False)
         stats.damage.set('info', 'stats', 2, 4, False)
         stats.defence.set('info', 'stats', 1, False)
-        stats.health.set('info', 'stats', 10, 20, False)
+        stats.health.set('info', 'stats', 20, 20, False)
         stats.power.set(False, False)
 
         # Calculate orb postion
@@ -91,18 +92,29 @@ class playerData(coreFunc):
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')
         screens.game.in_town.load()
-        screens.game.display()
 
         logger.info('Created new playdata.')
 
     @staticmethod
-    def load():
+    def load(fileid:str):
         Grid = screens.game.map.grid.Grid
-        # Get saved file
-        save_location = './appdata/saves/test.json'
-        with open(save_location, 'r') as savefile:
-            raw_data = savefile.read()
+     
+        # Get saved file data
+        save_location = './appdata/saves/{}.json'.format(fileid)
+
+        try:
+            with open(save_location, 'r') as savefile:
+                raw_data = savefile.read()
         
+        except Exception as e: 
+            logger.error(e, exc_info=True)
+            return
+
+        # Check that user did not edit save file
+        checkid = str(uuid.uuid3(uuid.NAMESPACE_URL, raw_data))
+        if fileid != checkid: 
+            raise Exception('UUID mismatch for savefile "{}" Did you edit the file?'.format(save_location))
+
         savedData = json.loads(raw_data)
 
         # Map
@@ -128,7 +140,6 @@ class playerData(coreFunc):
         # Display screen
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')
-        screens.game.display()
 
         logger.info('Loaded playerdata from "{}"'.format(save_location))
 
@@ -161,9 +172,15 @@ class playerData(coreFunc):
         savedData['stats']['health'] = stats.health.get('info', 'stats')
         savedData['stats']['power'] = stats.power.hasOrb()
 
-        # Save to file
-        save_location = './appdata/saves/{}.json'.format(nickname)
-        with open(save_location, 'w') as savefile:
-            savefile.write(json.dumps(savedData))
+        # Generate json text data
+        json_data = json.dumps(savedData)
 
-        logger.info('Saved playerdata to "{}"'.format(save_location)) 
+        # Generate UUID
+        fileid = uuid.uuid3(uuid.NAMESPACE_URL, json_data)
+
+        # Save to file
+        save_location = './appdata/saves/{}.json'.format(fileid)
+        with open(save_location, 'w') as savefile:
+            savefile.write(json_data)
+
+        logger.info('Saved playerdata to "{}"'.format(save_location))

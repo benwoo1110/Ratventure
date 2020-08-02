@@ -29,7 +29,8 @@ class new_game:
 
     @staticmethod
     def init():
-        new_game_screen.options.nickname.switchState('')
+        new_game_screen.options.nickname.switchState('', False)
+        new_game_screen.options.nickname.text.setText('Player')
 
     @staticmethod
     def textfield_selected():

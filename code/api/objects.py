@@ -59,17 +59,20 @@ class screen(coreFunc):
         setattr(self, name, surface(screen=self, name=name, **surfaceData))
         self.containerList.append(name)
 
-    def unload(self, surfaces:list = 'all'):
+    def unload(self, withSurfaces:list = 'all'):
         # Get all surfaces defined
-        if surfaces == 'all': toUnload = self.containerList
-        else: toUnload = surfaces
+        if withSurfaces == 'all': toUnload = self.containerList
+        else: toUnload = withSurfaces
 
         # Unload them
         for Surface in toUnload: 
             surface_toUnload = getattr(self, Surface)
             if surface_toUnload.loaded: surface_toUnload.unload()
 
-    def load(self, withSurfaces:list, refresh:bool = False):
+    def load(self, withSurfaces:list, refresh:bool = False, withBackground:bool = False):
+        # Display background on window
+        if withBackground: self.loadBackground()
+        
         # Get list of surface to load
         if withSurfaces == None: 
             logger.warn('[{}] No surfaces to load.'.format(self.name))
@@ -89,12 +92,9 @@ class screen(coreFunc):
         if 'background' in self.bg_image.containerList: 
             self.Screen.blit(self.bg_image.background, (0, 0))
 
-    def display(self, withSurfaces:list = None, refresh:bool = False, withBackground:bool = True):
-        # Display background on window
-        # if withBackground: self.loadBackground()
-        
+    def display(self, withSurfaces:list = None, refresh:bool = False, withBackground:bool = False):
         # Load surfaces
-        if withSurfaces != None: self.load(withSurfaces, refresh)
+        if withSurfaces != None: self.load(withSurfaces, refresh, withBackground)
         
         # Resize surface
         resizedSurface = pygame.transform.smoothscale(self.Screen, pg.scaled_size())
@@ -198,9 +198,9 @@ class item(coreFunc):
         self.load(withData='all')
 
     def addData(self, name, dataData):
-        dataData.name = name
-        dataData.item = self
-        self.__dict__[name] = dataData
+        if hasattr(dataData, 'name'): dataData.name = name
+        if hasattr(dataData, 'item'): dataData.item = self
+        setattr(self, name, dataData)
         self.containerList.append(name)
 
     def isState(self, state:str): return state == self.state
@@ -238,7 +238,8 @@ class item(coreFunc):
         else: toLoad = withData
 
         for data in toLoad:
-            if hasattr(self.__dict__[data], 'load'): getattr(self, data).load()
+            data_object = getattr(self, data)
+            if hasattr(data_object, 'load'): data_object.load()
 
     def display(self, withData:list = 'all'):
         # Load the item to surface
