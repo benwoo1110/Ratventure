@@ -3,8 +3,9 @@
 ######################################
 import json
 import uuid
+import time
 from random import randint
-from code.api.core import os, log, screens, traceback
+from code.api.core import os, log, screens, coreFunc
 from code.logic.stats import stats
 from code.logic.power import power
 
@@ -22,20 +23,34 @@ filepath = './appdata/saves/'
 if not os.path.isdir(filepath):
     # Create logs directory
     try: os.mkdir(filepath)
-    except: traceback.print_stack()
-    else: print('Created {} directory'.format(filepath))
+    except Exception as e: logger.error(e, exc_info=True)
+    else: logger.info('Created {} directory'.format(filepath))
 
 
 ##################
 # Gameplay logic #
 ##################
+class player(coreFunc):
+    def __init__(self, nickname:str = None, fileid:str = None, difficulty:str = None):
+        self.nickname = nickname
+        self.fileid = fileid
+        self.difficulty = difficulty
+
+
 class playerData:
-    
+    currentPlayer = player()
+
     @staticmethod
     def new():
-        # Create grid
         Grid = screens.game.map.grid.Grid
 
+        # reset currentPlayer 
+        playerData.currentPlayer = player (
+            nickname=screens.new_game.options.nickname.text.text,
+            difficulty=screens.new_game.options.difficulty.level.text
+            )
+        
+        # Create grid
         Grid.clear()
 
         # Set default hero, town and king
@@ -96,7 +111,7 @@ class playerData:
         # Switch to game screen
         screens.changeStack(type='load', screen='game') 
 
-        logger.info('Created new playdata.')
+        logger.info('Created new playerdata.')
 
     @staticmethod
     def load(fileid:str):
@@ -119,6 +134,9 @@ class playerData:
             raise Exception('UUID mismatch for savefile "{}" Did you edit the file?'.format(save_location))
 
         savedData = json.loads(raw_data)
+
+        # Store loaded player
+        playerData.currentPlayer = player (fileid=fileid, **savedData['player'])
 
         # Map
         Grid.generate(savedData['grid'])
@@ -148,13 +166,27 @@ class playerData:
 
     @staticmethod
     def save():
+        # Delete old save file if any
+        if playerData.currentPlayer.fileid != None:
+            file_location = './appdata/saves/{}.json'.format(playerData.currentPlayer.fileid)
+            # Delete the file
+            try: os.remove(file_location)
+            except Exception as e: logger.error(e, exc_info=True)
+            else: logger.info('Deleted old playerdata "{}"'.format(file_location))
+
+        # Init dictionary to save
         savedData = {}
 
-        # Save nickname
-        nickname = screens.new_game.options.nickname.text.text
-        savedData['nickname'] = nickname
+        # Save player
+        player_data = playerData.currentPlayer.__dict__.copy()
+        del player_data['fileid']
 
-        # Map
+        savedData['player'] = player_data
+
+        # Store save time
+        savedData['time_saved'] = time.time()
+
+        # Save map
         Grid = screens.game.map.grid.Grid
         savedData['grid'] = []
 
@@ -186,4 +218,4 @@ class playerData:
         with open(save_location, 'w') as savefile:
             savefile.write(json_data)
 
-        logger.info('Saved playerdata to "{}"'.format(save_location))
+        logger.info('Saved new playerdata to "{}"'.format(save_location))

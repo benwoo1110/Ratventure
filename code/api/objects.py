@@ -228,7 +228,7 @@ class item(coreFunc):
     def load(self, withData:list = 'all'):
         # Load image
         if self.images != None and self.images.containerList != []: 
-            self.surface.Surface.blit(self.images.__dict__[self.type+self.state], (self.images.frame.coord()))
+            self.surface.Surface.blit(getattr(self.images, self.type+self.state), (self.images.frame.coord()))
 
         self.loaded = True
 

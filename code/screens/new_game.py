@@ -90,7 +90,7 @@ new_game_screen = screen (
     keyboard = {
         'back': {
             'keys': [27],
-            'action': Switchscreen(type='back')
+            'action': Switchscreen(type='back', screen='mainmenu')
         }
     },
 
@@ -132,7 +132,7 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=760, y=881, w=271, h=140),
                 'imageData': {'frame': Frame(x=760, y=881, w=271, h=140)},
-                'action': Switchscreen(type='back')
+                'action': Switchscreen(type='back', screen='mainmenu')
             },
             'play': {
                 'type': 'button',

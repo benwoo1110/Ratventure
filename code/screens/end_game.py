@@ -5,7 +5,10 @@ import time
 from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
+from code.api.data.Text import Text, textFormat
 from code.logic.playerData import playerData
+from code.logic.stats import stats
+from code.logic.rank import rank
 
 
 #################
@@ -21,6 +24,30 @@ logger.info('Loading up {}...'.format(filename))
 ############################
 class end_game:
     
+    @staticmethod
+    def init():
+        # Check if win screen is the one loaded
+        if end_game_screen.win.loaded:
+            # Save to leaderboard
+            rank.add()
+
+            # Set cool colour for top 3
+            ranking = rank.getPos()
+
+            if ranking == 1: end_game_screen.win.leaderboard.switchState('First', False)
+            elif ranking == 2: end_game_screen.win.leaderboard.switchState('Second', False)
+            elif ranking == 3: end_game_screen.win.leaderboard.switchState('Third', False)
+            
+            else: end_game_screen.win.leaderboard.switchState('', False)
+
+            # Set player leaderboard on win screen
+            end_game_screen.win.leaderboard.postion.setText(str(ranking), withDisplay=False)
+            end_game_screen.win.leaderboard.nickname.setText(playerData.currentPlayer.nickname, withDisplay=False)
+            end_game_screen.win.leaderboard.days.setText(str(stats.day.get()), withDisplay=False)
+
+            # Load the changes
+            end_game_screen.win.load(withItems=['leaderboard'], refresh=True)
+
     @staticmethod
     def run():
         # Get action
@@ -68,6 +95,30 @@ end_game_screen = screen (
                 'imageData': {'frame': Frame(x=946, y=708, w=507, h=140)},
                 'action': Switchscreen(type='back', screen='mainmenu')
             },
+            'leaderboard': {
+                'type': 'object',
+                'frame': Frame(x=462, y=443, w=876, h=111),
+                'imageData': {'frame': Frame(x=462, y=443, w=876, h=111)},
+                'selectable': False,
+                'data': {
+                    'postion': Text (
+                        frame = Frame(x=465, y=443, w=105, h=111),
+                        text = '1',
+                        format = textFormat(fontSize=68, align='center', pos='center', colour=pg.colour.white)
+                    ),
+                    'nickname': Text (
+                        frame = Frame(x=573, y=443, w=497, h=111),
+                        text = 'Demo',
+                        format = textFormat(fontSize=68, align='left', pos='center', colour=pg.colour.white)
+                    ),
+                    'days': Text (
+                        frame = Frame(x=1073, y=443, w=236, h=111),
+                        text = '100',
+                        suffix = ' days',
+                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                    ),
+                }
+            }
         }
     }
 )

@@ -21,7 +21,7 @@ logger.info('Loading up {}...'.format(filename))
 class attack:
     enemies = {
         'rat': {
-            'chance': 0.6,
+            'chance': 0,
             'needOrb': False,
             'stats': {
                 'damage': [2, 3],
@@ -35,7 +35,7 @@ class attack:
             },
         },
         'moth': {
-            'chance': 0.3,
+            'chance': 0,
             'needOrb': False,
             'stats': {
                 'damage': [1, 2],
