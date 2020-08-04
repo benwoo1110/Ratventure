@@ -130,7 +130,6 @@ dmypy.json
 
 # Other files
 *.log
-*.json
 .DS_Store
 config.yml
 appdata/
