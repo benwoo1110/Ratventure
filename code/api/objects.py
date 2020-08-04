@@ -26,7 +26,7 @@ class screen(coreFunc):
         self.main = main
         self.bg_colour = bg_colour
         self.selectable = selectable
-        self.frame = Frame(x=0, y=0, w=pg.width, h=pg.height)
+        self.frame = Frame(x=window.x, y=window.y, w=window.width, h=window.height)
 
         # Event setup
         self.events = events(self)
@@ -35,10 +35,10 @@ class screen(coreFunc):
         self.keyboard = keyboardActions(self, keyboard)
 
         # Setting up screen
-        self.Screen = pygame.surface.Surface(pg.size(), pygame.SRCALPHA)
+        self.Screen = pygame.surface.Surface(window.size(), pygame.SRCALPHA)
 
         # Get background image
-        self.bg_image = Images([self.name], frame=self.frame)
+        self.bg_image = Images([self.name], (0, 0))
         self.loadBackground()
     
         # Load surfaces
@@ -97,10 +97,10 @@ class screen(coreFunc):
         if withSurfaces != None: self.load(withSurfaces, refresh, withBackground)
         
         # Resize surface
-        resizedSurface = pygame.transform.smoothscale(self.Screen, pg.scaled_size())
+        resizedSurface = pygame.transform.smoothscale(self.Screen, window.scaled_size())
         
         # Output to window
-        window.blit(resizedSurface, (0, 0))
+        window.Window.blit(resizedSurface, window.coord())
         pg.updateWindow()
 
 

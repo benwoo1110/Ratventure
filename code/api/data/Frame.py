@@ -1,8 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pygame, pg
-
+from code.api.core import log, coreFunc, os, pygame, pg, window
 
 #################
 # Setup logging #
@@ -34,6 +33,6 @@ class Frame(coreFunc):
         mousePos = pygame.mouse.get_pos()
         # Save surface coord to seperate variables
         s_x, s_y = surfaceCoord
-        scale = pg.config.scale
+        scale = window.scale
         # Return if in box
         return int((self.x + s_x)*scale) < mousePos[0] < int((self.x + self.w + s_x)*scale) and int((self.y + s_y)*scale) < mousePos[1] < int((self.y + self.h + s_y)*scale)

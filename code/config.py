@@ -20,8 +20,11 @@ title: 'Ratventure'
 # Application icon file location
 icon_file: './icon.png'
 
-# Size of pygame window in pixel
-scale: 0.5
+# Pygame windows fills the entire screen
+fullscreen: False
+
+# Config size of pygame window (Only apply if not fullscreen)
+scale: 0.8
 
 # Level of output shown
 # CRITICAL -> 50
@@ -39,9 +42,6 @@ logging:
 
 # Changes the refresh rate of pygame
 framerate: 60
-
-# Change speed of scrolling
-scroll_speed: 35
 '''
 
 
@@ -79,4 +79,6 @@ class Struct:
 
 # Convert dict to class object
 class config:
-    Config = Struct(**parsed_config_file)
+    @staticmethod
+    def get() -> Struct:
+        return Struct(**parsed_config_file)

@@ -74,7 +74,7 @@ class playerSaves:
             
             # Set time of save
             saved_time = datetime.fromtimestamp(saveData['time_saved'])
-            list_surface.file.date.setText(saved_time.strftime('%-d/%-m/%Y %-I:%M%p'), withDisplay=False)
+            list_surface.file.date.setText(saved_time.strftime('%d/%m/%Y %I:%M%p'), withDisplay=False)
 
             # Set file id
             list_surface.file.fileid = os.path.basename(file_location).split('.')[0]

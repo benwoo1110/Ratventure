@@ -63,7 +63,7 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=870, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=870, w=529, h=140)},
-                'action': Switchscreen(type='load', screen='alert')
+                'action': Info(text='quit') # Switchscreen(type='load', screen='alert')
             },
         }
     }

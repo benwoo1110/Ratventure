@@ -25,11 +25,7 @@ class coreFunc:
 # Common function #
 ###################
 class pg:
-    config = config.Config
-    width = int(1800)
-    height = int(1080)
-    scaled_width = int(width * config.scale)
-    scaled_height = int(height * config.scale)
+    config = config.get()
     keypressed = []
     clock = pygame.time.Clock()
 
@@ -47,12 +43,6 @@ class pg:
         purple = (97, 0, 188)
 
     @staticmethod
-    def size(): return (pg.width, pg.height)
-
-    @staticmethod
-    def scaled_size(): return (pg.scaled_width, pg.scaled_height)
-
-    @staticmethod
     def updateWindow():
         pygame.display.update()
         pg.clock.tick(pg.config.framerate)
@@ -61,6 +51,64 @@ class pg:
     def quit():
         logger.info('Exiting program... Goodbye!')
         pygame.quit()
+
+
+##########
+# Window #
+##########
+class windowScreen(coreFunc):
+    def __init__(self):
+        # Set icon
+        if os.path.isfile(pg.config.icon_file): 
+            pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
+
+        elif pg.config.icon_file != '': 
+            logger.warn('Error loading app icon image "{}"'.format(pg.config.icon_file))
+
+        # Set title
+        pygame.display.set_caption(pg.config.title)
+
+        self.width = 1800
+        self.height = 1080
+
+        # Set display
+        # Full screen mode
+        if pg.config.fullscreen: 
+            self.Window = pygame.display.set_mode(self.size(), pygame.FULLSCREEN)
+
+            # Get fullscreen window size
+            window_w, window_h = self.Window.get_size()
+            
+            # Set scaling
+            self.scale = min(window_w / self.width, window_h / self.height)
+            self.scaled_width = int(self.width * self.scale)
+            self.scaled_height = int(self.height * self.scale)
+
+            # Set coord to be center
+            self.x = int((window_w - self.scaled_width) / 2)
+            self.y = int((window_h - self.scaled_height) / 2)
+
+        # Window mode, use scale
+        else: 
+            # Set scaling
+            self.scale = pg.config.scale
+            self.scaled_width = int(self.width * self.scale)
+            self.scaled_height = int(self.height * self.scale)
+
+            # Set coord
+            self.x = 0
+            self.y = 0
+
+            self.Window = pygame.display.set_mode(self.scaled_size())
+
+        # Show display information
+        logger.debug(pygame.display.Info())
+
+    def size(self): return (self.width, self.height)
+
+    def scaled_size(self): return (self.scaled_width, self.scaled_height)
+
+    def coord(self): return (self.x, self.y)
 
 
 ##########
@@ -132,9 +180,6 @@ class Screens(coreFunc):
             if hasattr(screen.main, 'end'): screen.main.end()
             self.stackChange = False
 
-# Enable screen
-screens = Screens()
-
 
 ###########
 # Logging #
@@ -144,13 +189,14 @@ filepath = './logs/'
 if not os.path.isdir(filepath):
     # Create logs directory
     try: os.mkdir(filepath)
-    except: traceback.print_stack()
-    else: print('Created {} directory'.format(filepath))
+    except Exception as e: logger.error(e, exc_info=True)
+    else: logger.info('Created {} directory'.format(filepath))
+
 
 # Keep only certain number of log files 
 log_files = glob.glob("./logs/*.log")
 
-for index in range(len(log_files) - max(0, pg.config.logging.keep_logs-1)): #log_files[:min(-1, -config.logging.keep_logs)]:
+for index in range(len(log_files) - max(0, pg.config.logging.keep_logs-1)):
     os.remove(log_files[index])
 
 # setup log format and location
@@ -190,30 +236,18 @@ logger.info('Loading up {}...'.format(filename))
 logger.debug('[config] {}'.format(pg.config))
 
 
+# Ensure that appdata folder is created
+filepath = './appdata/'
+if not os.path.isdir(filepath):
+    # Create logs directory
+    try: os.mkdir(filepath)
+    except Exception as e: logger.error(e, exc_info=True)
+    else: logger.info('Created {} directory'.format(filepath))
+
+
 ################
 # Setup pygame #
 ################
-# Ensure that appdata folder is created
-if not os.path.isdir('./appdata'):
-    # Create logs directory
-    try: os.mkdir('appdata')
-    except: traceback.print_stack()
-    else: print("Created ./appdata directory")
-
-# Startup pygame window
 pygame.init()
-
-# Set icon
-if os.path.isfile(pg.config.icon_file): 
-    pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
-
-elif pg.config.icon_file != '': 
-    logger.warn('Error loading app icon image "{}"'.format(pg.config.icon_file))
-
-# Set title
-pygame.display.set_caption(pg.config.title)
-
-# Set display
-window = pygame.display.set_mode(pg.scaled_size(), pygame.DOUBLEBUF)
-
-logger.debug(pygame.display.Info())
+window = windowScreen()
+screens = Screens()

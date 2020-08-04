@@ -103,7 +103,7 @@ saves_screen = screen (
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
                     ),
                 }
             },
@@ -138,7 +138,7 @@ saves_screen = screen (
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
                     ),
                 }
             },
@@ -173,7 +173,7 @@ saves_screen = screen (
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
                     ),
                 }
             },
@@ -208,7 +208,7 @@ saves_screen = screen (
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
                     ),
                 }
             },
