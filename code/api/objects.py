@@ -167,7 +167,7 @@ class surface(coreFunc):
             resizedSurface = pygame.transform.smoothscale(self.Surface, self.frame.size(scale=window.scale))
             
             # Output to window
-            window.Window.blit(resizedSurface, self.frame.coord(scale=window.scale))
+            window.Window.blit(resizedSurface, self.frame.coord(surfaceCoord=window.coord(), scale=window.scale))
             pg.updateWindow()
         
         else:
