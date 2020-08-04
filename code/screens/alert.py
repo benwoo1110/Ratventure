@@ -40,7 +40,7 @@ alert_screen = screen (
     bg_colour = (0, 0, 0, 100),
 
     keyboard = {
-        'back': {
+        'dismiss': {
             'keys': [27],
             'action': Switchscreen(type='back')
         }

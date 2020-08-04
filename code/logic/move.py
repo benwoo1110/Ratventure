@@ -4,6 +4,7 @@
 from code.api.core import os, log, screens
 from code.logic.stats import stats
 from code.logic.attack import attack
+from code.logic.story import story
 
 
 #################
@@ -94,5 +95,10 @@ class move:
         screens.game.move.unload()
 
         # Check if hero in town or open
-        if Grid.heroInTown(): screens.game.in_town.display()
-        else: screens.game.in_open.display()
+        if Grid.heroInTown(): 
+            story.in_town.display()
+            screens.game.in_town.display()
+
+        else: 
+            story.in_open.display()
+            screens.game.in_open.display()

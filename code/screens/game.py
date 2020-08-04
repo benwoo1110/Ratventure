@@ -124,7 +124,7 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=0, y=358, w=740, h=157)},
                 'selectable': False,
                 'data': {
-                    'text': Text (
+                    'message': Text (
                         frame = Frame(x=88, y=358, w=542, h=152),
                         text = 'You are in a town.',
                         format = textFormat(fontSize=56, align='left', pos='center', warpText=24, lineSpacing=0.7, colour=pg.colour.black)
