@@ -33,7 +33,7 @@ if not os.path.isfile(filepath):
 ##################
 # Gameplay logic #
 ##################
-class rank:
+class playerRank:
     # Get leaderboard data
     try:
         with open(filepath, 'r') as leaderboardfile:
@@ -44,10 +44,10 @@ class rank:
     @staticmethod
     def check():
         # Ensure that leaderboard data is not tempered with
-        checkedData = rank.rankData.copy()
+        checkedData = playerRank.rankData.copy()
         missmatch = False
 
-        for rankid, data in rank.rankData.items():
+        for rankid, data in playerRank.rankData.items():
             # Generate json text data
             json_data = json.dumps(data)
 
@@ -60,15 +60,15 @@ class rank:
 
         # Reload data without those tempered with
         if missmatch:
-            rank.rankData = checkedData
-            rank.save()
+            playerRank.rankData = checkedData
+            playerRank.save()
 
     @staticmethod
     def save():
         # Create empty leaderboard file
         try:
             with open(filepath, 'w') as leaderboardfile:
-                leaderboardfile.write(json.dumps(rank.rankData, indent=4))
+                leaderboardfile.write(json.dumps(playerRank.rankData, indent=4))
 
         except Exception as e: logger.error(e, exc_info=True)
         else: logger.info('Save leaderboard data to {}'.format(filepath))
@@ -89,16 +89,16 @@ class rank:
         rankid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
 
         # Add to leaderboard data
-        rank.rankData[rankid] = win_data
+        playerRank.rankData[rankid] = win_data
 
         # Sort the rank based on days
-        rank.rankData = dict(sorted(rank.rankData.items(), key=lambda x: x[1]['days']))
+        playerRank.rankData = dict(sorted(playerRank.rankData.items(), key=lambda x: x[1]['days']))
 
-        rank.save()
+        playerRank.save()
 
     @staticmethod
     def getPos() -> int:
-        for postion, data in enumerate(rank.rankData.values(), 1):
+        for postion, data in enumerate(playerRank.rankData.values(), 1):
             # Found postion in data
             if data['nickname'] == playerData.currentPlayer.nickname and data['days'] == stats.day.get():
                 return postion
@@ -115,7 +115,7 @@ class rank:
         screens.leaderboard.loadBackground()
 
         # Set board paging
-        page = board.setPage(screen='leaderboard', number_of_files=len(rank.rankData), page=page)
+        page = board.setPage(screen='leaderboard', number_of_files=len(playerRank.rankData), page=page)
 
         # Set board next and back arrows
         board.arrowsState('leaderboard')
@@ -124,18 +124,18 @@ class rank:
         screens.leaderboard.board.load(withItems='all', refresh=True)
 
         # No leaderboard
-        if len(rank.rankData) == 0: 
+        if len(playerRank.rankData) == 0: 
             screens.leaderboard.display()
             return
 
         # Get data
-        list_data = list(rank.rankData.values())
+        list_data = list(playerRank.rankData.values())
 
         # Load up list
         for i in range(4):
             current_postion = (i + (page-1)*4)
             # Number of leaderboard less than 4 page
-            if current_postion > len(rank.rankData)-1: break
+            if current_postion > len(playerRank.rankData)-1: break
 
             # Set list surface base on savefile data
             list_surface = screens.leaderboard['list_{}'.format(i+1)]
@@ -158,7 +158,7 @@ class rank:
 
     @staticmethod
     def updateList(page:int):
-        rank.showList(int(board.currentPage('leaderboard')) + page)
+        playerRank.showList(int(board.currentPage('leaderboard')) + page)
 
 # Check ranks for tempered in startup
-rank.check()
+playerRank.check()

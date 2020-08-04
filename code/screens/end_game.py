@@ -8,7 +8,7 @@ from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
 from code.logic.playerData import playerData
 from code.logic.stats import stats
-from code.logic.rank import rank
+from code.logic.playerRank import playerRank
 
 
 #################
@@ -32,10 +32,10 @@ class end_game:
         # Check if win screen is the one loaded
         if end_game_screen.win.loaded:
             # Save to leaderboard
-            rank.add()
+            playerRank.add()
 
             # Set cool colour for top 3
-            ranking = rank.getPos()
+            ranking = playerRank.getPos()
 
             if ranking == 1: end_game_screen.win.leaderboard.switchState('First', False)
             elif ranking == 2: end_game_screen.win.leaderboard.switchState('Second', False)

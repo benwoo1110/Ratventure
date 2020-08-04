@@ -112,9 +112,9 @@ class attack:
         screens.game.attack.enemy.switchState(attack.current_enemy.capitalize(), False)
         
         # Set enemy stats
-        stats.damage.set('attack', 'stats', *enemy['stats']['damage'], False)
-        stats.defence.set('attack', 'stats', enemy['stats']['defence'], False)
-        stats.health.set('attack', 'stats', *enemy['stats']['health'], False)
+        stats.damage.set('attack', *enemy['stats']['damage'], False)
+        stats.defence.set('attack', enemy['stats']['defence'], False)
+        stats.health.set('attack', *enemy['stats']['health'], False)
 
         # Show enemy in grid
         screens.game.map.load(withItems=['grid'], refresh=True)
@@ -188,9 +188,9 @@ class attack:
 
             # Gains from winning
             gains = attack.enemies[attack.current_enemy]['gains']
-            stats.damage.update('info', 'stats', *gains['damage'], False)
-            stats.defence.update('info', 'stats', gains['defence'], False)
-            stats.health.update('info', 'stats', *gains['health'], False)
+            stats.damage.update('info', *gains['damage'], False)
+            stats.defence.update('info', gains['defence'], False)
+            stats.health.update('info', *gains['health'], False)
 
             # Reset
             attack.current_enemy = None

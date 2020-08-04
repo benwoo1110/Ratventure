@@ -1,6 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
+from random import randint
 from code.api.core import os, log, coreFunc
 from code.api.data.Images import Images
 from code.api.data.Frame import Frame
@@ -61,6 +62,32 @@ class Grid(coreFunc):
             for column in range(self.columns):
                 if gridData == None: self.tiles[row].append(Tile(row, column))
                 else: self.tiles[row].append(Tile(row, column, gridData[row][column]))
+
+    def randomiseTowns(self, number:int = 4, spacing:int = 3):
+        town_placed = 0
+        spacing -= 1
+        while town_placed < number:
+            row = randint(0, 7)
+            column = randint(0, 7)
+
+            # Ensure that pos isnt a town or at king's location
+            if self.tiles[row][column].hasSprite('town'): continue
+
+            # Check if town in within 3 pos
+            can_place = True
+            for c in range(-spacing, spacing+1):
+                for r in range(-(spacing-abs(c)), spacing-abs(c)+1):
+                    # Ensure there is such a tile and is not itself and not at king location
+                    if 0 <= row+r <= 7 and 0 <= column+c <= 7 and (r, c) != (7, 7):
+                        if self.tiles[row+r][column+c].hasSprite():
+                            can_place = False 
+                            break
+                if not can_place: break
+            
+            # Place down the town if checks pass
+            if can_place: 
+                self.tiles[row][column].sprites.append('town')
+                town_placed += 1
 
     def clear(self): self.generate()
     

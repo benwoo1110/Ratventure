@@ -5,7 +5,7 @@ from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
-from code.logic.rank import rank
+from code.logic.playerRank import playerRank
 
 
 #################
@@ -23,7 +23,7 @@ class leaderboard:
 
     @staticmethod
     def init():
-        rank.showList()
+        playerRank.showList()
 
     @staticmethod
     def run():
@@ -76,13 +76,13 @@ leaderboard_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=729, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=729, y=984, w=96, h=40)},
-                'action': Runclass(run=rank.updateList, parameters={'page': -1})
+                'action': Runclass(run=playerRank.updateList, parameters={'page': -1})
             },
             'page_next': {
                 'type': 'button',
                 'frame': Frame(x=1031, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=1031, y=984, w=96, h=40)},
-                'action': Runclass(run=rank.updateList, parameters={'page': 1})
+                'action': Runclass(run=playerRank.updateList, parameters={'page': 1})
             },
         },
 

@@ -1,6 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
+from random import randint
 from code.api.core import os, log, screens
 from code.logic.stats import stats
 from code.logic.attack import attack
@@ -22,7 +23,20 @@ class power:
     column = -1
 
     @staticmethod
-    def sense():
+    def setLocation():
+        Grid = screens.game.map.grid.Grid
+
+        while True:
+            row, column = randint(0, 7), randint(0, 7)
+
+            # Ensure that pos is valid and in open
+            if  (row >=4 or column >= 4) and (not Grid.tiles[row][column].hasSprite()):
+                # Save orb pos
+                power.row, power.column = row, column
+                break
+
+    @staticmethod
+    def canSense():
         if stats.power.hasOrb(): screens.game.in_open.sense_orb.switchState('Disabled', False)
         else: screens.game.in_open.sense_orb.switchState('', False)
 

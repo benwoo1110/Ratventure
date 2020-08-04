@@ -51,16 +51,16 @@ class stats:
     class damage:
 
         @staticmethod
-        def set(surface:str, item:str, min_d:int, max_d:int, withDisplay:bool = True):
+        def set(surface:str, min_d:int, max_d:int, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
             # Display the text
             damage_text = '{} - {}'.format(min_d, max_d)
-            game_screen[surface][item].damage.setText(damage_text, withDisplay=withDisplay)
+            game_screen[surface].stats.damage.setText(damage_text, withDisplay=withDisplay)
 
         @staticmethod
-        def update(surface:str, item:str, min_d:int, max_d:int, withDisplay:bool = True):
+        def update(surface:str, min_d:int, max_d:int, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
@@ -73,15 +73,15 @@ class stats:
 
             # Display the text
             damage_text = '{} - {}'.format(min_damage, max_damage)
-            game_screen[surface][item].damage.setText(damage_text, withDisplay=withDisplay)
+            game_screen[surface].stats.damage.setText(damage_text, withDisplay=withDisplay)
 
         @staticmethod  
-        def get(surface:str, item:str) -> tuple:
+        def get(surface:str) -> tuple:
             # Get game screen
             game_screen = screens.game
 
             # Get the damage text
-            damage_text = game_screen[surface][item].damage.text
+            damage_text = game_screen[surface].stats.damage.text
             min_damage, max_damage = damage_text.split(' - ')
 
             return (int(min_damage), int(max_damage))
@@ -89,15 +89,15 @@ class stats:
     class defence:
 
         @staticmethod
-        def set(surface:str, item:str, number:int, withDisplay:bool = True):
+        def set(surface:str, number:int, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
             # Display the text
-            game_screen[surface][item].defence.setText(str(number), withDisplay=withDisplay)
+            game_screen[surface].stats.defence.setText(str(number), withDisplay=withDisplay)
 
         @staticmethod
-        def update(surface:str, item:str, number:int, withDisplay:bool = True):
+        def update(surface:str, number:int, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
@@ -105,29 +105,29 @@ class stats:
             new_defence = str(stats.defence.get(surface, item) + number)
 
             # Display the text
-            game_screen[surface][item].defence.setText(new_defence, withDisplay=withDisplay)
+            game_screen[surface].stats.defence.setText(new_defence, withDisplay=withDisplay)
 
         @staticmethod
-        def get(surface:str, item:str):
+        def get(surface:str):
             # Get game screen
             game_screen = screens.game
 
-            return int(game_screen[surface][item].defence.text)
+            return int(game_screen[surface].stats.defence.text)
 
     class health:
 
         @staticmethod
-        def set(surface:str, item:str, current:int = 0, max:int = 0, withDisplay:bool = True):
+        def set(surface:str, current:int = 0, max:int = 0, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
             # Display the text
             health_text = '{}/{}'.format(current, max)
-            game_screen[surface][item].health.setText(health_text, withDisplay=withDisplay)
+            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
 
         
         @staticmethod
-        def update(surface:str, item:str, current_h:int = 0, max_h:int = 0, withDisplay:bool = True):
+        def update(surface:str, current_h:int = 0, max_h:int = 0, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
 
@@ -140,10 +140,10 @@ class stats:
 
             # Display the text
             health_text = '{}/{}'.format(current_health, max_health)
-            game_screen[surface][item].health.setText(health_text, withDisplay=withDisplay)
+            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
 
         @staticmethod
-        def setBonus(surface:str, item:str, number:int, withDisplay:bool = True):
+        def setBonus(surface:str, number:int, withDisplay:bool = True):
             # Get game screen
             game_screen = screens.game
             
@@ -151,14 +151,14 @@ class stats:
             health_text = '+ {}'.format(number)
 
             # Display the text
-            game_screen[surface][item].health.setText(health_text, withDisplay=withDisplay)
+            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
 
         @staticmethod
-        def getBonus(surface:str, item:str, number:int = 0):
+        def getBonus(surface:str, number:int = 0):
             # Get game screen
             game_screen = screens.game
 
-            health_text = game_screen[surface][item].health.text
+            health_text = game_screen[surface].stats.health.text
 
             if health_text.startswith('+ '): health_text = health_text[2:]
             else: logger.error('Error getting health.')
@@ -166,11 +166,11 @@ class stats:
             return int(health_text)
 
         @staticmethod
-        def get(surface:str, item:str):
+        def get(surface:str):
             # Get game screen
             game_screen = screens.game
 
-            health_text = game_screen[surface][item].health.text.split('/')
+            health_text = game_screen[surface].stats.health.text.split('/')
 
             if len(health_text) != 2: logger.error('Error getting health, did you mean to getBonus()?')
 
