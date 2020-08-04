@@ -1,9 +1,9 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, screens
+from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.actions import Runclass, Switchscreen, Info
+from code.api.actions import Runclass, Switchscreen, Alert
 from code.api.data.Text import Text, textFormat
 from code.logic.playerSaves import playerSaves
 
@@ -111,7 +111,12 @@ saves_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1429, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1429, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.deleteSaved, parameters={'number': 1})
+                'action': Alert (
+                    type='confirm', 
+                    title='Deleted Saved',
+                    content='Are you sure you want to delete the savefile?',
+                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 1})
+                ),
             },
             'play': {
                 'type': 'button',
@@ -146,7 +151,12 @@ saves_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1429, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1429, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.deleteSaved, parameters={'number': 2})
+                'action': Alert (
+                    type='confirm', 
+                    title='Deleted Saved',
+                    content='Are you sure you want to delete the savefile?',
+                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 2})
+                ),
             },
             'play': {
                 'type': 'button',
@@ -181,7 +191,12 @@ saves_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1429, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1429, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.deleteSaved, parameters={'number': 3})
+                'action': Alert (
+                    type='confirm', 
+                    title='Deleted Saved',
+                    content='Are you sure you want to delete the savefile?',
+                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 3})
+                ),            
             },
             'play': {
                 'type': 'button',
@@ -216,7 +231,12 @@ saves_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1429, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1429, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.deleteSaved, parameters={'number': 4})
+                'action': Alert (
+                    type='confirm', 
+                    title='Deleted Saved',
+                    content='Are you sure you want to delete the savefile?',
+                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 4})
+                ),
             },
             'play': {
                 'type': 'button',

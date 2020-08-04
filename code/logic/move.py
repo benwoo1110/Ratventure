@@ -19,31 +19,41 @@ logger.info('Loading up {}...'.format(filename))
 # Gameplay logic #
 ##################
 class move:
+
+    @staticmethod
+    def checkDirection():
+        Grid = screens.game.map.grid.Grid
+        move_surface = screens.game.move
+
+        # Get hero's position
+        hero_r, hero_c = Grid.find('hero')
+        
+        # up
+        if not 0 <= hero_r-1 <= 7: move_surface.up.switchState('Disabled', withDisplay=False)
+        else: move_surface.up.switchState('', withDisplay=False)
+        
+        # down
+        if not 0 <= hero_r+1 <= 7: move_surface.down.switchState('Disabled', withDisplay=False)
+        else: move_surface.down.switchState('', withDisplay=False)
+        
+        # left
+        if not 0 <= hero_c-1 <= 7: move_surface.left.switchState('Disabled', withDisplay=False)
+        else: move_surface.left.switchState('', withDisplay=False)
+        
+        # right
+        if not 0 <= hero_c+1 <= 7: move_surface.right.switchState('Disabled', withDisplay=False)
+        else: move_surface.right.switchState('', withDisplay=False)
     
     @staticmethod
     def initSurface():
-        move_surface = screens.game.move
         Grid = screens.game.map.grid.Grid
-        
-        # Get hero's position
-        hero_r, hero_c = Grid.find('hero')
 
         # Check if hero in town or open
         if Grid.heroInTown(): screens.game.in_town.unload()
         else: screens.game.in_open.unload()
 
         # Disable arrows for impossible directions
-        if not 0 <= hero_r-1 <= 7: move_surface.up.switchState('Disabled', withDisplay=False)
-        else: move_surface.up.switchState('', withDisplay=False)
-
-        if not 0 <= hero_r+1 <= 7: move_surface.down.switchState('Disabled', withDisplay=False)
-        else: move_surface.down.switchState('', withDisplay=False)
-
-        if not 0 <= hero_c-1 <= 7: move_surface.left.switchState('Disabled', withDisplay=False)
-        else: move_surface.left.switchState('', withDisplay=False)
-
-        if not 0 <= hero_c+1 <= 7: move_surface.right.switchState('Disabled', withDisplay=False)
-        else: move_surface.right.switchState('', withDisplay=False)
+        move.checkDirection()
 
         # Display to screen
         screens.game.move.display()
@@ -84,8 +94,13 @@ class move:
             screens.game.move.unload()
             return
 
-        # Go make to selection menu
-        move.back()
+        # Update story
+        if Grid.heroInTown(): story.in_town.display()
+        else: story.in_open.display()
+
+        # Disable arrows for impossible directions
+        move.checkDirection()
+        screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
 
     @staticmethod
     def back():
@@ -95,10 +110,5 @@ class move:
         screens.game.move.unload()
 
         # Check if hero in town or open
-        if Grid.heroInTown(): 
-            story.in_town.display()
-            screens.game.in_town.display()
-
-        else: 
-            story.in_open.display()
-            screens.game.in_open.display()
+        if Grid.heroInTown(): screens.game.in_town.display()
+        else: screens.game.in_open.display()
