@@ -167,12 +167,7 @@ class playerData:
     @staticmethod
     def save():
         # Delete old save file if any
-        if playerData.currentPlayer.fileid != None:
-            file_location = './appdata/saves/{}.json'.format(playerData.currentPlayer.fileid)
-            # Delete the file
-            try: os.remove(file_location)
-            except Exception as e: logger.error(e, exc_info=True)
-            else: logger.info('Deleted old playerdata "{}"'.format(file_location))
+        playerData.delete()
 
         # Init dictionary to save
         savedData = {}
@@ -211,11 +206,27 @@ class playerData:
         json_data = json.dumps(savedData)
 
         # Generate UUID
-        fileid = uuid.uuid3(uuid.NAMESPACE_URL, json_data)
+        fileid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
 
         # Save to file
         save_location = './appdata/saves/{}.json'.format(fileid)
         with open(save_location, 'w') as savefile:
             savefile.write(json_data)
 
+        # Set new player fileid
+        playerData.currentPlayer.fileid = fileid
+
         logger.info('Saved new playerdata to "{}"'.format(save_location))
+
+    @staticmethod
+    def delete():
+        if playerData.currentPlayer.fileid != None: 
+            # Get file location    
+            file_location = './appdata/saves/{}.json'.format(playerData.currentPlayer.fileid)
+
+            # Delete the file
+            try: os.remove(file_location)
+            except Exception as e: logger.error(e, exc_info=True)
+            else: logger.info('Deleted old playerdata "{}"'.format(file_location))
+
+        else: logger.info('Player does not have a save file.')

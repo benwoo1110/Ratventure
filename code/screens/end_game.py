@@ -26,6 +26,9 @@ class end_game:
     
     @staticmethod
     def init():
+        # Remove save since game ended
+        playerData.delete()
+
         # Check if win screen is the one loaded
         if end_game_screen.win.loaded:
             # Save to leaderboard

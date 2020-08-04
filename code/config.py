@@ -24,7 +24,7 @@ icon_file: './icon.png'
 fullscreen: False
 
 # Config size of pygame window (Only apply if not fullscreen)
-scale: 0.8
+scale: 0.6
 
 # Level of output shown
 # CRITICAL -> 50
@@ -35,7 +35,7 @@ scale: 0.8
 logging:
   # For console output
   console_level: 'INFO'
-  # App activities logged in './A-List-of-Sorts-v2/logs'
+  # App activities logged in './Ratventure/logs/'
   file_level: 'DEBUG'
   # Number of logs to keep in logs folder
   keep_logs: 5
