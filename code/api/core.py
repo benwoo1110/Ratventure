@@ -126,17 +126,22 @@ class Screens(coreFunc):
         self.containerList.append(name)
         logger.debug('Added screen {}'.format(name))
 
-    def changeStack(self, type, screen):
+    def changeStack(self, type:str, screen:str = None):
+        # Skip if another changeStack() is happening
+        if self.stackChange: 
+            logger.warn('Another stack change is happening, skipping type:{} screen:{}'.format(type, screen))
+            return
+        
         self.stackChange = True
 
         # Go back to previous screen
-        if type == 'back':
+        if str(type) == 'back':
             # Go back one screen
             if screen == None: self.screensStack.pop()
             # Go back to screen specified
             elif screen in self.containerList: 
                 self.screensStack = self.screensStack[:self.screensStack.index(screen)+1]
-            #Error
+            # Error
             else: logger.error('"{}" is not a screen.'.format(screen))
         
         # Load a new screen
@@ -168,6 +173,9 @@ class Screens(coreFunc):
 
             # Display the screen
             screen.display()
+
+            # Log current screen stacks
+            logger.debug('New screen stack of {}'.format(self.screensStack))
             
             # Main loop for top screen
             while not self.stackChange:
@@ -190,7 +198,7 @@ if not os.path.isdir(filepath):
     # Create logs directory
     try: os.mkdir(filepath)
     except Exception as e: logger.error(e, exc_info=True)
-    else: logger.info('Created {} directory'.format(filepath))
+    else: print('Created {} directory'.format(filepath))
 
 
 # Keep only certain number of log files 

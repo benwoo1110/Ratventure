@@ -84,8 +84,8 @@ class power:
         Grid = screens.game.map.grid.Grid
 
         # Update stats upon taking orb
-        stats.damage.update('info', 'stats', 5, 5, False)
-        stats.defence.update('info', 'stats', 5)
+        stats.damage.update('info', 5, 5, False)
+        stats.defence.update('info', 5)
         stats.power.take()
 
         # Disable sensing orb

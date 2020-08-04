@@ -52,9 +52,6 @@ class screen(coreFunc):
         # Adding to data of all screen
         screens.add(self.name, self)
 
-        # Log the content of the screen
-        logger.debug('[{}] {}'.format(self.name, self))
-
     def addSurface(self, name, surfaceData:dict = {}):
         setattr(self, name, surface(screen=self, name=name, **surfaceData))
         self.containerList.append(name)

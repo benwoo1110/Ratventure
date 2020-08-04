@@ -1,11 +1,9 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, screens
+from code.api.core import os, log
 from code.api.objects import screen, Frame
-from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat
-from code.logic.playerData import playerData
+from code.api.actions import Runclass, Switchscreen, Info, Alert
 
 
 #################
@@ -63,7 +61,12 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=983, y=870, w=529, h=140),
                 'imageData': {'frame': Frame(x=983, y=870, w=529, h=140)},
-                'action': Info(text='quit') # Switchscreen(type='load', screen='alert')
+                'action': Alert (
+                    type='confirm', 
+                    title='Quit Game',
+                    content='Are you sure you want to quit?',
+                    yes=Info(text='quit')
+                ),
             },
         }
     }

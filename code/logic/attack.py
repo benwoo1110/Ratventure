@@ -139,13 +139,13 @@ class attack:
     @staticmethod
     def doDamage(by:str, to:str):
         # Calculate damage
-        damage_done = randint(*stats.damage.get(by, 'stats'))
+        damage_done = randint(*stats.damage.get(by))
 
         # Remove defence
-        damage_done = max(0, damage_done - stats.defence.get(to, 'stats'))
+        damage_done = max(0, damage_done - stats.defence.get(to))
 
         # Deal damage to enemy
-        stats.health.update(to, 'stats', -damage_done)
+        stats.health.update(to, -damage_done)
 
         print(damage_done)
 
@@ -166,7 +166,7 @@ class attack:
         attack.doDamage(by='attack', to='info')
 
         # When hero dies, game over
-        if stats.health.get('info', 'stats')[0] == 0:
+        if stats.health.get('info')[0] == 0:
             # actions to do when hero dies
             screens.end_game.unload()
             screens.end_game.gameover.load()
@@ -174,7 +174,7 @@ class attack:
             return
 
         # Check when enemy dies
-        if stats.health.get('attack', 'stats')[0] == 0:
+        if stats.health.get('attack')[0] == 0:
             
             # When the king is defeated, player wins
             if attack.current_enemy == 'king':

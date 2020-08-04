@@ -65,7 +65,7 @@ class stats:
             game_screen = screens.game
 
             # Get value
-            min_damage, max_damage = stats.damage.get(surface, item)
+            min_damage, max_damage = stats.damage.get(surface)
 
             # Set new value
             min_damage += min_d
@@ -102,7 +102,7 @@ class stats:
             game_screen = screens.game
 
             # Get value
-            new_defence = str(stats.defence.get(surface, item) + number)
+            new_defence = str(stats.defence.get(surface) + number)
 
             # Display the text
             game_screen[surface].stats.defence.setText(new_defence, withDisplay=withDisplay)
@@ -132,7 +132,7 @@ class stats:
             game_screen = screens.game
 
             # Get value
-            current_health, max_health = stats.health.get(surface, item)
+            current_health, max_health = stats.health.get(surface)
 
             # Set new value
             current_health = max(0, current_health + current_h)

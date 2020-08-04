@@ -34,7 +34,10 @@ class eventResults(coreFunc):
         else: return hasattr(self, action)
 
     def contains(self, key:str, value:any) -> bool: 
-        return any(result[key] == value for result in self.__dict__.values())
+        if type(value) == str:
+            return any(result[key] == value for result in self.__dict__.values())
+        elif type(value) == list:
+            return any(result[key] in value for result in self.__dict__.values())
 
 
 class events(coreFunc):
@@ -71,7 +74,7 @@ class events(coreFunc):
             if hasattr(thing_object, 'state') and (thing_object.isState('Disabled') or thing_object.isState('Selected')): continue
 
             # Check if object is to do an action
-            if hasattr(thing_object, 'action') and thing_object.action != None:
+            if hasattr(thing_object, 'action'):
                 # Check if mouse over object
                 if thing_object.frame.mouseIn(frame_coord):
                     thing_object.switchState('Hover')
@@ -81,7 +84,7 @@ class events(coreFunc):
                     thing_object.switchState('')
 
             # Look for things in the object
-            elif hasattr(thing_object, 'containerList') and thing_object.containerList != []:
+            if hasattr(thing_object, 'containerList') and thing_object.containerList != []:
                 result_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
                 if result_thing != None: on_thing = result_thing
 

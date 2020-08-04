@@ -44,6 +44,9 @@ class playerData:
     def new():
         Grid = screens.game.map.grid.Grid
 
+        # Unload previous state
+        screens.game.unload()
+
         # reset currentPlayer 
         playerData.currentPlayer = player (
             nickname=screens.new_game.options.nickname.text.text,
@@ -82,6 +85,9 @@ class playerData:
     @staticmethod
     def load(fileid:str):
         Grid = screens.game.map.grid.Grid
+
+        # Unload previous state
+        screens.game.unload()
      
         # Get saved file data
         save_location = './appdata/saves/{}.json'.format(fileid)

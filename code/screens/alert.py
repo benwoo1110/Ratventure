@@ -27,6 +27,11 @@ class alert:
 
         # No action
         if event_result == None: return
+
+        # Go back if clicked
+        if event_result.contains('name', ['dismiss', 'no', 'yes', 'ok']):
+            screens.changeStack(type='back')
+
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
 
@@ -48,17 +53,22 @@ alert_screen = screen (
 
     surfaces = {
         'confirm': {
-            'frame': Frame(x=495, y=253, w=811, h=573),
+            'frame': Frame(x=495, y=256, w=811, h=573),
             'message': {
                 'type': 'text',
-                'frame': Frame(x=57, y=70, w=696, h=428),
-                'imageData': {'frame': Frame(x=57, y=70, w=696, h=428)},
+                'frame': Frame(x=57, y=33, w=696, h=465),
+                'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
                 'selectable': False,
                 'data': {
-                    'text': Text (
-                        frame = Frame(x=57, y=70, w=697, h=250),
-                        text = 'Are you sure you want to quit the game?',
-                        format = textFormat(fontSize=88, align='center', pos='center', warpText=18, lineSpacing=0.8, colour=pg.colour.black)
+                    'title': Text (
+                        frame = Frame(x=57, y=48, w=697, h=95),
+                        text = 'Title Here',
+                        format = textFormat(fontSize=88, align='center', pos='center', colour=pg.colour.black)
+                    ),
+                    'content': Text (
+                        frame = Frame(x=57, y=156, w=697, h=183),
+                        text = 'Content of message here.',
+                        format = textFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=pg.colour.black)
                     ),
                 },
             },
@@ -66,13 +76,41 @@ alert_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=92, y=371, w=285, h=95),
                 'imageData': {'frame': Frame(x=92, y=371, w=285, h=95)},
-                'action': Info(text='difficulty')
+                'action': Info(text='no')
             },
             'yes': {
                 'type': 'button',
                 'frame': Frame(x=433, y=371, w=285, h=95),
                 'imageData': {'frame': Frame(x=433, y=371, w=285, h=95)},
-                'action': Info(text='difficulty')
+                'action': Info(text='yes')
+            },
+        },
+
+        'notify': {
+            'frame': Frame(x=495, y=256, w=811, h=573),
+            'message': {
+                'type': 'text',
+                'frame': Frame(x=57, y=33, w=696, h=465),
+                'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
+                'selectable': False,
+                'data': {
+                    'title': Text (
+                        frame = Frame(x=57, y=48, w=697, h=95),
+                        text = 'Title Here',
+                        format = textFormat(fontSize=88, align='center', pos='center', colour=pg.colour.black)
+                    ),
+                    'content': Text (
+                        frame = Frame(x=57, y=156, w=697, h=183),
+                        text = 'Content of message here.',
+                        format = textFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=pg.colour.black)
+                    ),
+                },
+            },
+            'ok': {
+                'type': 'button',
+                'frame': Frame(x=224, y=384, w=362, h=85),
+                'imageData': {'frame': Frame(x=224, y=384, w=362, h=85)},
+                'action': Info(text='no')
             },
         }
     }

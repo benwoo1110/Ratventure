@@ -48,5 +48,5 @@ class rest:
         # Unload rest surface
         screens.game.rest.unload()
         
-        # Displau back town surface
+        # Display back town surface
         screens.game.in_town.display()

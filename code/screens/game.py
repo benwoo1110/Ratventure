@@ -3,7 +3,7 @@
 ######################################
 from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
-from code.api.actions import Runclass, Switchscreen, Info
+from code.api.actions import Runclass, Switchscreen, Alert
 from code.api.data.Text import Text, textFormat
 from code.api.data.Grid import Grid
 from code.logic.move import move
@@ -35,10 +35,6 @@ class game:
         if event_result == None: return
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
-
-    @staticmethod
-    def end():
-        game_screen.unload()
 
 
 ##################
@@ -151,13 +147,21 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
-                'action': Runclass(run=playerData.save)
+                'action': [
+                    Runclass(run=playerData.save),
+                    Alert (type='notify', title='Game Saved', content='You have saved the game.')
+                ]
             },
             'exit': {
                 'type': 'button',
                 'frame': Frame(x=385, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Switchscreen(type='back', screen='mainmenu')
+                'action': Alert (
+                    type='confirm', 
+                    title='Exit Game',
+                    content='Are you sure you want to exit the game?',
+                    yes=Switchscreen(type='back', screen='mainmenu')
+                ),
             },
         },
 
@@ -179,13 +183,21 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
-                'action': Runclass(run=playerData.save)
+                'action': [
+                    Runclass(run=playerData.save),
+                    Alert (type='notify', title='Game Saved', content='You have saved the game.')
+                ]
             },
             'exit': {
                 'type': 'button',
                 'frame': Frame(x=385, y=335, w=245, h=75),
                 'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Switchscreen(type='back', screen='mainmenu')
+                'action': Alert (
+                    type='confirm', 
+                    title='Exit Game',
+                    content='Are you sure you want to exit the game?',
+                    yes=Switchscreen(type='back', screen='mainmenu')
+                ),
             },
         },
 
