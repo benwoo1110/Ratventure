@@ -103,12 +103,13 @@ class screen(coreFunc):
 
 class surface(coreFunc):
     def __init__(self, screen, name, frame:Frame, selectable:bool = True, 
-    bg_colour:tuple = None, **items):
+    bg_colour:tuple = None, directDisplay:bool = False, **items):
         self.screen = screen
         self.name = name
         self.frame = frame
         self.selectable = selectable
         self.bg_colour = bg_colour
+        self.directDisplay = directDisplay
 
         # Create surface
         self.Surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
@@ -159,9 +160,19 @@ class surface(coreFunc):
     def display(self, withItems:list = None, refresh:bool = False):        
         # Load the surface with items
         self.load(withItems, refresh)
+
+        # Directly display to window
+        if self.directDisplay:
+            # Resize surface
+            resizedSurface = pygame.transform.smoothscale(self.Surface, self.frame.size(scale=window.scale))
+            
+            # Output to window
+            window.Window.blit(resizedSurface, self.frame.coord(scale=window.scale))
+            pg.updateWindow()
         
-        # Load to screen
-        self.screen.display()
+        else:
+            # Load to screen
+            self.screen.display()
 
 
 class item(coreFunc):

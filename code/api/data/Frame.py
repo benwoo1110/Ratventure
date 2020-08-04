@@ -18,9 +18,11 @@ class Frame(coreFunc):
         self.w:int = w
         self.h:int = h
 
-    def size(self) -> tuple: return (self.w, self.h)
+    def size(self, scale:int = 1) -> tuple:
+        return (int(self.w * scale), int(self.h * scale))
 
-    def coord(self, surfaceCoord:tuple = (0, 0)) -> tuple: return (self.x + surfaceCoord[0], self.y + surfaceCoord[1])
+    def coord(self, surfaceCoord:tuple = (0, 0), scale:int = 1) -> tuple: 
+        return (int((self.x + surfaceCoord[0]) * scale), int((self.y + surfaceCoord[1]) * scale))
     
     def rect(self): return (self.x, self.y, self.w, self.h)
 

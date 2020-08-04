@@ -54,6 +54,7 @@ alert_screen = screen (
     surfaces = {
         'confirm': {
             'frame': Frame(x=495, y=256, w=811, h=573),
+            'directDisplay': True,
             'message': {
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
@@ -88,6 +89,7 @@ alert_screen = screen (
 
         'notify': {
             'frame': Frame(x=495, y=256, w=811, h=573),
+            'directDisplay': True,
             'message': {
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
