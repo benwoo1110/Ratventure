@@ -91,11 +91,17 @@ class Text(coreFunc):
         # Get text with prefix and suffix
         text = self.getText()
         
-        # No warpText
-        if self.format.warpText == None:warpped_text = [text]
+        # Set \n as a new line when display
+        line_text = text.split('\n')
 
         # Warp the text
-        else: warpped_text = textwrap.wrap(text, width=self.format.warpText)
+        if self.format.warpText == None: warpped_text = line_text
+        
+        else:
+            warpped_text = []
+            for line in line_text:
+                warpped_text += textwrap.wrap(line, width=self.format.warpText)
+        
         # Print text to surface
         h = 0
         for line in warpped_text:
