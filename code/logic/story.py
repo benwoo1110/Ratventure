@@ -46,20 +46,33 @@ stories = {
         "The one and only - Rat King!"
     ],
     "attack": [
-        "You deal {} damage to the {}.\nOuch! The {} hit you for {} damage."
+        "Hmm should I attack or run?"
+    ],
+    "hero_attack": [
+        "You deal {} damage to the {}."
     ],
     "enemy_attack": [
+        "Ouch! The {} hit you for {} damage.",
         "The {} hit you for {} damage.",
         "The {} hit you for {} damage. That hurts!"
     ],
     "immune": [
         "You do not have the Orb of Power - the Rat King is immune!"
     ],
-    "defeat_enemy": [
+    "run": [
+        "You have ran and hide."
+    ],
+    "enemy_defeated": [
         "The {} is dead! You are victorious!",
         "Congratulations, you have defeated the {}!",
         "You have defeated the {}, congratulations!"
-    ]
+    ],
+    "hero_defeated": [
+        "You are dead. Game over."
+    ],
+    "win": [
+        "The world is saved! You Win!"
+    ],
 }
 
 
@@ -74,6 +87,12 @@ class Story(coreFunc):
         # Add all the story as attributess
         for name, messages in stories.items():
             setattr(self, name, message(name, messages))
+
+    def getCurrent(self) -> str:
+        return screens.game.info.story.message.text
+
+    def setCurrent(self, Message:str):
+        screens.game.info.story.message.setText(Message)
 
 
 class message(coreFunc):

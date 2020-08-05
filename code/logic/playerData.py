@@ -8,6 +8,7 @@ from code.api.core import os, log, screens, coreFunc
 from code.logic.stats import stats
 from code.logic.power import power
 from code.logic.hero import hero
+from code.logic.story import story
 
 
 #################
@@ -72,6 +73,9 @@ class playerData:
         # Set if player can sense for orb
         power.canSense()
 
+        # Set starting story
+        story.in_town.display()
+
         # Load screen
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')
@@ -122,6 +126,9 @@ class playerData:
         # Set if player can sense for orb
         power.canSense()
 
+        # Set story saved
+        story.setCurrent(savedData['story'])
+
         # Check if player in town
         if Grid.heroInTown(): screens.game.in_town.load()
         else: screens.game.in_open.load(withItems=['sense_orb'])
@@ -163,6 +170,9 @@ class playerData:
 
         # Stats
         savedData['stats'] = hero.getStats()
+
+        # Save story
+        savedData['story'] = story.getCurrent()
 
         # Generate json text data
         json_data = json.dumps(savedData)

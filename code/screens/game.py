@@ -83,6 +83,18 @@ game_screen = screen (
                     )
                 },
             },
+            'hero': {
+                'type': 'object',
+                'frame': Frame(x=88, y=185, w=235, h=164),
+                'selectable': False,
+                'data': {
+                    'stats': Text (
+                        frame = Frame(x=175, y=185, w=112, h=59),
+                        text = '+ 1',
+                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
+                    ),
+                }
+            },
             'stats': { 
                 'type': 'text',
                 'frame': Frame(x=323, y=111, w=417, h=350),
@@ -318,6 +330,13 @@ game_screen = screen (
                 'frame': Frame(x=88, y=15, w=207, h=217),
                 'imageData': {'frame': Frame(x=88, y=15, w=207, h=217)},
                 'selectable': False,
+                'data': {
+                    'update': Text (
+                        frame = Frame(x=172, y=17, w=112, h=59),
+                        text = '- 2',
+                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.red)
+                    ),
+                }
             },
             'stats': { 
                 'type': 'text',

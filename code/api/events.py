@@ -16,6 +16,16 @@ logger.info('Loading up {}...'.format(filename))
 #################
 # Event classes #
 #################
+class gameEvent(coreFunc):
+    ANIMATE = pygame.USEREVENT + 1
+
+    pygame.time.set_timer(ANIMATE, 10)
+
+    counter = 0
+
+    animateQueue = []
+
+
 class eventRun(coreFunc):
     def __init__(self, action:str, event:any, parameters:list = []): 
         self.action = action
@@ -99,6 +109,7 @@ class events(coreFunc):
             eventRun(action='click', event=self.click, parameters=[on_thing]),
             eventRun(action='keydown', event=self.keydown),
             eventRun(action='keyup', event=self.keyup),
+            eventRun(action='animate', event=self.animate),
             eventRun(action='quit', event=self.quit)
         ])       
         
@@ -121,6 +132,18 @@ class events(coreFunc):
 
             # Output result
             return click_result
+
+    def animate(self, event):
+        if event.type == gameEvent.ANIMATE:
+            if gameEvent.animateQueue != []:
+                # Run the animation instant
+                animate_result = gameEvent.animateQueue[0](gameEvent.counter)
+                gameEvent.counter += 1
+
+                # Animate is done, remove it and reset
+                if animate_result == True:
+                    gameEvent.counter = 0
+                    gameEvent.animateQueue.pop(0)
 
     def keydown(self, event):
         keyboard_result = None

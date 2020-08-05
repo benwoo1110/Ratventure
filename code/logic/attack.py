@@ -3,6 +3,7 @@
 ######################################
 from random import random, randint
 from code.api.core import os, log, screens
+from code.api.events import gameEvent
 from code.logic.stats import stats
 from code.api.data.Grid import Sprite
 from code.logic.story import story
@@ -94,6 +95,7 @@ class attack:
 
         # Show attack screen if there is an enemy
         if attack.current_enemy != None: 
+            # Load attack screen
             attack.initSurface()
             return True
 
@@ -115,6 +117,14 @@ class attack:
         # Show enemy in grid
         screens.game.map.load(withItems=['grid'], refresh=True)
 
+        # Enable buttons
+        screens.game.attack.attack.switchState('', False)
+        screens.game.attack.run.switchState('', False)
+
+        # Show message
+        if attack.current_enemy == 'king': story.encounter_king.display()
+        else: story.encounter_wild.display(attack.current_enemy.capitalize())
+
         # Load attack surface
         screens.game.attack.load(withItems='all', refresh=True)
         
@@ -125,6 +135,8 @@ class attack:
     def run():
         # Add a day
         stats.day.update()
+
+        # Add run story
 
         # Show back in open
         screens.game.attack.unload()
@@ -144,64 +156,95 @@ class attack:
         return damage_done
 
     @staticmethod
-    def Attack():
-        can_damage = True
-        # Check if enemy require orb to deal damage
-        if attack.enemies[attack.current_enemy]['needOrb']:
-            if not stats.power.hasOrb(): 
-                # Enemy is immune without orb of power
+    def sequence(counter:int):
+        # Start of attack
+        if counter == 0: 
+
+            # Disable buttons
+            screens.game.attack.attack.switchState('Disabled')
+            screens.game.attack.run.switchState('Disabled')
+
+            # Enemy is immune without orb of power
+            if attack.enemies[attack.current_enemy]['needOrb'] and not stats.power.hasOrb():
+                # Hero cannot attack
                 story.immune.display()
-                can_damage = False
-
-        # Calculate damage by hero
-        if can_damage: hero_damage = attack.doDamage(by='info', to='attack')
-        else: hero_damage = 0
-
-        # Calculate damage by enemy
-        enemy_damage = attack.doDamage(by='attack', to='info')
-
-        # Show to story
-        story.attack.display(hero_damage, attack.current_enemy, attack.current_enemy, enemy_damage)
-
-        # When hero dies, game over
-        if stats.health.get('info')[0] == 0:
-            # actions to do when hero dies
-            screens.end_game.unload()
-            screens.end_game.gameover.load()
-            screens.changeStack(type='load', screen='end_game')
-            return
-
-        # Check when enemy dies
-        if stats.health.get('attack')[0] == 0:
             
-            # When the king is defeated, player wins
-            if attack.current_enemy == 'king':
+            # Hero attacks
+            else:
+                # Deal damage
+                hero_damage = attack.doDamage(by='info', to='attack')
+                story.hero_attack.display(hero_damage, attack.current_enemy)
+
+        # Next move
+        elif counter == 120: 
+
+            # Enemy is dead
+            if stats.health.get('attack')[0] == 0:
+                # Show defeat message
+                story.enemy_defeated.display(attack.current_enemy)
+                # Get hero's position
+                hero_r, hero_c = screens.game.map.grid.Grid.find('hero')
+                # Remove enemy from grid
+                screens.game.map.grid.Grid.tiles[hero_r][hero_c].sprites.pop(0)
+
+            # Enemy attacks
+            else:
+                enemy_damage = attack.doDamage(by='attack', to='info')
+                story.enemy_attack.display(attack.current_enemy, enemy_damage)
+
+        # Next move
+        elif counter == 240:
+
+            # If player is dead, player loses
+            if stats.health.get('info')[0] == 0:
+                story.hero_defeated.display()
+
+            # Enemy is dead            
+            elif stats.health.get('attack')[0] == 0:
+
+                # If king is defeated, player wins
+                if attack.current_enemy == 'king':
+                    story.win.display()
+
+                # Just a wild enemy
+                else:
+                    # Gains here
+                    
+                    # Return to selection screen
+                    screens.game.attack.unload()
+                    screens.game.map.load(withItems=['grid'], refresh=True)
+                    screens.game.info.load(withItems=['stats'], refresh=True)
+                    screens.game.in_open.load()
+                    screens.game.display()
+                    return True
+            
+            # Both player and enemy is still alive
+            else: 
+                story.attack.display()
+                # Enable buttons for another attack/run
+                screens.game.attack.attack.switchState('')
+                screens.game.attack.run.switchState('')
+                return True
+
+        # End attack sequence
+        elif counter >= 360:
+
+            # If player is dead, load game over screen
+            if stats.health.get('info')[0] == 0:
+                screens.end_game.unload()
+                screens.end_game.gameover.load()
+                screens.changeStack(type='load', screen='end_game')
+                return True
+
+            # If king is defeated, load win screen
+            elif stats.health.get('attack')[0] == 0 and attack.current_enemy == 'king':
                 # Player won
                 screens.end_game.unload()
                 screens.end_game.win.load()
                 screens.changeStack(type='load', screen='end_game')
-                return
+                return True
 
-            Grid = screens.game.map.grid.Grid
-
-            # Gains from winning
-            gains = attack.enemies[attack.current_enemy]['gains']
-            stats.damage.update('info', *gains['damage'], False)
-            stats.defence.update('info', gains['defence'], False)
-            stats.health.update('info', *gains['health'], False)
-
-            # Reset
-            attack.current_enemy = None
-
-            # Get hero's position
-            hero_r, hero_c = Grid.find('hero')
-
-            # Remove enemy from grid
-            Grid.tiles[hero_r][hero_c].sprites.pop(0)
-
-            # Load back in open selection
-            screens.game.attack.unload()
-            screens.game.map.load(withItems=['grid'], refresh=True)
-            screens.game.info.load(withItems=['stats'], refresh=True)
-            screens.game.in_open.load()
-            screens.game.display()
+    @staticmethod
+    def Attack():
+        # Run attack sequence
+        gameEvent.animateQueue.append(attack.sequence)
