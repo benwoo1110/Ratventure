@@ -45,11 +45,10 @@ stories = {
         "Tada! The Rat King is here!",
         "The one and only - Rat King!"
     ],
-    "hero_attack": [
-        "You deal {} damage to the {}."
+    "attack": [
+        "You deal {} damage to the {}.\nOuch! The {} hit you for {} damage."
     ],
     "enemy_attack": [
-        "Ouch! The {} hit you for {} damage.",
         "The {} hit you for {} damage.",
         "The {} hit you for {} damage. That hurts!"
     ],
@@ -82,7 +81,7 @@ class message(coreFunc):
         self.name = name
         self.messages = messages
 
-    def display(self, placeholder:list = []):
+    def display(self, *placeholder):
         # Show the selected story to game screen
         message = random.choice(self.messages)
         screens.game.info.story.message.setText(message.format(*placeholder))

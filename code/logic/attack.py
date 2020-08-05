@@ -5,6 +5,7 @@ from random import random, randint
 from code.api.core import os, log, screens
 from code.logic.stats import stats
 from code.api.data.Grid import Sprite
+from code.logic.story import story
 
 
 #################
@@ -21,7 +22,7 @@ logger.info('Loading up {}...'.format(filename))
 class attack:
     enemies = {
         'rat': {
-            'chance': 0,
+            'chance': 0.4,
             'needOrb': False,
             'stats': {
                 'damage': [2, 3],
@@ -35,7 +36,7 @@ class attack:
             },
         },
         'moth': {
-            'chance': 0,
+            'chance': 0.2,
             'needOrb': False,
             'stats': {
                 'damage': [1, 2],
@@ -100,13 +101,8 @@ class attack:
 
     @staticmethod
     def initSurface():
-        Grid = screens.game.map.grid.Grid
-
         # Get enemy
         enemy = attack.enemies[attack.current_enemy]
-
-        # Get hero's position
-        hero_r, hero_c = Grid.find('hero')
 
         # Set enemy image
         screens.game.attack.enemy.switchState(attack.current_enemy.capitalize(), False)
@@ -127,8 +123,6 @@ class attack:
 
     @staticmethod
     def run():
-        Grid = screens.game.map.grid.Grid
-
         # Add a day
         stats.day.update()
 
@@ -137,7 +131,7 @@ class attack:
         screens.game.in_open.display()
 
     @staticmethod
-    def doDamage(by:str, to:str):
+    def doDamage(by:str, to:str) -> int:
         # Calculate damage
         damage_done = randint(*stats.damage.get(by))
 
@@ -147,23 +141,27 @@ class attack:
         # Deal damage to enemy
         stats.health.update(to, -damage_done)
 
-        print(damage_done)
+        return damage_done
 
     @staticmethod
     def Attack():
         can_damage = True
         # Check if enemy require orb to deal damage
         if attack.enemies[attack.current_enemy]['needOrb']:
-            if not stats.power.hasOrb(): can_damage = False
+            if not stats.power.hasOrb(): 
+                # Enemy is immune without orb of power
+                story.immune.display()
+                can_damage = False
 
         # Calculate damage by hero
-        if can_damage:
-            print('damage by hero: ',end='')
-            attack.doDamage(by='info', to='attack')
+        if can_damage: hero_damage = attack.doDamage(by='info', to='attack')
+        else: hero_damage = 0
 
         # Calculate damage by enemy
-        print('damage by enemy: ',end='')
-        attack.doDamage(by='attack', to='info')
+        enemy_damage = attack.doDamage(by='attack', to='info')
+
+        # Show to story
+        story.attack.display(hero_damage, attack.current_enemy, attack.current_enemy, enemy_damage)
 
         # When hero dies, game over
         if stats.health.get('info')[0] == 0:
