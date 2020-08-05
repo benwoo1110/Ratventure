@@ -5,6 +5,7 @@ from code.api.core import os, log, screens
 from code.logic.stats import stats
 from code.logic.attack import attack
 from code.logic.story import story
+from code.logic.hero import hero
 
 
 #################
@@ -22,26 +23,21 @@ class move:
 
     @staticmethod
     def checkDirection():
-        Grid = screens.game.map.grid.Grid
         move_surface = screens.game.move
-
-        # Get hero's position
-        hero_r, hero_c = Grid.find('hero')
-        
         # up
-        if not 0 <= hero_r-1 <= 7: move_surface.up.switchState('Disabled', withDisplay=False)
+        if not 0 <= hero.row-1 <= 7: move_surface.up.switchState('Disabled', withDisplay=False)
         else: move_surface.up.switchState('', withDisplay=False)
         
         # down
-        if not 0 <= hero_r+1 <= 7: move_surface.down.switchState('Disabled', withDisplay=False)
+        if not 0 <= hero.row+1 <= 7: move_surface.down.switchState('Disabled', withDisplay=False)
         else: move_surface.down.switchState('', withDisplay=False)
         
         # left
-        if not 0 <= hero_c-1 <= 7: move_surface.left.switchState('Disabled', withDisplay=False)
+        if not 0 <= hero.column-1 <= 7: move_surface.left.switchState('Disabled', withDisplay=False)
         else: move_surface.left.switchState('', withDisplay=False)
         
         # right
-        if not 0 <= hero_c+1 <= 7: move_surface.right.switchState('Disabled', withDisplay=False)
+        if not 0 <= hero.column+1 <= 7: move_surface.right.switchState('Disabled', withDisplay=False)
         else: move_surface.right.switchState('', withDisplay=False)
     
     @staticmethod
@@ -61,26 +57,23 @@ class move:
     @staticmethod
     def Move(direction:str):
         Grid = screens.game.map.grid.Grid
-
-        # Get hero's position
-        hero_r, hero_c = Grid.find('hero')
-
+        
         # Check for enemy to remove
         for enemy in attack.enemies:
-            if enemy != 'king' and enemy in Grid.tiles[hero_r][hero_c].sprites:
-                Grid.tiles[hero_r][hero_c].sprites.remove(enemy)
+            if enemy != 'king' and enemy in Grid.tiles[hero.row][hero.column].sprites:
+                Grid.tiles[hero.row][hero.column].sprites.remove(enemy)
 
         # Remove hero from current location
-        Grid.tiles[hero_r][hero_c].sprites.remove('hero')
+        Grid.tiles[hero.row][hero.column].sprites.remove('hero')
 
         # Change location
-        if direction == 'up': hero_r -= 1
-        elif direction == 'down': hero_r += 1
-        elif direction == 'left': hero_c -= 1
-        elif direction == 'right': hero_c += 1
+        if direction == 'up': hero.row -= 1
+        elif direction == 'down': hero.row += 1
+        elif direction == 'left': hero.column -= 1
+        elif direction == 'right': hero.column += 1
 
         # Add hero to new location
-        Grid.tiles[hero_r][hero_c].sprites.append('hero')
+        Grid.tiles[hero.row][hero.column].sprites.append('hero')
 
         # Update map
         screens.game.map.display(withItems=['grid'], refresh=True)

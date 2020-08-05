@@ -21,6 +21,9 @@ class hero:
     column = 0
 
     @staticmethod
+    def location() -> tuple: return (hero.row, hero.column)
+
+    @staticmethod
     def resetStats():
         stats.day.set(1, False)
         stats.damage.set('info', 2, 4, False)

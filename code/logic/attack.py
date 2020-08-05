@@ -7,6 +7,7 @@ from code.api.events import gameEvent
 from code.logic.stats import stats
 from code.api.data.Grid import Sprite
 from code.logic.story import story
+from code.logic.hero import hero
 
 
 #################
@@ -70,9 +71,6 @@ class attack:
         # Reset
         attack.current_enemy = None
 
-        # Get hero's position
-        hero_r, hero_c = Grid.find('hero')
-
         # Not attack if hero is in town
         if Grid.heroInTown(): return False
 
@@ -80,7 +78,7 @@ class attack:
         new_enemy = False
         for name, enemy in attack.enemies.items():
             # Detect enemy present in grid
-            if name in Grid.tiles[hero_r][hero_c].sprites:
+            if name in Grid.tiles[hero.row][hero.column].sprites:
                 attack.current_enemy = name
                 break
             
@@ -91,7 +89,7 @@ class attack:
                 new_enemy = True
         
         # Add enemy to grid
-        if new_enemy: Grid.tiles[hero_r][hero_c].sprites.insert(0, attack.current_enemy)
+        if new_enemy: Grid.tiles[hero.row][hero.column].sprites.insert(0, attack.current_enemy)
 
         # Show attack screen if there is an enemy
         if attack.current_enemy != None: 
@@ -137,6 +135,7 @@ class attack:
         stats.day.update()
 
         # Add run story
+        story.run.display()
 
         # Show back in open
         screens.game.attack.unload()

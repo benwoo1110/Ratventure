@@ -32,14 +32,14 @@ if not os.path.isdir(filepath):
 # Gameplay logic #
 ##################
 class player(coreFunc):
-    def __init__(self, nickname:str = None, fileid:str = None, difficulty:str = None):
+    def __init__(self, nickname:str, difficulty:str, fileid:str = None):
         self.nickname = nickname
         self.fileid = fileid
         self.difficulty = difficulty
 
 
 class playerData:
-    currentPlayer = player()
+    currentPlayer = None
 
     @staticmethod
     def new():
@@ -51,9 +51,12 @@ class playerData:
         # reset currentPlayer 
         playerData.currentPlayer = player (
             nickname=screens.new_game.options.nickname.text.text,
-            difficulty=screens.new_game.options.difficulty.level.text
+            difficulty=screens.new_game.options.difficulty.level.text,
             )
-        
+
+        # Reset hero location
+        hero.row, hero.column = 0, 0
+
         # Create grid
         Grid.clear()
 
@@ -114,6 +117,9 @@ class playerData:
         # Store loaded player
         playerData.currentPlayer = player (fileid=fileid, **savedData['player'])
 
+        # Load hero location
+        hero.row, hero.column = savedData['hero']
+
         # Map
         Grid.generate(savedData['grid'])
 
@@ -152,6 +158,9 @@ class playerData:
         del player_data['fileid']
 
         savedData['player'] = player_data
+
+        # Save hero location
+        savedData['hero'] = hero.location()
 
         # Store save time
         savedData['time_saved'] = time.time()

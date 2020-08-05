@@ -5,6 +5,7 @@ from random import randint
 from code.api.core import os, log, screens
 from code.logic.stats import stats
 from code.logic.attack import attack
+from code.logic.hero import hero
 
 
 #################
@@ -21,6 +22,9 @@ logger.info('Loading up {}...'.format(filename))
 class power:
     row = -1
     column = -1
+
+    @staticmethod
+    def location() -> tuple: return (power.row, power.column)
 
     @staticmethod
     def setLocation():
@@ -46,11 +50,8 @@ class power:
         # Unload previous selection screen
         screens.game.in_open.unload()
 
-        # Check if hero is at orb location
-        hero_r, hero_c = Grid.find('hero')
-
         # Orb is found
-        if hero_r == power.row and hero_c == power.column:
+        if hero.location() == power.location():
             # Show orb in map
             Grid.tiles[power.row][power.column].sprites.insert(0, 'orb')
 
@@ -62,11 +63,11 @@ class power:
             # Get direction
             direction = ''
 
-            if power.row > hero_r: direction += 'south'
-            elif power.row < hero_r: direction += 'north'
+            if power.row > hero.row: direction += 'south'
+            elif power.row < hero.row: direction += 'north'
 
-            if power.column > hero_c: direction += 'east'
-            elif power.column < hero_c: direction += 'west'
+            if power.column > hero.column: direction += 'east'
+            elif power.column < hero.column: direction += 'west'
 
             direction = direction.capitalize()
 

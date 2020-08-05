@@ -5,6 +5,7 @@ from random import randint
 from code.api.core import os, log, coreFunc
 from code.api.data.Images import Images
 from code.api.data.Frame import Frame
+from code.logic.hero import hero
 
 
 #################
@@ -97,11 +98,8 @@ class Grid(coreFunc):
                 if self.tiles[row][column].hasSprite(Sprite): return (row, column)
 
     def heroInTown(self):
-        # Get hero's position
-        hero_r, hero_c = self.find('hero')
-
         # Check if hero in town or open
-        return self.tiles[hero_r][hero_c].hasSprite('town')
+        return self.tiles[hero.row][hero.column].hasSprite('town')
 
     def load(self):
         # Get surface
