@@ -31,11 +31,7 @@ class attack:
                 'defence': 1,
                 'health': [8, 8]
             },
-            'gains': {
-                'damage': [0, 0],
-                'defence': 0,
-                'health': [0, 0]
-            },
+            'gains': [5, 10]
         },
         'moth': {
             'chance': 0.2,
@@ -45,11 +41,7 @@ class attack:
                 'defence': 2,
                 'health': [10, 10]
             },
-            'gains': {
-                'damage': [0, 0],
-                'defence': 0,
-                'health': [0, 0]
-            },
+            'gains': [5, 10]
         },
         'king': {
             'chance': 0,
@@ -155,7 +147,7 @@ class attack:
         return damage_done
 
     @staticmethod
-    def sequence(counter:int):
+    def Attack(counter:int):
         # Start of attack
         if counter == 0: 
 
@@ -175,7 +167,7 @@ class attack:
                 story.hero_attack.display(hero_damage, attack.current_enemy)
 
         # Next move
-        elif counter == 120: 
+        elif counter == 100: 
 
             # Enemy is dead
             if stats.health.get('attack')[0] == 0:
@@ -192,7 +184,7 @@ class attack:
                 story.enemy_attack.display(attack.current_enemy, enemy_damage)
 
         # Next move
-        elif counter == 240:
+        elif counter == 200:
 
             # If player is dead, player loses
             if stats.health.get('info')[0] == 0:
@@ -226,7 +218,7 @@ class attack:
                 return True
 
         # End attack sequence
-        elif counter >= 360:
+        elif counter >= 300:
 
             # If player is dead, load game over screen
             if stats.health.get('info')[0] == 0:
@@ -242,8 +234,3 @@ class attack:
                 screens.end_game.win.load()
                 screens.changeStack(type='load', screen='end_game')
                 return True
-
-    @staticmethod
-    def Attack():
-        # Run attack sequence
-        gameEvent.animateQueue.append(attack.sequence)

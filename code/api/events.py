@@ -16,14 +16,33 @@ logger.info('Loading up {}...'.format(filename))
 #################
 # Event classes #
 #################
-class gameEvent(coreFunc):
-    ANIMATE = pygame.USEREVENT + 1
+class Sequence(coreFunc):
+    def __init__(self, n:int, timer:int = 10):
+        self.Event = pygame.USEREVENT + n
+        self.counter = 0
+        self.queue = []
+        pygame.time.set_timer(self.Event, timer)
 
-    pygame.time.set_timer(ANIMATE, 10)
+    def addQueue(self, Action:Runclass):
+        if isinstance(Action, Runclass): self.queue.append(Action)
+        else: logger.error('Unable to add action to queue. Action needs to be a Runclass.')
 
-    counter = 0
 
-    animateQueue = []
+class gameevent(coreFunc):
+    def __init__(self, Events:dict = {}):
+        for name, Event in Events.items():
+            self.add(name, Event)
+    
+    def add(self, name:str, Event:dict):
+        setattr(self, name, Sequence(**Event))
+
+
+gameEvent = gameevent(
+    {
+        'stats': {'n': 1, 'timer': 10},
+        'animate': {'n': 2, 'timer': 10}
+    }
+)
 
 
 class eventRun(coreFunc):
@@ -89,7 +108,7 @@ class events(coreFunc):
                 if thing_object.frame.mouseIn(frame_coord):
                     thing_object.switchState('Hover')
                     on_thing = thing_object
-                
+                # Mouse not over object
                 elif thing_object.isState('Hover'): 
                     thing_object.switchState('')
 
@@ -109,7 +128,7 @@ class events(coreFunc):
             eventRun(action='click', event=self.click, parameters=[on_thing]),
             eventRun(action='keydown', event=self.keydown),
             eventRun(action='keyup', event=self.keyup),
-            eventRun(action='animate', event=self.animate),
+            eventRun(action='game', event=self.game),
             eventRun(action='quit', event=self.quit)
         ])       
         
@@ -128,22 +147,33 @@ class events(coreFunc):
             click_result = actionResult(name=object_thing.name, type=object_thing.type, outcome='clicked')
             
             # Get the outcome of running
-            click_result.getOutcome(object_thing)
+            click_result.getOutcome(object_thing.action)
 
             # Output result
             return click_result
 
-    def animate(self, event):
-        if event.type == gameEvent.ANIMATE:
-            if gameEvent.animateQueue != []:
-                # Run the animation instant
-                animate_result = gameEvent.animateQueue[0](gameEvent.counter)
-                gameEvent.counter += 1
+    def game(self, event):
+        for name, Event in gameEvent.__dict__.items():
+            # Init result
+            game_result = actionResult(name=name, type='gameEvent')
+
+            # Check for event
+            if event.type == Event.Event:
+                # Run the event
+                if Event.queue != []:
+                    runEvent = Event.queue[0]
+                    # Set counter parameter
+                    runEvent.parameters['counter'] = Event.counter
+                    # Run the animation instant
+                    game_result.getOutcome(runEvent)
+                    Event.counter += 1
 
                 # Animate is done, remove it and reset
-                if animate_result == True:
-                    gameEvent.counter = 0
-                    gameEvent.animateQueue.pop(0)
+                if game_result.withOutcome(True):
+                    Event.counter = 0
+                    Event.queue.pop(0)
+
+                    return game_result
 
     def keydown(self, event):
         keyboard_result = None
@@ -181,7 +211,7 @@ class events(coreFunc):
                     # Set name of result
                     keyboard_result.name = key.name
                     # Get the outcome of running
-                    keyboard_result.getOutcome(key) 
+                    keyboard_result.getOutcome(key.action) 
             
         return keyboard_result
 

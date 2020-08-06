@@ -114,6 +114,26 @@ class Grid(coreFunc):
                 for tile_sprite in tile.sprites:
                      Surface.blit(sprite.get(tile_sprite), (self.frame.coord((x, y))))
 
+    def move(self, counter, row, column):
+        # Get current hero location
+        x = self.size * hero.column + self.spacing * hero.column
+        y = self.size * hero.row + self.spacing * hero.row
+
+        # Get new hero location, that hero is moving to
+        new_x = self.size * column + self.spacing * column
+        new_y = self.size * row + self.spacing * row
+
+        # Calculate current animation position
+        if x <= new_x: new_x = min(x+counter, new_x)
+        else: new_x = max(x-counter, new_x)
+
+        if y <= new_y: new_y = min(y+counter, new_y)
+        else: new_y = max(x-counter, new_y)
+
+        # Display to grid surface
+        self.item.surface.Surface.blit(sprite.get('hero'), (self.frame.coord((x, y))))
+        self.item.display(withData='all', refresh=True)     
+
 
 class Tile(coreFunc):
     def __init__(self, row:int, column:int, sprites:list = None):

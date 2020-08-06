@@ -2,6 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import os, log, pg
+from code.api.events import gameEvent
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Alert
 from code.api.data.Text import Text, textFormat
@@ -368,7 +369,10 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=302, w=251, h=104),
                 'imageData': {'frame': Frame(x=88, y=302, w=251, h=104)},
-                'action': Runclass(run=attack.Attack)
+                'action': Runclass(
+                    run = gameEvent.animate.addQueue, 
+                    parameters = {'Action': Runclass(run=attack.Attack)}
+                    )
             },
             'run': {
                 'type': 'button',

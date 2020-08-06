@@ -2,6 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import os, log, screens
+from code.api.events import gameEvent
 from code.logic.stats import stats
 from code.logic.attack import attack
 from code.logic.story import story
@@ -53,6 +54,7 @@ class move:
 
         # Display to screen
         screens.game.move.display()
+
 
     @staticmethod
     def Move(direction:str):

@@ -139,20 +139,28 @@ class Screens(coreFunc):
             # Go back one screen
             if screen == None: self.screensStack.pop()
             # Go back to screen specified
-            elif screen in self.containerList: 
-                self.screensStack = self.screensStack[:self.screensStack.index(screen)+1]
+            elif screen in self.containerList: self.screensStack = self.screensStack[:self.screensStack.index(screen)+1]
             # Error
-            else: logger.error('"{}" is not a screen.'.format(screen))
+            else:
+                logger.error('"{}" is not a screen.'.format(screen))
+                return
         
         # Load a new screen
         elif type == 'load':  
             if screen in self.containerList: self.screensStack.append(screen)
             # Error
-            else: logger.error('"{}" is not a screen.'.format(screen))
+            else:
+                logger.error('"{}" is not a screen.'.format(screen))
+                return
 
         # Error
-        else: logger.error('{} type not recognised.'.format(type))
-
+        else: 
+            logger.error('{} type not recognised.'.format(type))
+            return
+        
+        # Log change
+        logger.debug('Change stack completed with type:{} screen:{}'.format(type, screen))
+            
         return True
 
     def mainloop(self, startScreen:str):

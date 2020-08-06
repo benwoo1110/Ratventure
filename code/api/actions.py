@@ -25,9 +25,10 @@ class Info(coreFunc):
 
 
 class Runclass(coreFunc):
-    def __init__(self, run:any, parameters:dict = {}):
+    def __init__(self, run:any, parameters:dict = None):
         self.run = run
-        self.parameters = parameters
+        if parameters == None: self.parameters = dict()
+        else: self.parameters = parameters
 
     def do(self):
         # Run the function if possible
@@ -121,20 +122,20 @@ class key(coreFunc):
 # Action outcome classes #
 ##########################
 class actionResult(coreFunc):
-    def __init__(self, name:str, type:str, outcome:any = None): 
+    def __init__(self, name:str = None, type:str = None, outcome:any = None): 
         self.name = name
         self.type = str(type)
         self.outcome = outcome
 
-    def getOutcome(self, object_thing):
+    def getOutcome(self, Action):
         # Check if have action
-        if object_thing.action == None: return
+        if Action == None: return
 
         # A list of actions
-        if type(object_thing.action) == list:
+        if type(Action) == list:
             self.outcome = []
             # Run through all the laction
-            for action in object_thing.action:
+            for action in Action:
                 # Run the action
                 try: self.outcome.append(action.do())
                 # There is a error
@@ -142,7 +143,7 @@ class actionResult(coreFunc):
 
         else:
             # Run the action
-            try: self.outcome = object_thing.action.do()
+            try: self.outcome = Action.do()
             # There is a error
             except Exception as e: logger.error(e, exc_info=True)
 
