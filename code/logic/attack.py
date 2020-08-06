@@ -24,6 +24,7 @@ logger.info('Loading up {}...'.format(filename))
 class attack:
     enemies = {
         'appear_chance': 50,
+        'run_chance': 20,
         'list': ['rat', 'moth', 'king'],
         'rat': {
             'chance': 60,
@@ -104,6 +105,20 @@ class attack:
         return False
 
     @staticmethod
+    def runChance():
+        # Get chance of whether player can run from enemy
+        chance_number = randint(1, 100)
+
+        # Player able to run
+        if chance_number <= attack.enemies['run_chance']:
+            screens.game.attack.run.switchState('', False)
+            
+        # Player unable to run
+        else: 
+            screens.game.attack.run.switchState('Disabled', False)
+
+
+    @staticmethod
     def initSurface():
         # Get enemy
         enemy = attack.enemies[attack.current_enemy]
@@ -122,6 +137,9 @@ class attack:
         # Enable buttons
         screens.game.attack.attack.switchState('', False)
         screens.game.attack.run.switchState('', False)
+
+        # See chance of run
+        attack.runChance()
 
         # Show message
         if attack.current_enemy == 'king': story.encounter_king.display()

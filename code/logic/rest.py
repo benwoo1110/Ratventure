@@ -17,6 +17,7 @@ logger.info('Loading up {}...'.format(filename))
 # Gameplay logic #
 ##################
 class rest:
+    maxGain = 2
 
     @staticmethod
     def initSurface():
@@ -26,6 +27,11 @@ class rest:
         # Set health that will be added
         current_health, max_health = stats.health.get('info')
         add_health = max_health - current_health
+
+        # Amount regain based on maxGain
+        if rest.maxGain >= 0: add_health = min(rest.maxGain, add_health)
+        
+        # Update health gained when rest on display
         stats.health.setBonus('rest', add_health, False)
 
         # Load the rest surface
@@ -33,9 +39,9 @@ class rest:
     
     @staticmethod
     def Rest():
-        # Set health back to max
-        _, max_health = stats.health.get('info')
-        stats.health.set('info', max_health, max_health)
+        # Get health amount set to gain
+        health_to_regain = stats.health.getBonus('rest')
+        stats.health.update('info', health_to_regain)
 
         # Next day
         stats.day.update()
