@@ -1,12 +1,14 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-import logging
 import yaml
 import os
+import traceback
 
 
-# Default setting for file
+###################
+# Default setting #
+###################
 default_config_contents = '''\
 #########################
 # Ratventure config.yml #
@@ -34,7 +36,7 @@ scale: 0.6
 # DEBUG -> 10
 logging:
   # For console output
-  console_level: 'INFO'
+  console_level: 'DEBUG'
   # App activities logged in './Ratventure/logs/'
   file_level: 'DEBUG'
   # Number of logs to keep in logs folder
@@ -42,25 +44,10 @@ logging:
 
 # Changes the refresh rate of pygame
 framerate: 60
+
+# You really shouldn't be using this mode
+boring_mode: False
 '''
-
-
-##########################
-# Getting configurations #
-##########################
-config_dir = './config.yml'
-if os.path.basename(os.getcwd()) == 'code': config_dir = '../config.yml'
-
-# Create file if it doesnt exist
-if not os.path.isfile(config_dir):
-    with open(config_dir, 'w') as config_file:
-        config_file.write(default_config_contents)
-        print("Generated ./config.yml")
-
-# Read from config file
-with open(config_dir) as config_file:
-    parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
-    config_file.close()
 
 
 ###########################
@@ -68,17 +55,62 @@ with open(config_dir) as config_file:
 ###########################
 class Struct:
     def __init__(self, **response):
-        for k,v in response.items():
-            if isinstance(v,dict):
-                self.__dict__[k] = Struct(**v)
-            else:
-                self.__dict__[k] = v
+        for key,value in response.items():
+            if isinstance(value, dict): setattr(self, key, Struct(**value))
+            else: setattr(self, key, value)
 
     def __repr__(self): return '{}'.format(self.__dict__)
 
 
-# Convert dict to class object
+##################
+# Config actions #
+##################
 class config:
+    file_dir = './config.yml'
+
+    @staticmethod
+    def check():
+        # Create file if it doesnt exist
+        if not os.path.isfile(config.file_dir):
+            with open(config.file_dir, 'w') as config_file:
+                config_file.write(default_config_contents)
+                print("Generated new ./config.yml")
+
     @staticmethod
     def get() -> Struct:
+        try:
+            # Read from config file
+            with open(config.file_dir) as config_file:
+                parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+                config_file.close()
+
+        except FileNotFoundError: 
+            # File not found, run check to create new one
+            print('Config not found, trying to create a new one...')
+            config.check()
+
+            # Try again
+            with open(config.file_dir) as config_file:
+                parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+                config_file.close()
+
+        except:
+            traceback.print_exc()
+            # Possible issue with yaml file formating, try reset config
+            print('Config seem broken, renaming it to ./config_broken.yml')
+            os.rename(config.file_dir, './config_broken.yml')
+            config.check()
+
+            # Try again
+            with open(config.file_dir) as config_file:
+                parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
+                config_file.close()
+
+        # Load config dict to a structured class
         return Struct(**parsed_config_file)
+
+
+###################
+# Checking config #
+###################
+config.check()

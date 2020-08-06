@@ -119,7 +119,7 @@ new_game_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=760, y=642, w=987, h=140),
                 'imageData': {'frame': Frame(x=760, y=642, w=987, h=140)},
-                # 'action': Info(text='difficulty'),
+                'selectable': False,
                 'data': {
                     'level': Text (
                         frame = Frame(x=760, y=642, w=987, h=140),
@@ -140,6 +140,18 @@ new_game_screen = screen (
                 'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
                 'action': Runclass(run=playerData.new)
             },
+            'difficulty_back': {
+                'type': 'button',
+                'frame': Frame(x=959, y=666, w=92, h=92),
+                'imageData': {'frame': Frame(x=760, y=642, w=265, h=140)},
+                # 'action': Runclass(run=playerData.new)
+            },
+            'difficulty_next': {
+                'type': 'button',
+                'frame': Frame(x=1456, y=666, w=92, h=92),
+                'imageData': {'frame': Frame(x=1482, y=642, w=265, h=140)},
+                # 'action': Runclass(run=playerData.new)
+            }
         },
     }
 )
