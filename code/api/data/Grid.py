@@ -124,15 +124,16 @@ class Grid(coreFunc):
         new_y = self.size * row + self.spacing * row
 
         # Calculate current animation position
-        if x <= new_x: new_x = min(x+counter, new_x)
-        else: new_x = max(x-counter, new_x)
+        if x <= new_x: new_x = min(x+counter*3, new_x)
+        else: new_x = max(x-counter*3, new_x)
 
-        if y <= new_y: new_y = min(y+counter, new_y)
-        else: new_y = max(x-counter, new_y)
+        if y <= new_y: new_y = min(y+counter*3, new_y)
+        else: new_y = max(y-counter*3, new_y)
 
         # Display to grid surface
-        self.item.surface.Surface.blit(sprite.get('hero'), (self.frame.coord((x, y))))
-        self.item.display(withData='all', refresh=True)     
+        self.item.load()
+        self.item.surface.Surface.blit(sprite.get('hero'), (self.frame.coord((new_x, new_y))))
+        self.item.surface.display()   
 
 
 class Tile(coreFunc):

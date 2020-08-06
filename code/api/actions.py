@@ -66,7 +66,6 @@ class Alert(coreFunc):
 
             screens.alert.confirm.load(withItems=['message'], refresh=True)
 
-        
         elif self.type == 'notify':
             # Set messages
             screens.alert.notify.message.title.setText(self.title, withDisplay=False)

@@ -141,6 +141,9 @@ class events(coreFunc):
         # Check if item is valid
         if object_thing == None: return
 
+        # If item is disabled
+        if hasattr(object_thing, 'state') and object_thing.isState('Disabled'): return
+
         # Check if mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Set state to clicked

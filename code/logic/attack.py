@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from random import random, randint
+from random import randint
 from code.api.core import os, log, screens
 from code.api.events import gameEvent
 from code.logic.stats import stats
@@ -23,8 +23,10 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class attack:
     enemies = {
+        'appear_chance': 50,
+        'list': ['rat', 'moth', 'king'],
         'rat': {
-            'chance': 0.4,
+            'chance': 60,
             'needOrb': False,
             'stats': {
                 'damage': [2, 3],
@@ -34,7 +36,7 @@ class attack:
             'gains': [5, 10]
         },
         'moth': {
-            'chance': 0.2,
+            'chance': 40,
             'needOrb': False,
             'stats': {
                 'damage': [1, 2],
@@ -44,7 +46,7 @@ class attack:
             'gains': [5, 10]
         },
         'king': {
-            'chance': 0,
+            'chance': -1,
             'needOrb': True,
             'stats': {
                 'damage': [4, 8],
@@ -66,27 +68,37 @@ class attack:
         # Not attack if hero is in town
         if Grid.heroInTown(): return False
 
-        # Calculate enemy appearing
-        new_enemy = False
-        for name, enemy in attack.enemies.items():
-            # Detect enemy present in grid
+        # Detect enemy present in grid
+        for name in attack.enemies['list']:
             if name in Grid.tiles[hero.row][hero.column].sprites:
                 attack.current_enemy = name
-                break
-            
-            # Get chance of new enemy appearing
-            chance_number = random()
-            if chance_number < enemy['chance']:
+                # Load attack screen
+                attack.initSurface()
+                return True
+
+        # Calculate enemy appearing
+        chance_number = randint(1, 100)
+        if chance_number > attack.enemies['appear_chance']: return False
+
+        # Get new enemy based on chance
+        base = 0
+        new_enemy = False
+        chance_number = randint(1, 100)
+        
+        for name in attack.enemies['list']:
+            if base < chance_number <= attack.enemies[name]['chance']+base:
                 attack.current_enemy = name
                 new_enemy = True
+
+            base += attack.enemies[name]['chance']
         
         # Add enemy to grid
-        if new_enemy: Grid.tiles[hero.row][hero.column].sprites.insert(0, attack.current_enemy)
+        if new_enemy:
+            Grid.tiles[hero.row][hero.column].sprites.insert(0, attack.current_enemy)
 
-        # Show attack screen if there is an enemy
-        if attack.current_enemy != None: 
-            # Load attack screen
+            # Show attack screen if there is an enemy
             attack.initSurface()
+
             return True
 
         return False

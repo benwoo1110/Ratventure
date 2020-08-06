@@ -250,25 +250,37 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=304, y=33-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=304, y=33-13, w=104, h=94)},
-                'action': Runclass(run=move.Move, parameters={'direction': 'up'})
+                'action': Runclass(
+                    run = gameEvent.animate.addQueue, 
+                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'up'})}
+                    )
             },
             'down': {
                 'type': 'button',
                 'frame': Frame(x=304, y=220-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=304, y=220-13, w=104, h=94)},
-                'action': Runclass(run=move.Move, parameters={'direction': 'down'})
+                'action': Runclass(
+                    run = gameEvent.animate.addQueue, 
+                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'down'})}
+                    )
             },
             'left': {
                 'type': 'button',
                 'frame': Frame(x=200, y=126-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=200, y=126-13, w=104, h=94)},
-                'action': Runclass(run=move.Move, parameters={'direction': 'left'})
+                'action': Runclass(
+                    run = gameEvent.animate.addQueue, 
+                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'left'})}
+                    )
             },
             'right': {
                 'type': 'button',
                 'frame': Frame(x=407, y=126-13, w=104, h=94),
                 'imageData': {'frame': Frame(x=407, y=126-13, w=104, h=94)},
-                'action': Runclass(run=move.Move, parameters={'direction': 'right'})
+                'action': Runclass(
+                    run = gameEvent.animate.addQueue, 
+                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'right'})}
+                    )
             },
             'back': {
                 'type': 'button',

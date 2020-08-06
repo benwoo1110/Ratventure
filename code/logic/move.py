@@ -21,6 +21,8 @@ logger.info('Loading up {}...'.format(filename))
 # Gameplay logic #
 ##################
 class move:
+    new_r = -1
+    new_c = -1
 
     @staticmethod
     def checkDirection():
@@ -57,45 +59,75 @@ class move:
 
 
     @staticmethod
-    def Move(direction:str):
+    def Move(counter, direction:str):
         Grid = screens.game.map.grid.Grid
-        
-        # Check for enemy to remove
-        for enemy in attack.enemies:
-            if enemy != 'king' and enemy in Grid.tiles[hero.row][hero.column].sprites:
-                Grid.tiles[hero.row][hero.column].sprites.remove(enemy)
 
-        # Remove hero from current location
-        Grid.tiles[hero.row][hero.column].sprites.remove('hero')
+        # Start of move
+        if counter == 0:
 
-        # Change location
-        if direction == 'up': hero.row -= 1
-        elif direction == 'down': hero.row += 1
-        elif direction == 'left': hero.column -= 1
-        elif direction == 'right': hero.column += 1
+            # Disable move
+            screens.game.move.up.switchState('Disabled', withDisplay=False)
+            screens.game.move.down.switchState('Disabled', withDisplay=False)
+            screens.game.move.left.switchState('Disabled', withDisplay=False)
+            screens.game.move.right.switchState('Disabled', withDisplay=False)
+            screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
 
-        # Add hero to new location
-        Grid.tiles[hero.row][hero.column].sprites.append('hero')
+            # Check for enemy to remove
+            for enemy in attack.enemies:
+                if enemy != 'king' and enemy in Grid.tiles[hero.row][hero.column].sprites:
+                    Grid.tiles[hero.row][hero.column].sprites.remove(enemy)
 
-        # Update map
-        screens.game.map.display(withItems=['grid'], refresh=True)
+            # Remove hero from current location
+            Grid.tiles[hero.row][hero.column].sprites.remove('hero')
 
-        # Add a day
-        stats.day.update()
+            # Change location
+            move.new_r, move.new_c = hero.row, hero.column
+            if direction == 'up' and move.new_r > 0: move.new_r -= 1
+            elif direction == 'down' and move.new_r < 7: move.new_r += 1
+            elif direction == 'left' and move.new_c > 0: move.new_c -= 1
+            elif direction == 'right' and move.new_c < 7: move.new_c += 1
 
-        # Check for attack
-        if attack.haveEnemy(): 
-            # Unload move
-            screens.game.move.unload()
-            return
+            print(move.new_r, move.new_c)
 
-        # Update story
-        if Grid.heroInTown(): story.in_town.display()
-        else: story.in_open.display()
+        # Run move animation
+        elif counter < 35:
+            Grid.move(counter, move.new_r, move.new_c)
 
-        # Disable arrows for impossible directions
-        move.checkDirection()
-        screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
+        # Move is done
+        elif counter >= 35:
+            # Set new location
+            hero.row, hero.column = move.new_r, move.new_c
+            move.new_r, move.new_c = -1, -1
+
+            # Add hero to new location
+            Grid.tiles[hero.row][hero.column].sprites.append('hero')
+
+            # Update map
+            screens.game.map.display(withItems=['grid'], refresh=True)
+
+            # Add a day
+            stats.day.update()
+
+            # Check for attack
+            if attack.haveEnemy(): 
+                # Unload move
+                screens.game.move.unload()
+                return True
+
+            # Update story
+            if Grid.heroInTown(): 
+                story.in_town.display()
+                # Show town selection
+                move.back()
+                return True
+
+            else: story.in_open.display()
+
+            # Disable arrows for impossible directions
+            move.checkDirection()
+            screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
+
+            return True
 
     @staticmethod
     def back():
