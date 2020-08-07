@@ -23,8 +23,9 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class attack:
     enemies = {
-        'appear_chance': 50,
+        'appear_chance': 0,
         'run_chance': 20,
+        'multiplier': 1.2,
         'list': ['rat', 'moth', 'king'],
         'rat': {
             'chance': 60,
@@ -127,9 +128,9 @@ class attack:
         screens.game.attack.enemy.switchState(attack.current_enemy.capitalize(), False)
         
         # Set enemy stats
-        stats.damage.set('attack', *enemy['stats']['damage'], False)
-        stats.defence.set('attack', enemy['stats']['defence'], False)
-        stats.health.set('attack', *enemy['stats']['health'], False)
+        stats.damage.set('attack', *enemy['stats']['damage'], False, attack.enemies['multiplier'])
+        stats.defence.set('attack', enemy['stats']['defence'], False, attack.enemies['multiplier'])
+        stats.health.set('attack', *enemy['stats']['health'], False, attack.enemies['multiplier'])
 
         # Show enemy in grid
         screens.game.map.load(withItems=['grid'], refresh=True)

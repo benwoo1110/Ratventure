@@ -3,9 +3,12 @@
 ######################################
 from random import randint
 from code.api.core import os, log, screens
+from code.api.events import gameEvent
+from code.api.actions import Runclass
 from code.logic.stats import stats
 from code.logic.attack import attack
 from code.logic.hero import hero
+from code.logic.story import story
 
 
 #################
@@ -22,6 +25,7 @@ logger.info('Loading up {}...'.format(filename))
 class power:
     row = -1
     column = -1
+    orb_change = 5
 
     @staticmethod
     def location() -> tuple: return (power.row, power.column)
@@ -40,6 +44,13 @@ class power:
                 break
 
     @staticmethod
+    def changeLocation():
+        # Check if its day to change location
+        if stats.day.get() % power.orb_change == 0:
+            power.setLocation()
+            story.change_orb.display()
+
+    @staticmethod
     def canSense():
         if stats.power.hasOrb(): screens.game.in_open.sense_orb.switchState('Disabled', False)
         else: screens.game.in_open.sense_orb.switchState('', False)
@@ -52,6 +63,9 @@ class power:
 
         # Orb is found
         if hero.location() == power.location():
+            # Set story
+            story.take_orb.display()
+
             # Show orb in map
             Grid.tiles[power.row][power.column].sprites.insert(0, 'orb')
 
@@ -70,6 +84,9 @@ class power:
             elif power.column < hero.column: direction += 'west'
 
             direction = direction.capitalize()
+
+            # Set story
+            story.sense_orb.display(direction)
 
             # Set compass direction
             screens.game.no_orb.compass.switchState(direction, False)
@@ -111,3 +128,6 @@ class power:
         # Load back selection screen
         screens.game.in_open.display()
 
+
+# Add change orb to gameEvent queue
+gameEvent.orb_change.addQueue(Runclass(run=power.changeLocation))

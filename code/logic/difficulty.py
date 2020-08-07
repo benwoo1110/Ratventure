@@ -45,8 +45,8 @@ class difficulty:
     current = None
 
     @staticmethod
-    def set():
+    def set(mode:str):
         pass
 
-    def get(Difficulty:str) -> dict:
+    def get() -> dict:
         pass

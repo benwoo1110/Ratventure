@@ -27,6 +27,9 @@ stories = {
         "You are fully healed.",
         "You have regained full health."
     ],
+    "change_orb": [
+        "HmMm the orb changed location. Should I sense it?",
+    ],
     "sense_orb": [
         "You sense that the Orb of Power is to the {}.",
         "You smell the Orb of Power at the {}."

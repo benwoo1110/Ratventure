@@ -17,15 +17,20 @@ logger.info('Loading up {}...'.format(filename))
 # Event classes #
 #################
 class Sequence(coreFunc):
-    def __init__(self, n:int, timer:int = 10):
+    def __init__(self, n:int, timer:int = 10, withCounter:bool = True, autoRemove:bool = True):
         self.Event = pygame.USEREVENT + n
         self.counter = 0
         self.queue = []
-        pygame.time.set_timer(self.Event, timer)
+        self.withCounter = withCounter
+        self.autoRemove = autoRemove
+        if timer != -1: pygame.time.set_timer(self.Event, timer)
 
     def addQueue(self, Action:Runclass):
         if isinstance(Action, Runclass): self.queue.append(Action)
         else: logger.error('Unable to add action to queue. Action needs to be a Runclass.')
+
+    def call(self):
+        pygame.event.post(pygame.event.Event(self.Event))
 
 
 class gameevent(coreFunc):
@@ -40,7 +45,8 @@ class gameevent(coreFunc):
 gameEvent = gameevent(
     {
         'stats': {'n': 1, 'timer': 10},
-        'animate': {'n': 2, 'timer': 10}
+        'animate': {'n': 2, 'timer': 10},
+        'orb_change': {'n': 3, 'timer': -1, 'withCounter': False, 'autoRemove': False}
     }
 )
 
@@ -164,17 +170,17 @@ class events(coreFunc):
             if event.type == Event.Event:
                 # Run the event
                 if Event.queue != []:
-                    runEvent = Event.queue[0]
+                    eventAction = Event.queue[0]
                     # Set counter parameter
-                    runEvent.parameters['counter'] = Event.counter
+                    if Event.withCounter: eventAction.parameters['counter'] = Event.counter
                     # Run the animation instant
-                    game_result.getOutcome(runEvent)
-                    Event.counter += 1
+                    game_result.getOutcome(eventAction)
+                    if Event.withCounter: Event.counter += 1
 
                 # Animate is done, remove it and reset
                 if game_result.withOutcome(True):
                     Event.counter = 0
-                    Event.queue.pop(0)
+                    if Event.autoRemove: Event.queue.pop(0)
 
                     return game_result
 

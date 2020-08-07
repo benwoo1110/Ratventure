@@ -47,9 +47,14 @@ game_screen = screen (
     firstLoad=[],
 
     keyboard = {
-        'back': {
+        'exit': {
             'keys': [27],
-            'action': Switchscreen(type='back', screen='mainmenu')
+            'action': Alert (
+                type='confirm', 
+                title='Force Exit',
+                content='Are you sure you want to force exit the game?',
+                yes=Switchscreen(type='back', screen='mainmenu')
+            ),
         }
     },
 
