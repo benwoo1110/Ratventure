@@ -20,7 +20,7 @@ class difficulty:
         'Easy': {
             'run': 20,
             'enemy': 50,
-            'enemy_chance': {'rat': 100, 'moth': 0},
+            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
             'multiplier': 1.0,
             'orb_change': -1,
             'rest_gain': -1,
@@ -30,7 +30,7 @@ class difficulty:
         'Medium': {
             'run': 100,
             'enemy': 50,
-            'enemy_chance': {'rat': 0, 'moth': 100},
+            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
             'multiplier': 2,
             'orb_change': -1,
             'rest_gain': -1,
@@ -40,7 +40,7 @@ class difficulty:
         'Hard': {
             'run': 100,
             'enemy': 50,
-            'enemy_chance': {'rat': 60, 'moth': 40},
+            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
             'multiplier': 1.0,
             'orb_change': -1,
             'rest_gain': -1,

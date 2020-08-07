@@ -26,9 +26,9 @@ class attack:
         'appear_chance': 0,
         'run_chance': 20,
         'multiplier': 1.2,
-        'list': ['rat', 'moth', 'king'],
+        'list': ['rat', 'moth', 'roach', 'king'],
         'rat': {
-            'chance': 60,
+            'chance': 10,
             'needOrb': False,
             'stats': {
                 'damage': [2, 3],
@@ -38,7 +38,17 @@ class attack:
             'gains': [5, 10]
         },
         'moth': {
-            'chance': 40,
+            'chance': 30,
+            'needOrb': False,
+            'stats': {
+                'damage': [1, 2],
+                'defence': 2,
+                'health': [10, 10]
+            },
+            'gains': [5, 10]
+        },
+        'roach': {
+            'chance': 60,
             'needOrb': False,
             'stats': {
                 'damage': [1, 2],
