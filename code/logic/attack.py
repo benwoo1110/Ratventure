@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens
+from code.api.core import os, log, screens, pg
 from code.api.events import gameEvent
 from code.logic.stats import stats
 from code.api.data.Grid import Sprite
@@ -22,52 +22,7 @@ logger.info('Loading up {}...'.format(filename))
 # Gameplay logic #
 ##################
 class attack:
-    enemies = {
-        'appear_chance': 0,
-        'run_chance': 20,
-        'multiplier': 1.2,
-        'list': ['rat', 'moth', 'roach', 'king'],
-        'rat': {
-            'chance': 10,
-            'needOrb': False,
-            'stats': {
-                'damage': [2, 3],
-                'defence': 1,
-                'health': [8, 8]
-            },
-            'gains': [5, 10]
-        },
-        'moth': {
-            'chance': 30,
-            'needOrb': False,
-            'stats': {
-                'damage': [1, 2],
-                'defence': 2,
-                'health': [10, 10]
-            },
-            'gains': [5, 10]
-        },
-        'roach': {
-            'chance': 60,
-            'needOrb': False,
-            'stats': {
-                'damage': [1, 2],
-                'defence': 2,
-                'health': [10, 10]
-            },
-            'gains': [5, 10]
-        },
-        'king': {
-            'chance': -1,
-            'needOrb': True,
-            'stats': {
-                'damage': [4, 8],
-                'defence': 4,
-                'health': [20, 20]
-            },
-        },
-    }
-
+    enemies = pg.loadJson('./gamefiles/enemies.json')
     current_enemy = None
     
     @staticmethod

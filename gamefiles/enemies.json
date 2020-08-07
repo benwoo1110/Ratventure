@@ -1,0 +1,45 @@
+{
+    "appear_chance": 0,
+    "run_chance": 20,
+    "multiplier": 1.2,
+    "list": ["rat", "moth", "roach", "king"],
+    "rat": {
+        "chance": 10,
+        "needOrb": false,
+        "stats": {
+            "damage": [2, 3],
+            "defence": 1,
+            "health": [8, 8]
+        },
+        "gains": [5, 10]
+    },
+    "moth": {
+        "chance": 30,
+        "needOrb": false,
+        "stats": {
+            "damage": [1, 2],
+            "defence": 2,
+            "health": [10, 10]
+        },
+        "gains": [5, 10]
+    },
+    "roach": {
+        "chance": 60,
+        "needOrb": false,
+        "stats": {
+            "damage": [1, 2],
+            "defence": 2,
+            "health": [10, 10]
+        },
+        "gains": [5, 10]
+    },
+    "king": {
+        "chance": -1,
+        "needOrb": true,
+        "stats": {
+            "damage": [4, 8],
+            "defence": 4,
+            "health": [20, 20]
+        }
+    }
+}

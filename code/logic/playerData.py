@@ -4,7 +4,7 @@
 import json
 import uuid
 import time
-from code.api.core import os, log, screens, coreFunc
+from code.api.core import os, log, screens, coreFunc, pg
 from code.logic.power import power
 from code.logic.hero import hero
 from code.logic.story import story
@@ -193,18 +193,12 @@ class playerData:
         # Generate json text data
         json_data = json.dumps(savedData)
 
-        # Generate UUID
+        # Generate and set UUID
         fileid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
-
-        # Save to file
-        save_location = './appdata/saves/{}.json'.format(fileid)
-        with open(save_location, 'w') as savefile:
-            savefile.write(json_data)
-
-        # Set new player fileid
         playerData.currentPlayer.fileid = fileid
 
-        logger.info('Saved new playerdata to "{}"'.format(save_location))
+        # Save to file
+        pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
 
     @staticmethod
     def delete():

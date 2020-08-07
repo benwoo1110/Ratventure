@@ -6,6 +6,7 @@ import logging
 import sys
 import glob
 import traceback
+import json
 import pygame
 from datetime import datetime
 from code.config import config
@@ -43,12 +44,38 @@ class pg:
         purple = (97, 0, 188)
 
     @staticmethod
+    def loadJson(filepath:str) -> dict:
+        '''Loading of file from json'''
+        try:
+            with open(filepath, 'r') as datafile:
+                data = json.loads(datafile.read())
+
+        except Exception as e: logger.error(e, exc_info=True)
+
+        else: 
+            logger.info('Loaded json file from {}'.format(filepath))
+            return data
+
+    @staticmethod
+    def saveJson(filepath:str, data:dict):
+        '''Saving file to json'''
+        try:
+            with open(filepath, 'w') as savefile:
+                savefile.write(json.dumps(data))
+
+        except Exception as e: logger.error(e, exc_info=True)
+
+        else: logger.info('Saved data to {}'.format(filepath))
+
+    @staticmethod
     def updateWindow():
+        '''Displays screens/surfaces to pygame window'''
         pygame.display.update()
         pg.clock.tick(pg.config.framerate)
 
     @staticmethod
     def quit():
+        '''Exit pygame program'''
         logger.info('Exiting program... Goodbye!')
         pygame.quit()
 
@@ -63,7 +90,7 @@ class windowScreen(coreFunc):
             pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
 
         elif pg.config.icon_file != '': 
-            logger.warn('Error loading app icon image "{}"'.format(pg.config.icon_file))
+            logger.warning('Error loading app icon image "{}"'.format(pg.config.icon_file))
 
         # Set title
         pygame.display.set_caption(pg.config.title)
@@ -129,7 +156,7 @@ class Screens(coreFunc):
     def changeStack(self, type:str, screen:str = None):
         # Skip if another changeStack() is happening
         if self.stackChange: 
-            logger.warn('Another stack change is happening, skipping change type:{} screen:{}'.format(type, screen))
+            logger.warning('Another stack change is happening, skipping change type:{} screen:{}'.format(type, screen))
             return
         
         self.stackChange = True
@@ -201,12 +228,12 @@ class Screens(coreFunc):
 # Logging #
 ###########
 # Ensure that logs folder is created
-filepath = './logs/'
-if not os.path.isdir(filepath):
+folderpath = './logs/'
+if not os.path.isdir(folderpath):
     # Create logs directory
-    try: os.mkdir(filepath)
+    try: os.mkdir(folderpath)
     except Exception as e: logger.error(e, exc_info=True)
-    else: print('Created {} directory'.format(filepath))
+    else: print('Created {} directory'.format(folderpath))
 
 
 # Keep only certain number of log files 

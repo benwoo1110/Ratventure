@@ -87,8 +87,6 @@ class move:
             elif direction == 'left' and move.new_c > 0: move.new_c -= 1
             elif direction == 'right' and move.new_c < 7: move.new_c += 1
 
-            print(move.new_r, move.new_c)
-
         # Run move animation
         elif counter < 35:
             Grid.move(counter, move.new_r, move.new_c)

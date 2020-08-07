@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, screens
+from code.api.core import os, log, screens, pg
 from code.logic.attack import attack
 from code.logic.power import power
 from code.logic.rest import rest
@@ -16,38 +16,7 @@ logger.info('Loading up {}...'.format(filename))
 
 
 class difficulty:
-    modes = {
-        'Easy': {
-            'run': 20,
-            'enemy': 50,
-            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
-            'multiplier': 1.0,
-            'orb_change': -1,
-            'rest_gain': -1,
-            'town_number': 5,
-            'town_space': 3,
-        },
-        'Medium': {
-            'run': 100,
-            'enemy': 50,
-            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
-            'multiplier': 2,
-            'orb_change': -1,
-            'rest_gain': -1,
-            'town_number': 4,
-            'town_space': 4,
-        },
-        'Hard': {
-            'run': 100,
-            'enemy': 50,
-            'enemy_chance': {'rat': 0, 'moth': 0, 'roach': 100},
-            'multiplier': 1.0,
-            'orb_change': -1,
-            'rest_gain': -1,
-            'town_number': 2,
-            'town_space': 5,
-        }
-    }
+    modes = pg.loadJson('./gamefiles/difficulty.json')
 
     @staticmethod
     def set(mode:str = None):
