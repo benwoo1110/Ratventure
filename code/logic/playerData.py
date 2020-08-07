@@ -5,10 +5,10 @@ import json
 import uuid
 import time
 from code.api.core import os, log, screens, coreFunc
-from code.logic.stats import stats
 from code.logic.power import power
 from code.logic.hero import hero
 from code.logic.story import story
+from code.logic.difficulty import difficulty
 
 
 #################
@@ -51,8 +51,11 @@ class playerData:
         # reset currentPlayer 
         playerData.currentPlayer = player (
             nickname=screens.new_game.options.nickname.text.text,
-            difficulty=screens.new_game.options.difficulty.level.text,
+            difficulty=screens.new_game.options.difficulty.mode.text,
             )
+
+        # Set difficulty settings
+        difficulty.set()
 
         # Reset hero location
         hero.row, hero.column = 0, 0
@@ -65,7 +68,8 @@ class playerData:
         Grid.tiles[7][7].sprites = ['king']
 
         # Generate random towns 
-        Grid.randomiseTowns()
+        town_settings = difficulty.get()
+        Grid.randomiseTowns(town_settings['town_number'], town_settings['town_space'])
 
         # Create new stats
         hero.resetStats()
@@ -116,6 +120,9 @@ class playerData:
 
         # Store loaded player
         playerData.currentPlayer = player (fileid=fileid, **savedData['player'])
+
+        # Set difficulty settings
+        difficulty.set(playerData.currentPlayer.difficulty)
 
         # Load hero location
         hero.row, hero.column = savedData['hero']

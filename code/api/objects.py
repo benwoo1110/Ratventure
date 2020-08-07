@@ -177,7 +177,7 @@ class surface(coreFunc):
 
 class item(coreFunc):
     def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, 
-    data:dict = {}, selectable: bool = True, state:str = '', action:any = None):
+    data:dict = {}, selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False):
         self.surface = surface
         self.name = name
         self.selectable = selectable
@@ -185,6 +185,7 @@ class item(coreFunc):
         self.frame = frame
         self.state = state
         self.action = action
+        self.lock_state = lock_state
 
         # Get images
         if imageData != None:
@@ -221,8 +222,10 @@ class item(coreFunc):
 
     def switchState(self, toState:str, withLoad:bool = True, withDisplay:bool = True):
         # Change the state
-        if self.state != toState and self.hasState(toState): 
-            self.state = toState
+        if self.state != toState and self.hasState(toState):
+            # Ensure that item is not locked
+            if not self.lock_state: self.state = toState
+            else: return
 
             # Load/display to screen
             if withLoad:

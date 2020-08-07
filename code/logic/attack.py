@@ -112,11 +112,13 @@ class attack:
 
         # Player able to run
         if chance_number <= attack.enemies['run_chance']:
+            screens.game.attack.run.lock_state = False
             screens.game.attack.run.switchState('', False)
             
         # Player unable to run
         else: 
             screens.game.attack.run.switchState('Disabled', False)
+            screens.game.attack.run.lock_state = True
 
 
     @staticmethod

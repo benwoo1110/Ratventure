@@ -45,6 +45,9 @@ class power:
 
     @staticmethod
     def changeLocation():
+        # No change
+        if power.orb_change == -1: return
+        
         # Check if its day to change location
         if stats.day.get() % power.orb_change == 0:
             power.setLocation()

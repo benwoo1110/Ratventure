@@ -2,11 +2,12 @@
 # Import and initialize the librarys #
 ######################################
 import time
-from code.api.core import os, log, pg, screens
+from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
 from code.logic.playerData import playerData
+from code.logic.difficulty import difficulty
 
 
 #################
@@ -28,6 +29,9 @@ class new_game:
     def init():
         new_game_screen.options.nickname.switchState('', False)
         new_game_screen.options.nickname.text.setText('Player')
+
+        new_game_screen.options.difficulty.index = 0
+        new_game_screen.options.difficulty.mode.setText('Easy')
 
     @staticmethod
     def textfield_selected():
@@ -117,13 +121,14 @@ new_game_screen = screen (
             },
             'difficulty': {
                 'type': 'text',
-                'frame': Frame(x=760, y=642, w=987, h=140),
-                'imageData': {'frame': Frame(x=760, y=642, w=987, h=140)},
+                'frame': Frame(x=1051, y=642, w=405, h=140),
+                'imageData': {'frame': Frame(x=1051, y=642, w=405, h=140)},
                 'selectable': False,
                 'data': {
-                    'level': Text (
-                        frame = Frame(x=760, y=642, w=987, h=140),
-                        text = 'Extreme',
+                    'index': 0,
+                    'mode': Text (
+                        frame = Frame(x=1051, y=642, w=405, h=140),
+                        text = 'Easy',
                         format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
                     ),
                 },
@@ -144,13 +149,13 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=959, y=666, w=92, h=92),
                 'imageData': {'frame': Frame(x=760, y=642, w=265, h=140)},
-                # 'action': Runclass(run=playerData.new)
+                'action': Runclass(run=difficulty.update, parameters={'index': -1})
             },
             'difficulty_next': {
                 'type': 'button',
                 'frame': Frame(x=1456, y=666, w=92, h=92),
                 'imageData': {'frame': Frame(x=1482, y=642, w=265, h=140)},
-                # 'action': Runclass(run=playerData.new)
+                'action': Runclass(run=difficulty.update, parameters={'index': 1})
             }
         },
     }
