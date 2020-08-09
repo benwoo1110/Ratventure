@@ -5,9 +5,9 @@ from random import randint
 from code.api.core import os, log, screens
 from code.api.events import gameEvent
 from code.api.actions import Runclass
-from code.logic.stats import stats
+from code.logic.stats import Bonus
+from code.logic.player import player
 from code.logic.attack import attack
-from code.logic.hero import hero
 from code.logic.story import story
 
 
@@ -22,13 +22,12 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 # Gameplay logic #
 ##################
-class power:
-    row = -1
-    column = -1
-    orb_change = 5
-
-    @staticmethod
-    def location() -> tuple: return (power.row, power.column)
+class orb:
+    change = 5
+    stats = Bonus (
+        damage = [5, 5],
+        defence = 5
+    )
 
     @staticmethod
     def setLocation():
@@ -40,37 +39,38 @@ class power:
             # Ensure that pos is valid and in open
             if  (row >=4 or column >= 4) and (not Grid.tiles[row][column].hasSprite()):
                 # Save orb pos
-                power.row, power.column = row, column
+                player.orb.setNew([row, column])
                 break
 
     @staticmethod
     def changeLocation():
         # No change
-        if power.orb_change == -1: return
+        if orb.change == -1: return
         
         # Check if its day to change location
-        if stats.day.get() % power.orb_change == 0:
-            power.setLocation()
+        if player.stats.day % orb.change == 0:
+            orb.setLocation()
             story.change_orb.display()
 
     @staticmethod
     def canSense():
-        if stats.power.hasOrb(): screens.game.in_open.sense_orb.switchState('Disabled', False)
+        if player.weapon.have('orb'): screens.game.in_open.sense_orb.switchState('Disabled', False)
         else: screens.game.in_open.sense_orb.switchState('', False)
 
     @staticmethod
     def initSurface():
         Grid = screens.game.map.grid.Grid
+
         # Unload previous selection screen
         screens.game.in_open.unload()
 
         # Orb is found
-        if hero.location() == power.location():
+        if player.orb.pos() == player.hero.pos():
             # Set story
             story.take_orb.display()
 
             # Show orb in map
-            Grid.tiles[power.row][power.column].sprites.insert(0, 'orb')
+            Grid.tiles[player.orb.row][player.orb.column].sprites.insert(0, 'orb')
 
             screens.game.map.load(withItems=['grid'], refresh=True)
             screens.game.display(withSurfaces=['found_orb'])
@@ -80,11 +80,11 @@ class power:
             # Get direction
             direction = ''
 
-            if power.row > hero.row: direction += 'south'
-            elif power.row < hero.row: direction += 'north'
+            if player.orb.row > player.hero.row: direction += 'south'
+            elif player.orb.row < player.hero.row: direction += 'north'
 
-            if power.column > hero.column: direction += 'east'
-            elif power.column < hero.column: direction += 'west'
+            if player.orb.column > player.hero.column: direction += 'east'
+            elif player.orb.column < player.hero.column: direction += 'west'
 
             direction = direction.capitalize()
 
@@ -98,31 +98,30 @@ class power:
             screens.game.no_orb.display(withItems=['compass'], refresh=True)
 
         # Add a day
-        stats.day.update()
+        player.next_day()
 
     @staticmethod
     def take():
         Grid = screens.game.map.grid.Grid
 
         # Update stats upon taking orb
-        stats.damage.update('info', 5, 5, False)
-        stats.defence.update('info', 5)
-        stats.power.take()
+        player.stats.addBonus(orb.stats, screens.game.info.stats, True)
+        player.weapon.add('orb')
 
         # Disable sensing orb
         screens.game.in_open.sense_orb.switchState('Disabled', withDisplay=False)
 
         # Remove orb from map
-        Grid.tiles[power.row][power.column].sprites.remove('orb')
+        Grid.tiles[player.orb.row][player.orb.column].sprites.remove('orb')
         screens.game.map.display(withItems=['grid'], refresh=True)
 
         # Return to selection menu
-        power.back()
+        orb.back()
     
     @staticmethod
     def back():
         # Unload orb screen
-        if stats.power.hasOrb(): screens.game.found_orb.unload()
+        if player.weapon.have('orb'): screens.game.found_orb.unload()
         else: screens.game.no_orb.unload()
 
         # Check for attack
@@ -133,4 +132,4 @@ class power:
 
 
 # Add change orb to gameEvent queue
-gameEvent.orb_change.addQueue(Runclass(run=power.changeLocation))
+gameEvent.orb_change.addQueue(Runclass(run=orb.changeLocation))

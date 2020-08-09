@@ -2,7 +2,8 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import os, log, screens
-from code.logic.stats import stats
+from code.logic.stats import Bonus
+from code.logic.player import player
 
 
 #################
@@ -18,6 +19,7 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class rest:
     maxGain = 2
+    stats = Bonus(health=0)
 
     @staticmethod
     def initSurface():
@@ -25,14 +27,12 @@ class rest:
         screens.game.in_town.unload()
 
         # Set health that will be added
-        current_health, max_health = stats.health.get('info')
+        current_health, max_health = player.stats.health
         add_health = max_health - current_health
-
-        # Amount regain based on maxGain
-        if rest.maxGain >= 0: add_health = min(rest.maxGain, add_health)
+        if rest.maxGain >= 0: add_health = min(rest.maxGain, add_health)       
         
         # Update health gained when rest on display
-        stats.health.setBonus('rest', add_health, False)
+        rest.stats.set('health', [add_health, 0], screens.game.rest.stats)
 
         # Load the rest surface
         screens.game.rest.display(withItems=['stats'], refresh=True)
@@ -40,11 +40,10 @@ class rest:
     @staticmethod
     def Rest():
         # Get health amount set to gain
-        health_to_regain = stats.health.getBonus('rest')
-        stats.health.update('info', health_to_regain)
+        player.stats.addBonus(rest.stats, screens.game.info.stats, True)
 
         # Next day
-        stats.day.update()
+        player.next_day()
 
         # Go back to selection menu
         rest.back()

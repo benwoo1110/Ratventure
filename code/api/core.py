@@ -154,10 +154,9 @@ class Screens(coreFunc):
         logger.debug('Added screen {}'.format(name))
 
     def changeStack(self, type:str, screen:str = None):
-        # Skip if another changeStack() is happening
+        # Notify another changeStack() is happening
         if self.stackChange: 
-            logger.warning('Another stack change is happening, skipping change type:{} screen:{}'.format(type, screen))
-            return
+            logger.warning('Another stack change is happening as well, this may cause issues.')
         
         self.stackChange = True
 

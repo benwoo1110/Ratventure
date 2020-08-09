@@ -1,10 +1,12 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg
+from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
+from code.logic.player import player
+from code.logic.store import store
 
 
 #################
@@ -23,8 +25,12 @@ class shop:
     @staticmethod
     def init():
         # Set player stats
-        
-        pass
+        player.stats.display('damage', shop_screen.store.stats)
+        player.stats.display('defence', shop_screen.store.stats)
+        player.stats.display('health', shop_screen.store.stats)
+        player.stats.display('elixir', shop_screen.store.stats)
+
+        shop_screen.store.load(withItems=['stats'], refresh=True)
 
     @staticmethod
     def run():
@@ -35,6 +41,16 @@ class shop:
         if event_result == None: return
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
+
+    @staticmethod
+    def end():
+        # Set player stats for game screen
+        player.stats.display('damage', screens.game.info.stats)
+        player.stats.display('defence', screens.game.info.stats)
+        player.stats.display('health', screens.game.info.stats)
+        player.stats.display('elixir', screens.game.info.stats)
+
+        screens.game.info.load(withItems=['stats'], refresh=True)
 
 
 ##################
@@ -96,6 +112,7 @@ shop_screen = screen (
                 'frame': Frame(x=609, y=301, w=527, h=300),
                 'imageData': {'frame': Frame(x=609, y=301, w=527, h=300)},
                 'overlayDataFrame': True,
+                'action': Runclass(run=store.checkBuy, parameters={'weapon': 'shield'}),
                 'data': {
                     'object': Text (
                         frame = Frame(x=120, y=25, w=237, h=83),
@@ -124,6 +141,7 @@ shop_screen = screen (
                 'frame': Frame(x=1194, y=301, w=527, h=300),
                 'imageData': {'frame': Frame(x=1194, y=301, w=527, h=300)},
                 'overlayDataFrame': True,
+                'action': Runclass(run=store.checkBuy, parameters={'weapon': 'sword'}),
                 'data': {
                     'object': Text (
                         frame = Frame(x=120, y=25, w=237, h=83),
@@ -152,6 +170,7 @@ shop_screen = screen (
                 'frame': Frame(x=609, y=666, w=527, h=300),
                 'imageData': {'frame': Frame(x=609, y=666, w=527, h=300)},
                 'overlayDataFrame': True,
+                'action': Runclass(run=store.checkBuy, parameters={'weapon': 'armour'}),
                 'data': {
                     'object': Text (
                         frame = Frame(x=120, y=25, w=237, h=83),
@@ -180,6 +199,7 @@ shop_screen = screen (
                 'frame': Frame(x=1194, y=666, w=527, h=300),
                 'imageData': {'frame': Frame(x=1194, y=666, w=527, h=300)},
                 'overlayDataFrame': True,
+                'action': Runclass(run=store.checkBuy, parameters={'weapon': 'potion'}),
                 'data': {
                     'object': Text (
                         frame = Frame(x=120, y=25, w=237, h=83),

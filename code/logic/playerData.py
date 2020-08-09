@@ -4,10 +4,10 @@
 import json
 import uuid
 import time
-from code.api.core import os, log, screens, coreFunc, pg
-from code.logic.player import player, Player
-from code.logic.power import power
-from code.logic.hero import hero
+from code.api.core import os, log, screens, pg
+from code.api.actions import Alert
+from code.logic.player import player
+from code.logic.orb import orb
 from code.logic.story import story
 from code.logic.difficulty import difficulty
 from code.logic.store import store
@@ -39,46 +39,36 @@ class playerData:
         # Unload previous state
         screens.game.unload()
 
-        # reset current player
-        player.data = Player (
-            nickname = screens.new_game.options.nickname.text.text,
-            difficulty = screens.new_game.options.difficulty.mode.text,
-            damage = [2, 4],
-            defence = 1, 
-            health = [20, 20],
-            elixir = 0,
-            weapons = [],
-            row = 0, column = 0
-        )
+        # reset player
+        player.reset()
 
         # Set difficulty settings
         difficulty.set()
 
-        # Create grid
+        # Set grid to default hero, town and king
         Grid.clear()
-
-        # Set default hero, town and king
         Grid.tiles[0][0].sprites = ['town', 'hero']
         Grid.tiles[7][7].sprites = ['king']
 
-        # Generate random towns 
+        # Generate random towns
         town_settings = difficulty.get()
         Grid.randomiseTowns(town_settings['town_number'], town_settings['town_space'])
 
-        # Create new stats
-        hero.resetStats()
-
         # Calculate orb postion
-        power.setLocation()
-
-        # Set if player can sense for orb
-        power.canSense()
+        orb.setLocation()
+        orb.canSense()
 
         # Set up store
         store.setWeapons()
 
         # Set starting story
         story.in_town.display()
+
+        # Set player stats for game screen
+        player.stats.display('damage', screens.game.info.stats)
+        player.stats.display('defence', screens.game.info.stats)
+        player.stats.display('health', screens.game.info.stats)
+        player.stats.display('elixir', screens.game.info.stats)
 
         # Load screen
         screens.game.map.load(withItems=['grid'])
@@ -99,10 +89,8 @@ class playerData:
      
         # Get saved file data
         save_location = './appdata/saves/{}.json'.format(fileid)
-
         try:
-            with open(save_location, 'r') as savefile:
-                raw_data = savefile.read()
+            with open(save_location, 'r') as savefile: raw_data = savefile.read()
         
         except Exception as e: 
             logger.error(e, exc_info=True)
@@ -111,30 +99,38 @@ class playerData:
         # Check that user did not edit save file
         checkid = str(uuid.uuid3(uuid.NAMESPACE_URL, raw_data))
         if fileid != checkid: 
-            raise Exception('UUID mismatch for savefile "{}" Did you edit the file?'.format(save_location))
+            Alert (
+                type='notify', 
+                title='Error',
+                content='UUID mismatch for savefile. Did you edit the file?',
+            ).do()
+            logger.error('UUID mismatch for savefile {}'.format(save_location))
+            return
 
+        # Get the data
         savedData = json.loads(raw_data)
 
         # Loaded stored player
-        player.data = Player(fileid=fileid, **savedData['player'])
+        savedData['player']['fileid'] = fileid
+        player.load(savedData['player'])
+
+        # Set player stats for game screen
+        player.stats.display('damage', screens.game.info.stats)
+        player.stats.display('defence', screens.game.info.stats)
+        player.stats.display('health', screens.game.info.stats)
+        player.stats.display('elixir', screens.game.info.stats)
 
         # Set difficulty settings
-        difficulty.set(player.data.difficulty)
+        difficulty.set(player.difficulty)
 
-        # Load hero location
-        hero.row, hero.column = savedData['hero']
+        # Set weapons
+        store.setWeapons()
 
         # Map
         Grid.generate(savedData['grid'])
 
-        # Load orb location
-        power.row, power.column = savedData['orb']
-
-        # Load stats
-        hero.setStats(savedData['stats'])
-
         # Set if player can sense for orb
-        power.canSense()
+        orb.canSense()
 
         # Set story saved
         story.setCurrent(savedData['story'])
@@ -155,16 +151,10 @@ class playerData:
         playerData.delete()
 
         # Init dictionary to save
-        savedData = {}
+        savedData = dict()
 
         # Save player
-        player_data = playerData.player.__dict__.copy()
-        del player_data['fileid']
-
-        savedData['player'] = player_data
-
-        # Save hero location
-        savedData['hero'] = hero.location()
+        savedData['player'] = player.get()
 
         # Store save time
         savedData['time_saved'] = time.time()
@@ -177,13 +167,7 @@ class playerData:
             savedData['grid'].append([])
             for tile in tile_row:
                 savedData['grid'][-1].append(tile.sprites)
-
-        # Save orb location
-        savedData['orb'] = [power.row, power.column]
-
-        # Stats
-        savedData['stats'] = hero.getStats()
-
+        
         # Save story
         savedData['story'] = story.getCurrent()
 
@@ -192,20 +176,20 @@ class playerData:
 
         # Generate and set UUID
         fileid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
-        playerData.player.fileid = fileid
+        player.fileid = fileid
 
         # Save to file
         pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
 
     @staticmethod
     def delete():
-        if playerData.player.fileid != None: 
+        if player.fileid != None: 
             # Get file location    
-            file_location = './appdata/saves/{}.json'.format(playerData.player.fileid)
+            file_location = './appdata/saves/{}.json'.format(player.fileid)
 
             # Delete the file
             try: os.remove(file_location)
             except Exception as e: logger.error(e, exc_info=True)
-            else: logger.info('Deleted old playerdata "{}"'.format(file_location))
+            else: logger.info('Deleted old playerdata at {}'.format(file_location))
 
         else: logger.info('Player does not have a save file.')

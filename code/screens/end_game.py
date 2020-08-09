@@ -7,7 +7,6 @@ from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
 from code.logic.playerData import playerData
-from code.logic.stats import stats
 from code.logic.playerRank import playerRank
 
 
@@ -46,7 +45,7 @@ class end_game:
             # Set player leaderboard on win screen
             end_game_screen.win.leaderboard.postion.setText(str(ranking), withDisplay=False)
             end_game_screen.win.leaderboard.nickname.setText(playerData.currentPlayer.nickname, withDisplay=False)
-            end_game_screen.win.leaderboard.days.setText(str(stats.day.get()), withDisplay=False)
+            end_game_screen.win.leaderboard.days.setText(str(player.stats.day), withDisplay=False)
 
             # Load the changes
             end_game_screen.win.load(withItems=['leaderboard'], refresh=True)

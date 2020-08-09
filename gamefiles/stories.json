@@ -57,6 +57,9 @@
     "hero_defeated": [
         "You are dead. Game over."
     ],
+    "gain_elixir": [
+        "You gained {} elixir!"
+    ],
     "win": [
         "The world is saved! You Win!"
     ]

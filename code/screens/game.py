@@ -10,7 +10,7 @@ from code.api.data.Grid import Grid
 from code.logic.move import move
 from code.logic.playerData import playerData
 from code.logic.rest import rest
-from code.logic.power import power
+from code.logic.orb import orb
 from code.logic.attack import attack
 
 
@@ -52,7 +52,7 @@ game_screen = screen (
             'action': Alert (
                 type='confirm', 
                 title='Exit Game',
-                content='Are you sure you want to exit the game?',
+                content='Are you sure you want to exit to main menu?',
                 yes=Switchscreen(type='back', screen='mainmenu')
             ),
         }
@@ -75,13 +75,13 @@ game_screen = screen (
         'info': {
             'frame': Frame(x=1060, y=0, w=740, h=520),
             'selectable': False,
-            'day': { 
+            'days': { 
                 'type': 'text',
                 'frame': Frame(x=88, y=110, w=267, h=75),
                 'imageData': {'frame': Frame(x=0, y=0, w=350, h=185)},
                 'selectable': False,
                 'data': {
-                    'number': Text (
+                    'day': Text (
                         frame = Frame(x=88, y=110, w=267, h=75),
                         prefix = 'Day: ',
                         text = '1',
@@ -125,9 +125,10 @@ game_screen = screen (
                         text = '20/20',
                         format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.green)
                     ),
-                    'power': Text (
+                    'elixir': Text (
                         frame = Frame(x=323, y=288, w=307, h=59),
-                        text = '',
+                        prefix = 'Elixir: ',
+                        text = '0',
                         format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.purple)
                     ),
                 },
@@ -184,7 +185,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=118, y=40, w=476, h=167),
                 'imageData': {'frame': Frame(x=118, y=40, w=476, h=167)},
-                'action': Runclass(run=power.initSurface)
+                'action': Runclass(run=orb.initSurface)
             },
             'move': {
                 'type': 'button',
@@ -291,7 +292,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=166, y=364, w=378, h=75),
                 'imageData': {'frame': Frame(x=166, y=364, w=378, h=75)},
-                'action': Runclass(run=power.back)
+                'action': Runclass(run=orb.back)
             },
         },
 
@@ -321,7 +322,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=318, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=318, w=542, h=98)},
-                'action': Runclass(run=power.take)
+                'action': Runclass(run=orb.take)
             },
         },
 

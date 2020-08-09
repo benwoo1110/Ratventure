@@ -5,8 +5,7 @@ import json
 import time
 import uuid
 from code.api.core import os, log, screens
-from code.logic.playerData import playerData
-from code.logic.stats import stats
+from code.logic.player import player
 from code.logic.board import board
 
 
@@ -77,9 +76,9 @@ class playerRank:
     def add() -> int:
         # Store data is dict
         win_data = {
-            'nickname': playerData.currentPlayer.nickname,
+            'nickname': player.nickname,
             'win_time': time.time(),
-            'days': stats.day.get()
+            'days': player.stats.day
             } 
         
         # Generate json text data
@@ -100,7 +99,7 @@ class playerRank:
     def getPos() -> int:
         for postion, data in enumerate(playerRank.rankData.values(), 1):
             # Found postion in data
-            if data['nickname'] == playerData.currentPlayer.nickname and data['days'] == stats.day.get():
+            if data['nickname'] == player.nickname and data['days'] == player.stats.day:
                 return postion
 
         # Not found

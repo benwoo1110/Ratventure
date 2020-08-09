@@ -2,9 +2,10 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import os, log, screens, pg
-from code.logic.attack import attack
-from code.logic.power import power
+from code.logic.attack import enemy
+from code.logic.orb import orb
 from code.logic.rest import rest
+from code.logic.player import player
 
 
 #################
@@ -24,15 +25,15 @@ class difficulty:
         current_mode = difficulty.get(mode)
 
         # Settings for attack
-        attack.enemies['run_chance'] = current_mode['run']
-        attack.enemies['appear_chance'] = current_mode['enemy']
-        attack.enemies['multiplier'] = current_mode['multiplier']
+        enemy.enemies['run_chance'] = current_mode['run']
+        enemy.enemies['appear_chance'] = current_mode['enemy']
+        enemy.enemies['multiplier'] = current_mode['multiplier']
 
-        for enemy, chance in current_mode['enemy_chance'].items():
-            attack.enemies[enemy]['chance'] = chance
+        for name, chance in current_mode['enemy_chance'].items():
+            enemy.enemies[name]['chance'] = chance
 
         # Settings for orb
-        power.orb_change = current_mode['orb_change']
+        orb.change = current_mode['orb_change']
 
         # Settings for rest
         rest.maxGain = current_mode['rest_gain']
@@ -40,7 +41,7 @@ class difficulty:
     @staticmethod
     def get(mode:str = None) -> dict:
         # Gets the difficulty settings
-        if mode == None: return difficulty.modes[screens.new_game.options.difficulty.mode.text]
+        if mode == None: return difficulty.modes[player.difficulty]
         else: return difficulty.modes[mode]
     
     @staticmethod
@@ -53,6 +54,3 @@ class difficulty:
 
         # Set mode text
         difficulty_item.mode.setText(all_modes[difficulty_item.index])
-        
-        # Set the difficulty settings
-        difficulty.set()

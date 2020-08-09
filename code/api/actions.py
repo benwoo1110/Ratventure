@@ -74,6 +74,9 @@ class Alert(coreFunc):
             
             screens.alert.notify.display(withItems='all', refresh=True)
 
+        # When alert type not found
+        else: logger.error('No such alert type: {}'.format(self.type))
+
         # Go to alert screen
         return screens.changeStack(type='load', screen='alert')
 

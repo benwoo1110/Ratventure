@@ -3,6 +3,8 @@
 ######################################
 import random
 from code.api.core import os, log, screens, coreFunc, pg
+from code.api.actions import Alert, Runclass
+from code.logic.player import player
 
 
 #################
@@ -22,8 +24,12 @@ class store:
     @staticmethod
     def setGain(gain_text, gain_data:list):
         # Set the text
+        if type(gain_data[1]) == list: stats = gain_data[1][1]
+        else: stats = gain_data[1]
+
         prefix = '{}: '.format(gain_data[0].capitalize())
-        gain_text.setText(prefix=prefix, text=str(gain_data[1]), withDisplay=False)
+        text = '+ {}'.format(stats)
+        gain_text.setText(prefix=prefix, text=text, withDisplay=False)
 
         # Set the text colour
         if gain_data[0] == 'defence': gain_text.format.colour = pg.colour.blue
@@ -31,20 +37,73 @@ class store:
         elif gain_data[0] == 'health': gain_text.format.colour = pg.colour.green
 
     @staticmethod
-    def setWeapons(bought:list = None):
+    def setWeapons():
         store_surface = screens.shop.store
 
-        # Reset bought
-        if bought != None: store.bought = []
-        else: store.bought = bought
 
+        print(player.weapon.weapons)
         # Load up weapons stats to screen
         for name, weapon_data in store.weapons.items():
+            if name in player.weapon.weapons: 
+                store_surface[name].switchState('Disabled', False)
+                continue
+
+            else: store_surface[name].switchState('', False)
+
             # Set weapon text
             store_surface[name].object.setText(name.capitalize(), withDisplay=False)
             store_surface[name].price.setText(str(weapon_data['price']), withDisplay=False)
             store.setGain(store_surface[name].gain_1, weapon_data['gain_1'])
             store.setGain(store_surface[name].gain_2, weapon_data['gain_2'])
 
-            store_surface[name].switchState('', False)
             store_surface.load(withItems='all', refresh=True)
+
+    @staticmethod
+    def checkBuy(weapon:str):
+        # If player have enough elixir
+        if player.stats.elixir >= store.weapons[weapon]['price']:
+            Alert(
+                type = 'confirm',
+                title = 'Buy {}'.format(weapon.capitalize()),
+                content = 'Are you such you want to buy the {} for {} elixir?'.format(weapon.capitalize(), store.weapons[weapon]['price']),
+                yes = Runclass(run=store.buy, parameters={'weapon': weapon})
+            ).do()
+        
+        # Not enough elixir
+        else:
+            Alert(
+                type = 'notify',
+                title = 'Awww Snap',
+                content = 'You do not have enough elixir. This weapon requires {} elixir!'.format(store.weapons[weapon]['price']),
+            ).do()
+
+    @staticmethod
+    def addGain(gain):
+        player.stats.update(gain[0], gain[1], screens.shop.store.stats, True)
+
+    @staticmethod
+    def buy(weapon:str):
+        # Pay the price
+        player.stats.update('elixir', -store.weapons[weapon]['price'],  screens.shop.store.stats, True)
+
+        # Add gains to player stats
+        store.addGain(store.weapons[weapon]['gain_1'])
+        store.addGain(store.weapons[weapon]['gain_2'])
+
+        # Show that weapon is bought
+        screens.shop.store[weapon].switchState('Disabled')
+
+        # Add weapon to weapons list
+        player.weapon.add(weapon)
+
+        # Alert users on the gains
+        Alert(
+            type = 'notify',
+            title = 'Bought {}'.format(weapon.capitalize()),
+            content = 'You gained {} {} and {} {}! You have {} elixir left.'.format(
+                *store.weapons[weapon]['gain_1'],
+                *store.weapons[weapon]['gain_2'],
+                player.stats.elixir
+            )
+        ).do()
+

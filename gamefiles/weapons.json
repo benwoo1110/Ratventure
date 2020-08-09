@@ -1,22 +1,22 @@
 {
     "shield": {
-        "price": 20,
+        "price": 0,
         "gain_1": ["defence", 2],
-        "gain_2": ["damage", 1]
+        "gain_2": ["damage", [0, 1]]
     },
     "sword": {
-        "price": 20,
-        "gain_1": ["damage", 2],
+        "price": 2,
+        "gain_1": ["damage", [0, 2]],
         "gain_2": ["defence", 1]
     },
     "armour": {
         "price": 20,
-        "gain_1": ["health", 2],
+        "gain_1": ["health", [2, 2]],
         "gain_2": ["defence", 1]
     },
     "potion": {
         "price": 20,
-        "gain_1": ["health", 2],
-        "gain_2": ["damage", 1]
+        "gain_1": ["health", [2, 2]],
+        "gain_2": ["damage", [0, 1]]
     }
 }

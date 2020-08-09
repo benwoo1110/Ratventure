@@ -1,7 +1,8 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, screens
+from random import randint
+from code.api.core import os, log, screens, coreFunc
 from code.api.events import gameEvent
 
 
@@ -16,202 +17,94 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 # Gameplay logic #
 ##################
-class stats:
+class Stats(coreFunc):
+    def __init__(self, day:int = None, damage:list = None, defence:int = None, health:list = None, elixir:int = None):
+        self.day = day
+        self.damage = damage
+        self.defence = defence
+        self.health = health
+        self.elixir = elixir
 
-    class day:
+    def calDamage(self, defence:int = 0):
+        if self.damage != None: return max(0, randint(*self.damage) - defence)
 
-        @staticmethod
-        def update(by:int = 1, withDisplay:bool = True):
-            # Get day text
-            day_data = screens.game.info.day.number
+    def addBonus(self, bonus, item, withDisplay:bool = False):
+        for name, by in bonus.__dict__.items():
+            if by != None: self.update(name, by, item, withDisplay)
 
-            # Set new value
-            day_text = str(stats.day.get() + by)
+    def update(self, name:str, by, item, withDisplay:bool = False):
+        # For damage
+        if name == 'damage':
+            self.damage[0] += by[0]
+            self.damage[1] += by[1]
+
+        # For health
+        elif name == 'health':
+            self.health[0] = max(0, self.health[0] + by[0])
+            self.health[1] += by[1]
+
+        # The rest
+        else: 
+            setattr(self, name, getattr(self, name) + by)
 
             # Check for change orb day
-            gameEvent.orb_change.call()
+            if name == 'day': gameEvent.orb_change.call()
 
-            # Output text
-            day_data.setText(day_text, withDisplay=withDisplay)
+        # Display change
+        self.display(name, item, withDisplay)
 
-        @staticmethod
-        def set(day:int, withDisplay:bool = True):
-            # Get day text
-            day_data = screens.game.info.day.number
+    def set(self, name:str, to, item, withDisplay:bool = False):
+        # Set the new stats
+        setattr(self, name, to)
+        self.display(name, item, withDisplay)
 
-            # Set new value
-            day_text = str(day)
+    
+    def display(self, name:str, item, withDisplay:bool = False):
+        # Generate the text
+        if name == 'damage': text = str('{} - {}'.format(*self.damage))
+        elif name == 'health': text = str('{}/{}'.format(*self.health))
+        else: text = str('{}'.format(getattr(self, name)))
 
-            # Output text
-            day_data.setText(day_text, withDisplay=withDisplay)
+        # Display to stats screen
+        item[name].setText(text, withDisplay=withDisplay)
 
-        @staticmethod
-        def get() -> int:
-            # Get day text
-            day_data = screens.game.info.day.number
 
-            return int(day_data.text)
+class Bonus(coreFunc):
+    def __init__(self, damage:list = None, defence:int = None, health:list = None, elixir:int = None):
+        self.damage = damage
+        self.defence = defence
+        self.health = health
+        self.elixir = elixir
 
-    class damage:
+    def set(self, name:str, to, item, withDisplay:bool = False):
+        # Set the new stats
+        setattr(self, name, to)
+        self.display(name, item, withDisplay)
 
-        @staticmethod
-        def set(surface:str, min_d:int, max_d:int, withDisplay:bool = True, multiplier:int = 1, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
+    def display(self, name:str, item = None, withDisplay:bool = False):
+        # Generate teh text to display
+        text = str('+ {}'.format(getattr(self, name)))
 
-            # Display the text
-            damage_text = '{} - {}'.format(int(min_d*multiplier), int(max_d*multiplier))
-            game_screen[surface].stats.damage.setText(damage_text, withDisplay=withDisplay)
+        # Display to stats screen
+        item[name].setText(text, withDisplay=withDisplay)
 
-        @staticmethod
-        def update(surface:str, min_d:int, max_d:int, withDisplay:bool = True, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
 
-            # Get value
-            min_damage, max_damage = stats.damage.get(surface)
+class Location(coreFunc):
+    def __init__(self, row, column):
+        self.row = row
+        self.column = column
 
-            # Set new value
-            min_damage += min_d
-            max_damage += max_d
+    def pos(self): return (self.row, self.column)
 
-            # Display the text
-            damage_text = '{} - {}'.format(min_damage, max_damage)
-            game_screen[surface].stats.damage.setText(damage_text, withDisplay=withDisplay)
+    def setNew(self, pos:tuple):
+        self.row = pos[0]
+        self.column = pos[1]
 
-        @staticmethod  
-        def get(surface:str) -> tuple:
-            # Get game screen
-            game_screen = screens.game
 
-            # Get the damage text
-            damage_text = game_screen[surface].stats.damage.text
-            min_damage, max_damage = damage_text.split(' - ')
+class Weapon(coreFunc):
+    def __init__(self, weapons:list):
+        self.weapons = weapons
 
-            return (int(min_damage), int(max_damage))
+    def have(self, weapon:str): return weapon in self.weapons
 
-    class defence:
-
-        @staticmethod
-        def set(surface:str, number:int, withDisplay:bool = True, multiplier:int = 1, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
-
-            # Display the text
-            defence_number = int(number*multiplier)
-            game_screen[surface].stats.defence.setText(str(defence_number), withDisplay=withDisplay)
-
-        @staticmethod
-        def update(surface:str, number:int, withDisplay:bool = True, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
-
-            # Get value
-            new_defence = str(stats.defence.get(surface) + number)
-
-            # Display the text
-            game_screen[surface].stats.defence.setText(new_defence, withDisplay=withDisplay)
-
-        @staticmethod
-        def get(surface:str):
-            # Get game screen
-            game_screen = screens.game
-
-            return int(game_screen[surface].stats.defence.text)
-
-    class health:
-
-        @staticmethod
-        def set(surface:str, current_h:int = 0, max_h:int = 0, withDisplay:bool = True, multiplier:int = 1, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
-
-            # Display the text
-            health_text = '{}/{}'.format(int(current_h*multiplier), int(max_h*multiplier))
-            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
-
-        @staticmethod
-        def update(surface:str, current_h:int = 0, max_h:int = 0, withDisplay:bool = True, screen:str = 'game'):
-            # Get game screen
-            game_screen = screens[screen]
-
-            # Get value
-            current_health, max_health = stats.health.get(surface)
-
-            # Set new value
-            current_health = max(0, current_health + current_h)
-            max_health += max_h
-
-            # Display the text
-            health_text = '{}/{}'.format(current_health, max_health)
-            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
-
-        @staticmethod
-        def setBonus(surface:str, number:int, withDisplay:bool = True):
-            # Get game screen
-            game_screen = screens.game
-            
-            # Set new value
-            health_text = '+ {}'.format(number)
-
-            # Display the text
-            game_screen[surface].stats.health.setText(health_text, withDisplay=withDisplay)
-
-        @staticmethod
-        def getBonus(surface:str, number:int = 0):
-            # Get game screen
-            game_screen = screens.game
-
-            health_text = game_screen[surface].stats.health.text
-
-            if health_text.startswith('+ '): health_text = health_text[2:]
-            else: logger.error('Error getting health.')
-
-            return int(health_text)
-
-        @staticmethod
-        def get(surface:str):
-            # Get game screen
-            game_screen = screens.game
-
-            health_text = game_screen[surface].stats.health.text.split('/')
-
-            if len(health_text) != 2: logger.error('Error getting health, did you mean to getBonus()?')
-
-            return (int(health_text[0]), int(health_text[1]))
-
-    class power:
-
-        @staticmethod
-        def set(haveOrb:bool, withDisplay:bool = True):
-            # Get game screen
-            game_screen = screens.game
-
-            if haveOrb: stats.power.take(withDisplay)
-            else: stats.power.remove(withDisplay)
-
-        @staticmethod
-        def take(withDisplay:bool = True):
-            # Get game screen
-            game_screen = screens.game
-
-            # Display the text
-            orb_text = 'Orb of power'
-            game_screen.info.stats.power.setText(orb_text, withDisplay=withDisplay)
-
-        @staticmethod
-        def remove(withDisplay:bool = True):
-            # Get game screen
-            game_screen = screens.game
-
-            # Display the text
-            orb_text = ''
-            game_screen.info.stats.power.setText(orb_text, withDisplay=withDisplay)
-
-        @staticmethod
-        def hasOrb() -> bool:
-            # Get game screen
-            game_screen = screens.game
-
-            # Output if player have orb of power
-            return game_screen.info.stats.power.text == 'Orb of power'
+    def add(self, weapon:str): self.weapons.append(weapon)
