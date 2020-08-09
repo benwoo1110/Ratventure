@@ -50,9 +50,6 @@ class Alert(coreFunc):
         # Unload first
         screens.alert.unload()
 
-        # Update the action for alert button
-        screens.alert.unload()
-
         # Check type of alert to load
         if self.type == 'confirm': 
             # Set messages
@@ -64,7 +61,7 @@ class Alert(coreFunc):
             screens.alert.confirm.yes.action = self.yes
             screens.alert.keyboard.dismiss.action = self.dismiss
 
-            screens.alert.confirm.load(withItems=['message'], refresh=True)
+            screens.alert.confirm.display(withItems='all', refresh=True)
 
         elif self.type == 'notify':
             # Set messages
@@ -75,7 +72,7 @@ class Alert(coreFunc):
             screens.alert.notify.ok.action = self.ok
             screens.alert.keyboard.dismiss.action = self.dismiss            
             
-            screens.alert.notify.load(withItems=['message'], refresh=True)
+            screens.alert.notify.display(withItems='all', refresh=True)
 
         # Go to alert screen
         return screens.changeStack(type='load', screen='alert')

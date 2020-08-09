@@ -176,7 +176,7 @@ class surface(coreFunc):
 
 
 class item(coreFunc):
-    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, 
+    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False,
     data:dict = {}, selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False):
         self.surface = surface
         self.name = name
@@ -186,6 +186,7 @@ class item(coreFunc):
         self.state = state
         self.action = action
         self.lock_state = lock_state
+        self.overlayDataFrame = overlayDataFrame
 
         # Get images
         if imageData != None:
@@ -209,6 +210,7 @@ class item(coreFunc):
     def addData(self, name, dataData):
         if hasattr(dataData, 'name'): dataData.name = name
         if hasattr(dataData, 'item'): dataData.item = self
+        if hasattr(dataData, 'frame') and self.overlayDataFrame: dataData.frame.overlayCoord(self.frame.coord())
         setattr(self, name, dataData)
         self.containerList.append(name)
 

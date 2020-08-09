@@ -196,7 +196,7 @@ saves_screen = screen (
                     title='Deleted Saved',
                     content='Are you sure you want to delete the savefile?',
                     yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 3})
-                ),            
+                ),
             },
             'play': {
                 'type': 'button',

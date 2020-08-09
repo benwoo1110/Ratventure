@@ -21,6 +21,10 @@ class Frame(coreFunc):
     def size(self, scale:int = 1) -> tuple:
         return (int(self.w * scale), int(self.h * scale))
 
+    def overlayCoord(self, surfaceCoord:tuple): 
+        self.x += surfaceCoord[0]
+        self.y += surfaceCoord[1]
+
     def coord(self, surfaceCoord:tuple = (0, 0), scale:int = 1) -> tuple: 
         return (int((self.x + surfaceCoord[0]) * scale), int((self.y + surfaceCoord[1]) * scale))
     

@@ -3,9 +3,7 @@
 ######################################
 from random import randint
 from code.api.core import os, log, screens, pg
-from code.api.events import gameEvent
 from code.logic.stats import stats
-from code.api.data.Grid import Sprite
 from code.logic.story import story
 from code.logic.hero import hero
 

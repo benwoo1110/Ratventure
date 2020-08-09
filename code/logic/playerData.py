@@ -5,10 +5,12 @@ import json
 import uuid
 import time
 from code.api.core import os, log, screens, coreFunc, pg
+from code.logic.player import player, Player
 from code.logic.power import power
 from code.logic.hero import hero
 from code.logic.story import story
 from code.logic.difficulty import difficulty
+from code.logic.store import store
 
 
 #################
@@ -28,18 +30,7 @@ if not os.path.isdir(filepath):
     else: logger.info('Created {} directory'.format(filepath))
 
 
-##################
-# Gameplay logic #
-##################
-class player(coreFunc):
-    def __init__(self, nickname:str, difficulty:str, fileid:str = None):
-        self.nickname = nickname
-        self.fileid = fileid
-        self.difficulty = difficulty
-
-
 class playerData:
-    currentPlayer = None
 
     @staticmethod
     def new():
@@ -48,17 +39,20 @@ class playerData:
         # Unload previous state
         screens.game.unload()
 
-        # reset currentPlayer 
-        playerData.currentPlayer = player (
-            nickname=screens.new_game.options.nickname.text.text,
-            difficulty=screens.new_game.options.difficulty.mode.text,
-            )
+        # reset current player
+        player.data = Player (
+            nickname = screens.new_game.options.nickname.text.text,
+            difficulty = screens.new_game.options.difficulty.mode.text,
+            damage = [2, 4],
+            defence = 1, 
+            health = [20, 20],
+            elixir = 0,
+            weapons = [],
+            row = 0, column = 0
+        )
 
         # Set difficulty settings
         difficulty.set()
-
-        # Reset hero location
-        hero.row, hero.column = 0, 0
 
         # Create grid
         Grid.clear()
@@ -79,6 +73,9 @@ class playerData:
 
         # Set if player can sense for orb
         power.canSense()
+
+        # Set up store
+        store.setWeapons()
 
         # Set starting story
         story.in_town.display()
@@ -118,11 +115,11 @@ class playerData:
 
         savedData = json.loads(raw_data)
 
-        # Store loaded player
-        playerData.currentPlayer = player (fileid=fileid, **savedData['player'])
+        # Loaded stored player
+        player.data = Player(fileid=fileid, **savedData['player'])
 
         # Set difficulty settings
-        difficulty.set(playerData.currentPlayer.difficulty)
+        difficulty.set(player.data.difficulty)
 
         # Load hero location
         hero.row, hero.column = savedData['hero']
@@ -161,7 +158,7 @@ class playerData:
         savedData = {}
 
         # Save player
-        player_data = playerData.currentPlayer.__dict__.copy()
+        player_data = playerData.player.__dict__.copy()
         del player_data['fileid']
 
         savedData['player'] = player_data
@@ -195,16 +192,16 @@ class playerData:
 
         # Generate and set UUID
         fileid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
-        playerData.currentPlayer.fileid = fileid
+        playerData.player.fileid = fileid
 
         # Save to file
         pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
 
     @staticmethod
     def delete():
-        if playerData.currentPlayer.fileid != None: 
+        if playerData.player.fileid != None: 
             # Get file location    
-            file_location = './appdata/saves/{}.json'.format(playerData.currentPlayer.fileid)
+            file_location = './appdata/saves/{}.json'.format(playerData.player.fileid)
 
             # Delete the file
             try: os.remove(file_location)

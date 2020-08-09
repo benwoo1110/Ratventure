@@ -4,7 +4,7 @@
 from code.api.core import os, log, pg
 from code.api.events import gameEvent
 from code.api.objects import screen, Frame
-from code.api.actions import Runclass, Switchscreen, Alert
+from code.api.actions import Runclass, Switchscreen, Alert, Info
 from code.api.data.Text import Text, textFormat
 from code.api.data.Grid import Grid
 from code.logic.move import move
@@ -51,8 +51,8 @@ game_screen = screen (
             'keys': [27],
             'action': Alert (
                 type='confirm', 
-                title='Force Exit',
-                content='Are you sure you want to force exit the game?',
+                title='Exit Game',
+                content='Are you sure you want to exit the game?',
                 yes=Switchscreen(type='back', screen='mainmenu')
             ),
         }
@@ -149,73 +149,57 @@ game_screen = screen (
 
         'in_town': {
             'frame': Frame(x=1060, y=520, w=740, h=560),
-            'move': {
-                'type': 'button',
-                'frame': Frame(x=88, y=20, w=542, h=98),
-                'imageData': {'frame': Frame(x=88, y=20, w=542, h=98)},
-                'action': Runclass(run=move.initSurface)
-            },
             'rest': {
                 'type': 'button',
-                'frame': Frame(x=88, y=155, w=542, h=98),
-                'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
+                'frame': Frame(x=118, y=40, w=218, h=167),
+                'imageData': {'frame': Frame(x=118, y=40, w=218, h=167)},
                 'action': Runclass(run=rest.initSurface)
+            },
+            'shop': {
+                'type': 'button',
+                'frame': Frame(x=375, y=40, w=218, h=167),
+                'imageData': {'frame': Frame(x=375, y=40, w=218, h=167)},
+                'action': Switchscreen(type='load', screen='shop')
+            },
+            'move': {
+                'type': 'button',
+                'frame': Frame(x=118, y=248, w=218, h=167),
+                'imageData': {'frame': Frame(x=118, y=248, w=218, h=167)},
+                'action': Runclass(run=move.initSurface)
             },
             'save': {
                 'type': 'button',
-                'frame': Frame(x=88, y=335, w=245, h=75),
-                'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
+                'frame': Frame(x=375, y=248, w=218, h=167),
+                'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
                 'action': [
                     Runclass(run=playerData.save),
                     Alert (type='notify', title='Game Saved', content='You have saved the game.')
                 ]
-            },
-            'exit': {
-                'type': 'button',
-                'frame': Frame(x=385, y=335, w=245, h=75),
-                'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Alert (
-                    type='confirm', 
-                    title='Exit Game',
-                    content='Are you sure you want to exit the game?',
-                    yes=Switchscreen(type='back', screen='mainmenu')
-                ),
             },
         },
 
         'in_open': {
             'frame': Frame(x=1060, y=520, w=740, h=560),
-            'move': {
-                'type': 'button',
-                'frame': Frame(x=88, y=20, w=542, h=98),
-                'imageData': {'frame': Frame(x=88, y=20, w=542, h=98)},
-                'action': Runclass(run=move.initSurface)
-            },
             'sense_orb': {
                 'type': 'button',
-                'frame': Frame(x=88, y=155, w=542, h=98),
-                'imageData': {'frame': Frame(x=88, y=155, w=542, h=98)},
+                'frame': Frame(x=118, y=40, w=476, h=167),
+                'imageData': {'frame': Frame(x=118, y=40, w=476, h=167)},
                 'action': Runclass(run=power.initSurface)
+            },
+            'move': {
+                'type': 'button',
+                'frame': Frame(x=118, y=248, w=218, h=167),
+                'imageData': {'frame': Frame(x=118, y=248, w=218, h=167)},
+                'action': Runclass(run=move.initSurface)
             },
             'save': {
                 'type': 'button',
-                'frame': Frame(x=88, y=335, w=245, h=75),
-                'imageData': {'frame': Frame(x=88, y=335, w=245, h=75)},
+                'frame': Frame(x=375, y=248, w=218, h=167),
+                'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
                 'action': [
                     Runclass(run=playerData.save),
                     Alert (type='notify', title='Game Saved', content='You have saved the game.')
                 ]
-            },
-            'exit': {
-                'type': 'button',
-                'frame': Frame(x=385, y=335, w=245, h=75),
-                'imageData': {'frame': Frame(x=385, y=335, w=245, h=75)},
-                'action': Alert (
-                    type='confirm', 
-                    title='Exit Game',
-                    content='Are you sure you want to exit the game?',
-                    yes=Switchscreen(type='back', screen='mainmenu')
-                ),
             },
         },
 

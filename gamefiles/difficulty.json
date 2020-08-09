@@ -1,8 +1,8 @@
 {
     "Easy": {
-        "run": 20,
+        "run": 100,
         "enemy": 50,
-        "enemy_chance": {"rat": 0, "moth": 0, "roach": 100},
+        "enemy_chance": {"rat": 50, "moth": 30, "roach": 10, "cat": 10},
         "multiplier": 1.0,
         "orb_change": -1,
         "rest_gain": -1,
@@ -10,23 +10,33 @@
         "town_space": 3
     },
     "Medium": {
-        "run": 100,
-        "enemy": 50,
-        "enemy_chance": {"rat": 0, "moth": 0, "roach": 100},
-        "multiplier": 2,
-        "orb_change": -1,
-        "rest_gain": -1,
-        "town_number": 4,
+        "run": 70,
+        "enemy": 60,
+        "enemy_chance": {"rat": 30, "moth": 40, "roach": 20, "cat": 10},
+        "multiplier": 1.2,
+        "orb_change": 30,
+        "rest_gain": 16,
+        "town_number": 5,
         "town_space": 4
     },
     "Hard": {
-        "run": 100,
-        "enemy": 50,
-        "enemy_chance": {"rat": 0, "moth": 0, "roach": 100},
-        "multiplier": 1.0,
-        "orb_change": -1,
-        "rest_gain": -1,
-        "town_number": 2,
+        "run": 50,
+        "enemy": 80,
+        "enemy_chance": {"rat": 10, "moth": 40, "roach": 30, "cat": 20},
+        "multiplier": 1.6,
+        "orb_change": 20,
+        "rest_gain": 10,
+        "town_number": 4,
+        "town_space": 4
+    },
+    "Extreme": {
+        "run": 30,
+        "enemy": 95,
+        "enemy_chance": {"rat": 10, "moth": 20, "roach": 40, "cat": 30},
+        "multiplier": 2.0,
+        "orb_change": 10,
+        "rest_gain": 6,
+        "town_number": 3,
         "town_space": 5
     }
 }
