@@ -136,9 +136,6 @@ class attack:
 
     @staticmethod
     def run():
-        # Add a day
-        player.next_day()
-
         # Add run story
         story.run.display()
 
