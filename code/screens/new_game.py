@@ -108,12 +108,12 @@ new_game_screen = screen (
             },
             'nickname': {
                 'type': 'textfield',
-                'frame': Frame(x=760, y=347, w=987, h=140),
-                'imageData': {'frame': Frame(x=760, y=347, w=987, h=140)},
+                'frame': Frame(x=747, y=341, w=925, h=140),
+                'imageData': {'frame': Frame(x=747, y=341, w=925, h=140)},
                 'action': Runclass(run=new_game.textfield_selected),
                 'data': {
                     'text': Text (
-                        frame = Frame(x=760, y=347, w=987, h=140),
+                        frame = Frame(x=747, y=341, w=925, h=140),
                         text = 'Benedict',
                         format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
                     ),
@@ -121,13 +121,13 @@ new_game_screen = screen (
             },
             'difficulty': {
                 'type': 'text',
-                'frame': Frame(x=1051, y=642, w=405, h=140),
-                'imageData': {'frame': Frame(x=1051, y=642, w=405, h=140)},
+                'frame': Frame(x=1008, y=636, w=405, h=140),
+                'imageData': {'frame': Frame(x=1008, y=636, w=405, h=140)},
                 'selectable': False,
                 'data': {
                     'index': 0,
                     'mode': Text (
-                        frame = Frame(x=1051, y=642, w=405, h=140),
+                        frame = Frame(x=1008, y=636, w=405, h=140),
                         text = 'Easy',
                         format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
                     ),
@@ -135,26 +135,26 @@ new_game_screen = screen (
             },
             'back': {
                 'type': 'button',
-                'frame': Frame(x=760, y=881, w=271, h=140),
-                'imageData': {'frame': Frame(x=760, y=881, w=271, h=140)},
+                'frame': Frame(x=747, y=875, w=271, h=140),
+                'imageData': {'frame': Frame(x=747, y=875, w=271, h=140)},
                 'action': Switchscreen(type='back', screen='mainmenu')
             },
             'play': {
                 'type': 'button',
-                'frame': Frame(x=1188, y=881, w=559, h=140),
-                'imageData': {'frame': Frame(x=1188, y=881, w=559, h=140)},
+                'frame': Frame(x=1143, y=875, w=530, h=140),
+                'imageData': {'frame': Frame(x=1143, y=875, w=530, h=140)},
                 'action': Runclass(run=playerData.new)
             },
             'difficulty_back': {
                 'type': 'button',
-                'frame': Frame(x=959, y=666, w=92, h=92),
-                'imageData': {'frame': Frame(x=760, y=642, w=265, h=140)},
+                'frame': Frame(x=916, y=660, w=92, h=92),
+                'imageData': {'frame': Frame(x=747, y=636, w=260, h=92)},
                 'action': Runclass(run=difficulty.update, parameters={'index': -1})
             },
             'difficulty_next': {
                 'type': 'button',
-                'frame': Frame(x=1456, y=666, w=92, h=92),
-                'imageData': {'frame': Frame(x=1482, y=642, w=265, h=140)},
+                'frame': Frame(x=1412, y=660, w=92, h=92),
+                'imageData': {'frame': Frame(x=1412, y=636, w=260, h=92)},
                 'action': Runclass(run=difficulty.update, parameters={'index': 1})
             }
         },
