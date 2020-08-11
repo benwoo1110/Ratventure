@@ -30,8 +30,7 @@ class new_game:
         new_game_screen.options.nickname.switchState('', False)
         new_game_screen.options.nickname.text.setText('Player')
 
-        new_game_screen.options.difficulty.index = 0
-        new_game_screen.options.difficulty.mode.setText('Easy')
+        difficulty.setName(0)
 
     @staticmethod
     def textfield_selected():
@@ -149,13 +148,13 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=916, y=660, w=92, h=92),
                 'imageData': {'frame': Frame(x=747, y=636, w=260, h=92)},
-                'action': Runclass(run=difficulty.update, parameters={'index': -1})
+                'action': Runclass(run=difficulty.updateName, parameters={'index': -1})
             },
             'difficulty_next': {
                 'type': 'button',
                 'frame': Frame(x=1412, y=660, w=92, h=92),
                 'imageData': {'frame': Frame(x=1412, y=636, w=260, h=92)},
-                'action': Runclass(run=difficulty.update, parameters={'index': 1})
+                'action': Runclass(run=difficulty.updateName, parameters={'index': 1})
             }
         },
     }

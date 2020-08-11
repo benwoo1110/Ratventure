@@ -6,6 +6,7 @@ from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
+from code.logic.player import player
 from code.logic.playerData import playerData
 from code.logic.playerRank import playerRank
 
@@ -35,16 +36,12 @@ class end_game:
 
             # Set cool colour for top 3
             ranking = playerRank.getPos()
-
-            if ranking == 1: end_game_screen.win.leaderboard.switchState('First', False)
-            elif ranking == 2: end_game_screen.win.leaderboard.switchState('Second', False)
-            elif ranking == 3: end_game_screen.win.leaderboard.switchState('Third', False)
-            
+            if ranking <= 3: end_game_screen.win.leaderboard.switchState(str(ranking), False)
             else: end_game_screen.win.leaderboard.switchState('', False)
 
             # Set player leaderboard on win screen
             end_game_screen.win.leaderboard.postion.setText(str(ranking), withDisplay=False)
-            end_game_screen.win.leaderboard.nickname.setText(playerData.currentPlayer.nickname, withDisplay=False)
+            end_game_screen.win.leaderboard.nickname.setText(player.nickname, withDisplay=False)
             end_game_screen.win.leaderboard.days.setText(str(player.stats.day), withDisplay=False)
 
             # Load the changes

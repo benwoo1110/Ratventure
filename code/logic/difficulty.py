@@ -39,18 +39,31 @@ class difficulty:
         rest.maxGain = current_mode['rest_gain']
 
     @staticmethod
-    def get(mode:str = None) -> dict:
+    def get(mode = None) -> dict:
         # Gets the difficulty settings
         if mode == None: return difficulty.modes[player.difficulty]
+        if type(mode) == int: return difficulty.modes[difficulty.getName(mode)]
         else: return difficulty.modes[mode]
+
+    @staticmethod
+    def getName(index:int) -> str:
+        # Gets the difficulty name
+        return list(difficulty.modes.keys())[index]
     
     @staticmethod
-    def update(index:int):
+    def updateName(index:int):
         difficulty_item = screens.new_game.options.difficulty
        
         # Get name of mode
-        all_modes = list(difficulty.modes.keys())
-        difficulty_item.index = (difficulty_item.index + index) % len(all_modes)
-
+        difficulty_item.index = (difficulty_item.index + index) % len(difficulty.modes)
         # Set mode text
-        difficulty_item.mode.setText(all_modes[difficulty_item.index])
+        difficulty_item.mode.setText(difficulty.getName(difficulty_item.index))
+
+    @staticmethod
+    def setName(index:int):
+        difficulty_item = screens.new_game.options.difficulty
+
+        # Get name of mode
+        difficulty_item.index = index
+        # Set mode text
+        difficulty_item.mode.setText(difficulty.getName(index))
