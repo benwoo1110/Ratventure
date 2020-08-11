@@ -47,7 +47,15 @@ saves_screen = screen (
         'back': {
             'keys': [27],
             'action': Switchscreen(type='back', screen='mainmenu')
-        }
+        },
+        'page_back': {
+            'keys': [1073741904],
+            'action': Runclass(run=playerSaves.updateList, parameters={'page': -1})
+        },
+        'page_next': {
+            'keys': [1073741903],
+            'action': Runclass(run=playerSaves.updateList, parameters={'page': 1})
+        },
     },
 
     surfaces = {
