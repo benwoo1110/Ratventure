@@ -79,23 +79,23 @@ class Grid(coreFunc):
             for c in range(-spacing, spacing+1):
                 for r in range(-(spacing-abs(c)), spacing-abs(c)+1):
                     # Ensure there is such a tile and is not itself and not at king location
-                    if 0 <= row+r <= 7 and 0 <= column+c <= 7 and (r, c) != (7, 7):
+                    if 0 <= row+r <= 7 and 0 <= column+c <= 7:
                         if self.tiles[row+r][column+c].hasSprite():
                             can_place = False 
                             break
                 if not can_place: break
             
             # Place down the town if checks pass
-            if can_place: 
+            if can_place:
                 self.tiles[row][column].sprites.append('town')
                 town_placed += 1
 
     def clear(self): self.generate()
     
-    def find(self, Sprite) -> tuple:
+    def find(self, sprite_name) -> tuple:
         for row in range(self.rows):
             for column in range(self.columns):
-                if self.tiles[row][column].hasSprite(Sprite): return (row, column)
+                if self.tiles[row][column].hasSprite(sprite_name): return (row, column)
 
     def heroInTown(self):
         # Check if hero in town or open

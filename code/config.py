@@ -10,11 +10,17 @@ import traceback
 # Default setting #
 ###################
 default_config_contents = '''\
-#########################
-# Ratventure config.yml #
-#########################
-
+# +-+-+-+-+-+-+-+-+-+-+-+-+
+# | Ratventure config.yml |
+# +-+-+-+-+-+-+-+-+-+-+-+-+
 # NOTE: Change only if you know what you are doing!
+
+
+# +-+-+-+-+-+-+-+-+-+-+-+
+# | Pygame GUI Settings |
+# +-+-+-+-+-+-+-+-+-+-+-+
+# Changes the refresh rate of pygame
+framerate: 60
 
 # Window caption
 title: 'Ratventure'
@@ -28,25 +34,25 @@ fullscreen: False
 # Config size of pygame window (Only apply if not fullscreen)
 scale: 0.6
 
-# Level of output shown
+
+# +-+-+-+-+-+-+-+-+-+
+# | Logger Settings |
+# +-+-+-+-+-+-+-+-+-+
 # CRITICAL -> 50
 # ERROR -> 40
 # WARNING -> 30
 # INFO -> 20
 # DEBUG -> 10
+
 logging:
   # For console output
   console_level: 'DEBUG'
+
   # App activities logged in './Ratventure/logs/'
   file_level: 'DEBUG'
+
   # Number of logs to keep in logs folder
   keep_logs: 5
-
-# Changes the refresh rate of pygame
-framerate: 60
-
-# You really shouldn't be using this mode
-boring_mode: False
 '''
 
 
