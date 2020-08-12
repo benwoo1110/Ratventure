@@ -60,6 +60,3 @@ logger.info('Loading up {}...'.format(filename))
 ##############
 logger.info('Program started!')
 screens.mainloop(startScreen='mainmenu')
-
-# End program
-pg.quit()

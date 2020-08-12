@@ -3,7 +3,7 @@
 ######################################
 from random import randint
 from code.api.core import os, log, coreFunc
-from code.api.data.Images import Images
+from code.api.data.Sprite import Sprite
 from code.api.data.Frame import Frame
 from code.logic.player import player
 
@@ -16,39 +16,18 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
-class Sprite(coreFunc):
-    def __init__(self, spritePage:list):
-        # Get sprite images
-        images = Images(frame=Frame(x=0,y=0,w=101,h=101), imagePage=spritePage, scale=True)
-        self.containerList = images.containerList
-
-        # Load them to attributes
-        for image in images.containerList:
-            setattr(self, image, images[image])
-
-    def types(self): return self.containerList
-
-    def hasType(self, type:str): return str(type) in self.containerList
-
-    def get(self, sprite:str):
-        if sprite in self.containerList: return getattr(self, sprite)
-        else: logger.error('No such sprite: "{}"'.format(sprite))
-
-# Get sprites available
-sprite = Sprite(spritePage=['game', 'map', 'sprites'])
-
-
 class Grid(coreFunc):
-    def __init__(self, frame:Frame, rows:int, columns:int, name:str = None, item:str = None, gridData:list = None):
+    def __init__(self, frame:Frame, sprite:Sprite, rows:int, columns:int, name:str = None, item:str = None, gridData:list = None, spacing:int = 3, size:int = 101):
         self.frame = frame
+        self.sprite = sprite
         self.rows = rows
         self.columns = columns
         self.name = name
         self.item = item
 
         # Set tile size
-        self.spacing = 3
-        self.size = 101
+        self.spacing = spacing
+        self.size = size
         
         # Get tiles
         self.generate()
@@ -63,6 +42,15 @@ class Grid(coreFunc):
             for column in range(self.columns):
                 if gridData == None: self.tiles[row].append(Tile(row, column))
                 else: self.tiles[row].append(Tile(row, column, gridData[row][column]))
+
+    def get(self) -> list:
+        gridData = []
+        for tile_row in self.tiles:
+            gridData.append([])
+            for tile in tile_row:
+                gridData[-1].append(tile.sprites) 
+
+        return gridData
 
     def randomiseTowns(self, number:int = 4, spacing:int = 3):
         town_placed = 0
@@ -112,7 +100,7 @@ class Grid(coreFunc):
                 x = self.size * column + self.spacing * column
                 y = self.size * row + self.spacing * row
                 for tile_sprite in tile.sprites:
-                     Surface.blit(sprite.get(tile_sprite), (self.frame.coord((x, y))))
+                     Surface.blit(self.sprite.get(tile_sprite), (self.frame.coord((x, y))))
 
     def move(self, counter, row, column):
         # Get current hero location
@@ -132,7 +120,7 @@ class Grid(coreFunc):
 
         # Display to grid surface
         self.item.load()
-        self.item.surface.Surface.blit(sprite.get('hero'), (self.frame.coord((new_x, new_y))))
+        self.item.surface.Surface.blit(self.sprite.get('hero'), (self.frame.coord((new_x, new_y))))
         self.item.surface.display()   
 
 
@@ -144,7 +132,7 @@ class Tile(coreFunc):
         if sprites == None: self.sprites = []
         else: self.sprites = sprites
 
-    def getPos(self): return (self.row, self.column)
+    def pos(self): return (self.row, self.column)
 
     def hasSprite(self, tile_sprite:str = None): 
         if tile_sprite == None: return self.sprites != []

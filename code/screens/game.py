@@ -6,6 +6,7 @@ from code.api.events import gameEvent
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Alert, Info
 from code.api.data.Text import Text, textFormat
+from code.api.data.Sprite import Sprite
 from code.api.data.Grid import Grid
 from code.logic.move import move
 from code.logic.playerData import playerData
@@ -67,7 +68,11 @@ game_screen = screen (
                 'type': 'map',
                 'imageData': {'frame': Frame(x=0, y=0, w=1055, h=1080)},
                 'data': {
-                    'Grid': Grid (frame=Frame(x=115, y=125, w=830, h=830),rows=8, columns=8)
+                    'Grid': Grid (
+                        frame=Frame(x=115, y=125, w=830, h=830),
+                        sprite=Sprite(spritePage=['game', 'map', 'sprites'], size=(101, 101)),
+                        rows=8, columns=8
+                        )
                 }
             }
         },
@@ -92,12 +97,18 @@ game_screen = screen (
             'hero': {
                 'type': 'object',
                 'frame': Frame(x=88, y=185, w=235, h=164),
+                'imageData': {'frame': Frame(x=88, y=185, w=235, h=164)},
                 'selectable': False,
                 'data': {
                     'stats': Text (
                         frame = Frame(x=175, y=185, w=112, h=59),
                         text = '+ 1',
                         format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
+                    ),
+                    'weapons': Grid (
+                        frame=Frame(x=184, y=185, w=120, h=160),
+                        sprite=Sprite(spritePage=['game', 'info', 'weapons'], size=(50, 50)),
+                        rows=3, columns=2, spacing=2, size=50
                     ),
                 }
             },
@@ -172,10 +183,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=375, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
-                'action': [
-                    Runclass(run=playerData.save),
-                    Alert (type='notify', title='Game Saved', content='You have saved the game.')
-                ]
+                'action': Runclass(run=playerData.save),
             },
         },
 
@@ -197,10 +205,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=375, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
-                'action': [
-                    Runclass(run=playerData.save),
-                    Alert (type='notify', title='Game Saved', content='You have saved the game.')
-                ]
+                'action': Runclass(run=playerData.save),
             },
         },
 

@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import log, coreFunc, os, pg, pygame
-from code.api.actions import Info, Runclass, Switchscreen, actionResult
+from code.api.actions import Info, Runclass, Alert, Switchscreen, actionResult
 
 
 #################
@@ -225,5 +225,11 @@ class events(coreFunc):
         return keyboard_result
 
     def quit(self, event):
+        # Prompt user if they want to quit the game
         if event.type == pygame.QUIT: 
-            return actionResult(name='quit', type='quit', outcome='quit')
+            Alert (
+                type='confirm', 
+                title='Quit Game',
+                content='Are you sure you want to quit?',
+                yes=Info(text='quit')
+            ).do()

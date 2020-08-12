@@ -4,6 +4,7 @@
 from random import randint
 from code.api.core import os, log, screens, coreFunc
 from code.api.events import gameEvent
+from code.api.data.Sprite import Sprite
 
 
 #################
@@ -82,8 +83,10 @@ class Bonus(coreFunc):
         self.display(name, item, withDisplay)
 
     def display(self, name:str, item = None, withDisplay:bool = False):
+        stats = getattr(self, name)
         # Generate teh text to display
-        text = str('+ {}'.format(getattr(self, name)))
+        if type(stats) == list: text = str('+ {}'.format(stats[1]))
+        else: text = str('+ {}'.format(stats))
 
         # Display to stats screen
         item[name].setText(text, withDisplay=withDisplay)
@@ -102,9 +105,28 @@ class Location(coreFunc):
 
 
 class Weapon(coreFunc):
-    def __init__(self, weapons:list):
-        self.weapons = weapons
+    def __init__(self, weapons:list = None):
+        self.weapons = []
+
+        # Reset weapon grid
+        screens.game.info.hero.weapons.generate()
+        
+        # Set weapons to display in grid
+        if weapons != None: 
+            for weapon in weapons: self.add(weapon, False)
+       
+        screens.game.info.load(withItems=['hero'], refresh=True)
 
     def have(self, weapon:str): return weapon in self.weapons
 
-    def add(self, weapon:str): self.weapons.append(weapon)
+    def add(self, weapon:str, withLoad:bool = True): 
+        # Add to weapon list
+        self.weapons.append(weapon)
+
+        # Add to gui grid
+        number_of_weapons = len(self.weapons)
+        row = number_of_weapons // 2
+        column = number_of_weapons % 2
+
+        screens.game.info.hero.weapons.tiles[row][column].sprites.append(weapon)
+        if withLoad: screens.game.info.load(withItems=['hero'], refresh=True)

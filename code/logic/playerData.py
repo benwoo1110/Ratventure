@@ -160,14 +160,8 @@ class playerData:
         savedData['time_saved'] = time.time()
 
         # Save map
-        Grid = screens.game.map.grid.Grid
-        savedData['grid'] = []
+        savedData['grid'] = screens.game.map.grid.Grid.get()
 
-        for tile_row in Grid.tiles:
-            savedData['grid'].append([])
-            for tile in tile_row:
-                savedData['grid'][-1].append(tile.sprites)
-        
         # Save story
         savedData['story'] = story.getCurrent()
 
@@ -181,6 +175,9 @@ class playerData:
         # Save to file
         pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
 
+        # Tell user game is saved
+        Alert(type='notify', title='Game Saved', content='You have saved the game.').do()
+
     @staticmethod
     def delete():
         if player.fileid != None: 
@@ -189,6 +186,7 @@ class playerData:
 
             # Delete the file
             try: os.remove(file_location)
+            except FileNotFoundError: logger.warning('Looks like {} is already deleted!'.format(player.fileid))
             except Exception as e: logger.error(e, exc_info=True)
             else: logger.info('Deleted old playerdata at {}'.format(file_location))
 

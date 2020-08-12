@@ -22,13 +22,16 @@ class store:
     weapons = pg.loadJson('./gamefiles/weapons.json')
 
     @staticmethod
-    def setGain(gain_text, gain_data:list):
-        # Set the text
+    def gainText(gain_data) -> tuple:
         if type(gain_data[1]) == list: stats = gain_data[1][1]
         else: stats = gain_data[1]
 
-        prefix = '{}: '.format(gain_data[0].capitalize())
-        text = '+ {}'.format(stats)
+        return ('{}: '.format(gain_data[0].capitalize()), '+ {}'.format(stats))
+
+    @staticmethod
+    def setGain(gain_text, gain_data:list):
+        # Set the text
+        prefix, text = store.gainText(gain_data)
         gain_text.setText(prefix=prefix, text=text, withDisplay=False)
 
         # Set the text colour
@@ -101,8 +104,8 @@ class store:
             type = 'notify',
             title = 'Bought {}'.format(weapon.capitalize()),
             content = 'You gained {} {} and {} {}! You have {} elixir left.'.format(
-                *store.weapons[weapon]['gain_1'],
-                *store.weapons[weapon]['gain_2'],
+                *store.gainText(store.weapons[weapon]['gain_1']),
+                *store.gainText(store.weapons[weapon]['gain_2']),
                 player.stats.elixir
             )
         ).do()

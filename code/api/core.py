@@ -216,6 +216,8 @@ class Screens(coreFunc):
                 screen_result = screen.main.run()
 
                 if screen_result == 'quit':
+                    # End program
+                    pg.quit()
                     return
 
             # When screen ends

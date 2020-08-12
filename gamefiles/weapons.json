@@ -5,17 +5,17 @@
         "gain_2": ["damage", [0, 1]]
     },
     "sword": {
-        "price": 2,
+        "price": 0,
         "gain_1": ["damage", [0, 2]],
         "gain_2": ["defence", 1]
     },
     "armour": {
-        "price": 20,
+        "price": 0,
         "gain_1": ["health", [2, 2]],
         "gain_2": ["defence", 1]
     },
     "potion": {
-        "price": 20,
+        "price": 0,
         "gain_1": ["health", [2, 2]],
         "gain_2": ["damage", [0, 1]]
     }

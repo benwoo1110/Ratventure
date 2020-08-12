@@ -36,7 +36,7 @@ class player:
             health = [20, 20],
             elixir = 0
         )
-        player.weapon = Weapon(weapons=[])
+        player.weapon = Weapon()
         player.hero = Location(row=0, column=0)
         player.orb = Location(row=0, column=0)
         player.fileid = None
