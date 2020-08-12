@@ -35,6 +35,12 @@ class enemy:
             health = enemy.Enemy['stats']['health'].copy()
         )
 
+        # Set multiplier
+        if enemy.enemies['day_saturation'] == -1: saturation = 0
+        else: saturation = ((player.stats.day // enemy.enemies['day_saturation']) * 0.2)
+
+        enemy.stats.multiply(enemy.enemies['start_multiplier'] + saturation)
+
     @staticmethod
     def reset():
         enemy.stats = None

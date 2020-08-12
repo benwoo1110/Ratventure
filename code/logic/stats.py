@@ -4,7 +4,6 @@
 from random import randint
 from code.api.core import os, log, screens, coreFunc
 from code.api.events import gameEvent
-from code.api.data.Sprite import Sprite
 
 
 #################
@@ -25,6 +24,16 @@ class Stats(coreFunc):
         self.defence = defence
         self.health = health
         self.elixir = elixir
+
+    def multiply(self, multiplier:int):
+        for name, value in self.__dict__.items():
+            if value != None:
+                if type(value) == list: 
+                    for i in range(len(value)): value[i] = int(value[i] * multiplier)
+                else:
+                    value = int(value * multiplier)
+
+                setattr(self, name, value)
 
     def calDamage(self, defence:int = 0):
         if self.damage != None: return max(0, randint(*self.damage) - defence)

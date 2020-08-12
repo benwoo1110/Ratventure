@@ -27,7 +27,8 @@ class difficulty:
         # Settings for attack
         enemy.enemies['run_chance'] = current_mode['run']
         enemy.enemies['appear_chance'] = current_mode['enemy']
-        enemy.enemies['multiplier'] = current_mode['multiplier']
+        enemy.enemies['start_multiplier'] = current_mode['start_multiplier']
+        enemy.enemies['day_saturation'] = current_mode['day_saturation']
 
         for name, chance in current_mode['enemy_chance'].items():
             enemy.enemies[name]['chance'] = chance

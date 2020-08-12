@@ -94,6 +94,7 @@ class store:
         store.addGain(store.weapons[weapon]['gain_2'])
 
         # Show that weapon is bought
+        screens.shop.store[weapon].price.setText('')
         screens.shop.store[weapon].switchState('Disabled')
 
         # Add weapon to weapons list
