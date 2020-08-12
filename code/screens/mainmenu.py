@@ -61,7 +61,7 @@ mainmenu_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=878, y=875, w=652, h=134),
                 'imageData': {'frame': Frame(x=878, y=875, w=652, h=134)},
-                'action': Switchscreen(type='load', screen='leaderboard')
+                'action': Switchscreen(type='load', screen='credit')
             },
             'quit': {
                 'type': 'button',
