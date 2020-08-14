@@ -92,6 +92,17 @@ saves_screen = screen (
                 'imageData': {'frame': Frame(x=1031, y=984, w=96, h=40)},
                 'action': Runclass(run=playerSaves.updateList, parameters={'page': 1})
             },
+            'delete_all': {
+                'type': 'button',
+                'frame': Frame(x=1528, y=58, w=132, h=103),
+                'imageData': {'frame': Frame(x=1528, y=58, w=132, h=103)},
+                'action': Alert (
+                    type='confirm', 
+                    title='Delete All',
+                    content='Are you sure you want to delete all saves?',
+                    yes=Runclass(run=playerSaves.deleteAll)
+                ),
+            }
         },
 
         'list_1': {

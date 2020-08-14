@@ -113,3 +113,15 @@ class playerSaves:
 
         # Reload list view
         playerSaves.showList(int(board.currentPage('saves')))
+
+    @staticmethod
+    def deleteAll():
+        # Get all save files
+        files = glob.glob('./appdata/saves/*.json')
+
+        # Delete the file
+        for savefile in files:
+            try: os.remove(savefile)
+            except Exception as e: logger.error(e, exc_info=True)
+        
+        logger.info('Deleted all saved playerdata.')

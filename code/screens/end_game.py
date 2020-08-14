@@ -6,6 +6,7 @@ from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
+from code.api.data.Sound import Sound
 from code.logic.player import player
 from code.logic.playerData import playerData
 from code.logic.playerRank import playerRank
@@ -46,6 +47,11 @@ class end_game:
 
             # Load the changes
             end_game_screen.win.load(withItems=['leaderboard'], refresh=True)
+
+        # Check if gameover screen is the one loaded
+        elif end_game_screen.gameover.loaded:
+            # Play gameover sound effect
+            Sound.game_over.play()
 
     @staticmethod
     def run():
