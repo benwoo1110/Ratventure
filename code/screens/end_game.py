@@ -70,6 +70,7 @@ class end_game:
 end_game_screen = screen (
     name = 'end_game',
     main = end_game,
+    
     surfaces = {
         'gameover': {
             'frame': Frame(x=0, y=0, w=1800, h=1080),

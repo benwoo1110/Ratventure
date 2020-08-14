@@ -212,7 +212,9 @@ class attack:
 
             # Both player and enemy is still alive
             else: 
-                story.attack.display()
+                if screens.game.attack.run.lock_state: story.attack_norun.display()
+                else: story.attack_run.display()
+                
                 # Enable buttons for another attack/run
                 screens.game.attack.attack.switchState('')
                 screens.game.attack.run.switchState('')

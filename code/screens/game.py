@@ -45,7 +45,6 @@ class game:
 game_screen = screen (
     name = 'game',
     main = game,
-    firstLoad=[],
 
     keyboard = {
         'exit': {
@@ -391,3 +390,4 @@ game_screen = screen (
         
     }
 )
+game_screen.unload()

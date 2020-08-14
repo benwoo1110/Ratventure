@@ -37,8 +37,13 @@
         "Tada! The Rat King is here!",
         "The one and only - Rat King!"
     ],
-    "attack": [
-        "Hmm should I attack or run?"
+    "attack_run": [
+        "Hmm should I attack or run?",
+        "Should I run or attack?"
+    ],
+    "attack_norun": [
+        "Ugh... I can only attack.",
+        "Want to run? Not a chance!"
     ],
     "hero_attack": [
         "You deal {} damage to the {}."
