@@ -27,6 +27,13 @@ logger.info('Loading up {}...'.format(filename))
 # Screen main action class #
 ############################
 class game:
+
+    @staticmethod
+    def init():
+        # Ensure game events are started
+        gameEvent.stats.play()
+        gameEvent.animate.play()
+        gameEvent.orb_change.play()
     
     @staticmethod
     def run():
@@ -37,6 +44,19 @@ class game:
         if event_result == None: return
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
+
+    @staticmethod
+    def end():
+        # Pause all game events
+        gameEvent.stats.pause()
+        gameEvent.animate.pause()
+
+    @staticmethod
+    def clear_events():
+        # Clear the game events
+        gameEvent.stats.clearQueue()
+        gameEvent.animate.clearQueue()
+        gameEvent.orb_change.clearQueue()
 
 
 ##################
@@ -53,7 +73,10 @@ game_screen = screen (
                 type='confirm', 
                 title='Exit Game',
                 content='Are you sure you want to exit to main menu?',
-                yes=Switchscreen(type='back', screen='mainmenu')
+                yes= [
+                    Switchscreen(type='back', screen='mainmenu'),
+                    Runclass(run=game.clear_events)
+                ]
             ),
         }
     },

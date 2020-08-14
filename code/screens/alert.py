@@ -4,6 +4,7 @@
 from code.api.core import os, log, pg, screens
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
+from code.api.events import gameEvent
 from code.api.data.Text import Text, textFormat
 
 

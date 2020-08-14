@@ -23,6 +23,7 @@ class Sequence(coreFunc):
         self.queue = []
         self.withCounter = withCounter
         self.autoRemove = autoRemove
+        self.run = True
         if timer != -1: pygame.time.set_timer(self.Event, timer)
 
     def addQueue(self, Action:Runclass):
@@ -32,6 +33,13 @@ class Sequence(coreFunc):
     def call(self):
         pygame.event.post(pygame.event.Event(self.Event))
 
+    def pause(self): self.run = False
+
+    def play(self): self.run = True
+
+    def clearQueue(self): 
+        self.queue = []
+        self.counter = 0
 
 class gameevent(coreFunc):
     def __init__(self, Events:dict = {}):
@@ -168,8 +176,8 @@ class events(coreFunc):
 
             # Check for event
             if event.type == Event.Event:
-                # Run the event
-                if Event.queue != []:
+                # Run the event if can
+                if Event.queue != [] and Event.run:
                     eventAction = Event.queue[0]
                     # Set counter parameter
                     if Event.withCounter: eventAction.parameters['counter'] = Event.counter

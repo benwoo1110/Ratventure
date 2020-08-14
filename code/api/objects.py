@@ -92,13 +92,8 @@ class screen(coreFunc):
     def display(self, withSurfaces:list = None, refresh:bool = False, withBackground:bool = False):
         # Load surfaces
         if withSurfaces != None: self.load(withSurfaces, refresh, withBackground)
-        
-        # Resize surface
-        resizedSurface = pygame.transform.smoothscale(self.Screen, window.scaled_size())
-        
-        # Output to window
-        window.Window.blit(resizedSurface, window.coord())
-        pg.updateWindow()
+        # Trigger a window update
+        screens.triggerUpdate = True
 
 
 class surface(coreFunc):

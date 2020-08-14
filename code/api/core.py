@@ -131,6 +131,19 @@ class windowScreen(coreFunc):
         # Show display information
         logger.debug(pygame.display.Info())
 
+    def update(self):
+        try:
+            # Display window
+            resizedSurface = pygame.transform.smoothscale(screens.getCurrent(), self.scaled_size())
+            self.Window.blit(resizedSurface, self.coord())
+
+            # Update
+            pygame.display.update()
+            pg.clock.tick(pg.config.framerate)
+
+        # Error
+        except: logger.critical('Error updating pygame window!', exc_info=True)
+
     def size(self): return (self.width, self.height)
 
     def scaled_size(self): return (self.scaled_width, self.scaled_height)
@@ -147,11 +160,14 @@ class Screens(coreFunc):
         self.containerList = []
         self.screensStack = []
         self.stackChange = False
+        self.triggerUpdate = False
     
     def add(self, name, screen):
         self.__dict__[name] = screen
         self.containerList.append(name)
         logger.debug('Added screen {}'.format(name))
+
+    def getCurrent(self): return getattr(self, self.screensStack[-1]).Screen
 
     def changeStack(self, type:str, screen:str = None):
         # Notify another changeStack() is happening
@@ -213,10 +229,16 @@ class Screens(coreFunc):
             
             # Main loop for top screen
             while not self.stackChange:
+                # Get result of screen actions
                 screen_result = screen.main.run()
 
+                # Check for updates wanted to screen
+                if self.triggerUpdate:
+                    window.update()
+                    self.triggerUpdate = False
+
+                # End program
                 if screen_result == 'quit':
-                    # End program
                     pg.quit()
                     return
 

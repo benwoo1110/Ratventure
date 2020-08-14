@@ -48,9 +48,9 @@
         "chance": -1,
         "needOrb": true,
         "stats": {
-            "damage": [8, 12],
+            "damage": [6, 12],
             "defence": 6,
-            "health": [30, 30]
+            "health": [24, 24]
         }
     }
 }

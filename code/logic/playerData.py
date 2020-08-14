@@ -65,6 +65,7 @@ class playerData:
         story.in_town.display()
 
         # Set player stats for game screen
+        player.stats.display('day', screens.game.info.days)
         player.stats.display('damage', screens.game.info.stats)
         player.stats.display('defence', screens.game.info.stats)
         player.stats.display('health', screens.game.info.stats)
@@ -115,6 +116,7 @@ class playerData:
         player.load(savedData['player'])
 
         # Set player stats for game screen
+        player.stats.display('day', screens.game.info.days)
         player.stats.display('damage', screens.game.info.stats)
         player.stats.display('defence', screens.game.info.stats)
         player.stats.display('health', screens.game.info.stats)

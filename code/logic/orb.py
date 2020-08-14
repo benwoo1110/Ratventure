@@ -54,8 +54,8 @@ class orb:
 
     @staticmethod
     def canSense():
-        if player.weapon.have('orb'): screens.game.in_open.sense_orb.switchState('Disabled', False)
-        else: screens.game.in_open.sense_orb.switchState('', False)
+        if player.weapon.have('orb'): screens.game.in_open.sense_orb.switchState('Disabled', True, False)
+        else: screens.game.in_open.sense_orb.switchState('', True, False)
 
     @staticmethod
     def initSurface():
