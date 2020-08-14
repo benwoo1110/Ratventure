@@ -14,14 +14,12 @@ run `start.sh` file
 chmod +x start.sh
 ./start.sh
 ```
+
 #### windows:
-run `start.bat` file
-```
-.\start.bat
-```
+Run `start.bat` file
+
 #### universal:
 Run `startup.py` at the ./Ratventure directory
-<br />
 
 ## Depencencies
 * python 3.8.x
