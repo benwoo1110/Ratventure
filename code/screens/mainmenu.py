@@ -5,6 +5,9 @@ from code.api.core import os, log
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
 
+from code.api.data.Sound import Sound
+
+
 
 #################
 # Setup logging #
@@ -23,7 +26,7 @@ class mainmenu:
     def run():
         # Get action
         event_result = mainmenu_screen.events.get()
-
+        
         # No action
         if event_result == None: return
         # Quit program
