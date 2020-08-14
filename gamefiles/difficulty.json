@@ -19,7 +19,7 @@
         "price_multiplier": 1.2,
         "day_saturation": 15,
         "orb_change": 30,
-        "rest_gain": 16,
+        "rest_gain": 15,
         "town_number": 4,
         "town_space": 4
     },
@@ -43,7 +43,7 @@
         "price_multiplier": 1.6,
         "day_saturation": 8,
         "orb_change": 5,
-        "rest_gain": 6,
+        "rest_gain": 5,
         "town_number": 2,
         "town_space": 5
     }

@@ -26,6 +26,10 @@ class Stats(coreFunc):
         self.health = health
         self.elixir = elixir
 
+    def isFullHealth(self):
+        if self.health == None: return
+        return self.health[0] >= self.health[1]
+
     def multiply(self, multiplier:int):
         for name, value in self.__dict__.items():
             if value != None:
@@ -137,15 +141,15 @@ class Bonus(coreFunc):
         self.health = health
         self.elixir = elixir
 
-    def set(self, name:str, to, item, withDisplay:bool = False):
+    def set(self, name:str, to, item, withDisplay:bool = False, index:int = 1):
         # Set the new stats
         setattr(self, name, to)
-        self.display(name, item, withDisplay)
+        self.display(name, item, withDisplay, index)
 
-    def display(self, name:str, item = None, withDisplay:bool = False):
+    def display(self, name:str, item = None, withDisplay:bool = False, index:int = 1):
         stats = getattr(self, name)
         # Generate teh text to display
-        if type(stats) == list: text = str('+ {}'.format(stats[1]))
+        if type(stats) == list: text = str('+ {}'.format(stats[index]))
         else: text = str('+ {}'.format(stats))
 
         # Display to stats screen
