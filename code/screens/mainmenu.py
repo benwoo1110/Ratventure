@@ -5,9 +5,6 @@ from code.api.core import os, log
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
 
-from code.api.data.Sound import Sound
-
-
 
 #################
 # Setup logging #

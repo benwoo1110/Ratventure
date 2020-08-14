@@ -48,6 +48,9 @@ class end_game:
             # Load the changes
             end_game_screen.win.load(withItems=['leaderboard'], refresh=True)
 
+            # Play win sound effect
+            Sound.win.play()
+
         # Check if gameover screen is the one loaded
         elif end_game_screen.gameover.loaded:
             # Play gameover sound effect

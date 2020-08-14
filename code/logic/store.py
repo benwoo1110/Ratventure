@@ -5,6 +5,7 @@ from code.api.core import os, log, screens, pg
 from code.api.actions import Alert, Runclass
 from code.logic.player import player
 from code.logic.difficulty import difficulty
+from code.api.data.Sound import Sound
 
 
 #################
@@ -104,6 +105,9 @@ class store:
 
         # Add weapon to weapons list
         player.weapon.add(weapon)
+
+        # Play cool sound
+        Sound.weapon_equip.play()
 
         # Alert users on the gains
         Alert(

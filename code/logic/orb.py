@@ -9,6 +9,7 @@ from code.logic.stats import Bonus
 from code.logic.player import player
 from code.logic.attack import attack
 from code.logic.story import story
+from code.api.data.Sound import Sound
 
 
 #################
@@ -114,6 +115,9 @@ class orb:
         # Remove orb from map
         Grid.tiles[player.orb.row][player.orb.column].sprites.remove('orb')
         screens.game.map.display(withItems=['grid'], refresh=True)
+
+        # Play cool sound
+        Sound.orb_take.play()
 
         # Return to selection menu
         orb.back()

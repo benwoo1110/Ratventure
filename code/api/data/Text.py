@@ -6,6 +6,7 @@ import re
 from code.api.core import os, log, coreFunc, pg, pygame
 from code.api.actions import Alert
 from code.api.data.Frame import Frame
+from code.api.data.Sound import Sound
 
 
 #################
@@ -82,12 +83,16 @@ class Text(coreFunc):
         # Invalid based on regex
         else:
             if self.validation.invalidPrompt != None:
+                # Error sound
+                Sound.error.play()
+
                 # Tell user is invalid
-                 Alert(
+                Alert(
                     type='notify', 
                     title='Invalid Input',
                     content=self.validation.invalidPrompt
                 ).do()
+
             return False
 
     def getText(self):

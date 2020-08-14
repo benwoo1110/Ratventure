@@ -3,6 +3,7 @@
 ######################################
 from code.api.core import log, coreFunc, os, pg, pygame
 from code.api.actions import Info, Runclass, Alert, Switchscreen, actionResult
+from code.api.data.Sound import Sound
 
 
 #################
@@ -160,6 +161,9 @@ class events(coreFunc):
 
         # Check if mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # Play click sound
+            # Sound.button_click.play()
+
             # Set state to clicked
             click_result = actionResult(name=object_thing.name, type=object_thing.type, outcome='clicked')
             

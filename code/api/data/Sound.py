@@ -28,7 +28,7 @@ class Effect(coreFunc):
 
 
 class soundHandler(coreFunc):
-    def __init__(self, sound_dir:str = './sounds/', fileType:str = '.mp3'):
+    def __init__(self, sound_dir:str = './sounds/', fileType:str = ''):
         self.sound_dir = sound_dir
         self.fileType = fileType
 
