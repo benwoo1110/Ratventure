@@ -105,7 +105,7 @@ class orb:
         Grid = screens.game.map.grid.Grid
 
         # Update stats upon taking orb
-        player.stats.addBonus(orb.stats, screens.game.info.stats, True)
+        player.stats.addBonus(orb.stats, screens.game.info.stats, True, screens.game.info.hero)
         player.weapon.add('orb')
 
         # Disable sensing orb

@@ -2,8 +2,9 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens, coreFunc
+from code.api.core import os, log, screens, coreFunc, pg
 from code.api.events import gameEvent
+from code.api.actions import Runclass
 
 
 #################
@@ -38,11 +39,11 @@ class Stats(coreFunc):
     def calDamage(self, defence:int = 0):
         if self.damage != None: return max(0, randint(*self.damage) - defence)
 
-    def addBonus(self, bonus, item, withDisplay:bool = False):
+    def addBonus(self, bonus, item, withDisplay:bool = False, animate = None):
         for name, by in bonus.__dict__.items():
-            if by != None: self.update(name, by, item, withDisplay)
+            if by != None: self.update(name, by, item, withDisplay, animate)
 
-    def update(self, name:str, by, item, withDisplay:bool = False):
+    def update(self, name:str, by, item, withDisplay:bool = False, animate = None):
         # For damage
         if name == 'damage':
             self.damage[0] += by[0]
@@ -61,13 +62,63 @@ class Stats(coreFunc):
             if name == 'day': gameEvent.orb_change.call()
 
         # Display change
-        self.display(name, item, withDisplay)
+        if animate == None: self.display(name, item, withDisplay)
+        
+        # If animate instead
+        else: 
+            # Add stats animation to queue
+            gameEvent.stats.addQueue(
+                Runclass(run=self.animate, parameters={'name': name, 'by': by, 'item': item, 'animate': animate})
+            )
+
+    def animate(self, counter:int, name:str, by, item, animate):
+        if counter == 0:
+            # Generate the text to display
+            if type(by) == list: 
+                if by[1] != 0: text = by[1]
+                else: text = by[0]
+            else: text = by
+
+            # Adding polarity sign (+/-)
+            if text <= 0: text = '- {}'.format(abs(text))
+            else: text = '+ {}'.format(text)
+
+            # Set text colour to represent the stats type
+            if name == 'damage': animate.stats.format.colour = pg.colour.red
+            elif name == 'defence': animate.stats.format.colour = pg.colour.blue
+            elif name == 'health': animate.stats.format.colour = pg.colour.green
+            elif name == 'elixir': animate.stats.format.colour = pg.colour.purple
+            else: animate.stats.format.colour = pg.colour.white
+
+            animate.stats.setText(text, withDisplay=False)
+
+        # Pop out
+        elif counter <= 30:
+            animate.stats.format.modifyFont(fontSize=counter*2)
+            animate.display(withData='all')
+
+        # Pop back abit
+        elif counter <= 34:
+            animate.stats.format.modifyFont(fontSize=60-(counter-31)*2)
+            animate.display(withData='all')
+
+        # Show the updated stats
+        elif counter == 35: self.display(name, item, True)
+
+        # Pop out
+        elif 100 < counter <= 126: 
+            animate.stats.format.modifyFont(fontSize=52-(counter-100)*2)
+            animate.display(withData='all')
+
+        # Animation ended 
+        elif counter > 126: 
+            animate.stats.setText('')
+            return True
 
     def set(self, name:str, to, item, withDisplay:bool = False):
         # Set the new stats
         setattr(self, name, to)
         self.display(name, item, withDisplay)
-
     
     def display(self, name:str, item, withDisplay:bool = False):
         # Generate the text

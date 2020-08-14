@@ -27,6 +27,13 @@ class textFormat(coreFunc):
         self.lineSpacing = lineSpacing
         self.font = pygame.font.Font(self.fontType, self.fontSize)
 
+    def modifyFont(self, fontSize:int = None, fontType:str = None):
+        if fontSize != None: self.fontSize = fontSize
+        if fontType != None: self.fontType = fontType
+
+        # Regen the font
+        self.font = pygame.font.Font(self.fontType, self.fontSize)
+
 
 class textValidate(coreFunc):
     def __init__(self, charsAllowed:list = list(range(32,65)) + list(range(91,127)) + [8], 

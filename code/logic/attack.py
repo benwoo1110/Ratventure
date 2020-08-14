@@ -169,11 +169,11 @@ class attack:
                 hero_damage = player.stats.calDamage(enemy.stats.defence)
                 story.hero_attack.display(hero_damage, enemy.name)
 
-            enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True)
+            enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True, screens.game.attack.enemy)
             
 
         # Next move
-        elif counter == 100: 
+        elif counter == 130: 
 
             # Enemy is dead
             if enemy.stats.health[0] <= 0:
@@ -187,10 +187,10 @@ class attack:
                 enemy_damage = enemy.stats.calDamage(player.stats.defence)
                 story.enemy_attack.display(enemy.name, enemy_damage)
 
-                player.stats.update('health', [-enemy_damage, 0], screens.game.info.stats, True)
+                player.stats.update('health', [-enemy_damage, 0], screens.game.info.stats, True, screens.game.info.hero)
 
         # Next move
-        elif counter == 200:
+        elif counter == 260:
 
             # If player is dead, player loses
             if player.stats.health[0] <= 0:
@@ -207,7 +207,7 @@ class attack:
                 else:
                     # Gains from defeat
                     elixir_gained = randint(*enemy.Enemy['gains'])
-                    player.stats.update('elixir', elixir_gained, screens.game.info.stats, True)
+                    player.stats.update('elixir', elixir_gained, screens.game.info.stats, True, screens.game.info.hero)
                     story.gain_elixir.display(elixir_gained)
 
             # Both player and enemy is still alive
@@ -219,7 +219,7 @@ class attack:
                 return True
 
         # End attack sequence
-        elif counter >= 300:
+        elif counter >= 390:
 
             # Player is dead, load game over screen
             if player.stats.health[0] <= 0:

@@ -102,7 +102,7 @@ game_screen = screen (
                 'data': {
                     'stats': Text (
                         frame = Frame(x=175, y=185, w=112, h=59),
-                        text = '+ 1',
+                        text = '',
                         format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
                     ),
                     'weapons': Grid (
@@ -339,9 +339,9 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=88, y=15, w=207, h=217)},
                 'selectable': False,
                 'data': {
-                    'update': Text (
+                    'stats': Text (
                         frame = Frame(x=172, y=17, w=112, h=59),
-                        text = '- 2',
+                        text = '',
                         format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.red)
                     ),
                 }
