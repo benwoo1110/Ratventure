@@ -1,7 +1,7 @@
-# Ratventure
+![Alt text](design/banner.png)
 
 ## About
-Ratventure is a simple and fun roleplaying game.
+Ratventure is a simple and fun role-playing game.
 
 You are The Hero. The world is being invaded by the Rat King and his endless minions. The only way to defeat the Rat King is to find the Orb of Power, and then destroy the Rat King in combat. Since you have the ability to sense the Orb of Power, only you can save the world.
 
