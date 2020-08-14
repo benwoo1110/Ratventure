@@ -36,7 +36,10 @@ class playerData:
     def new():
         Grid = screens.game.map.grid.Grid
 
-        # Unload previous state
+        # Check if nickname is valid
+        if not screens.new_game.options.nickname.text.validateText(): return
+
+        # Unload previous states
         screens.game.unload()
 
         # reset player

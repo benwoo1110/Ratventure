@@ -4,6 +4,7 @@
 import textwrap
 import re
 from code.api.core import os, log, coreFunc, pg, pygame
+from code.api.actions import Alert
 from code.api.data.Frame import Frame
 
 
@@ -38,12 +39,13 @@ class textFormat(coreFunc):
 
 class textValidate(coreFunc):
     def __init__(self, charsAllowed:list = list(range(32,65)) + list(range(91,127)) + [8], 
-    inAscii:bool = True, regex:str = '[\w\D.]+', defaultText:str = 'default', customMethod:any = None):
+    inAscii:bool = True, regex:str = '[\w\D.]+', defaultText:str = 'default', customMethod:any = None, invalidPrompt:str = None):
         self.charsAllowed = charsAllowed
         self.inAscii = inAscii
         self.regex = re.compile(regex)
         self.defaultText = defaultText
         self.customMethod = customMethod
+        self.invalidPrompt = invalidPrompt
 
 class Text(coreFunc):
     def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '', name=None, item=None,
@@ -70,21 +72,23 @@ class Text(coreFunc):
         # Check for regex matching
         valid = self.validation
         regexTexts = valid.regex.findall(self.text)
-
-        # Mo match at all
-        if regexTexts == []: 
-            self.text = valid.defaultText
-            return False
-
-        # Partical match
-        elif len(regexTexts) > 1: 
-            self.text = regexTexts[0]
-            return False
+        logger.debug('[{}] Regex matching result of {}'.format(self.item.name, regexTexts))
 
         # Full match
-        elif regexTexts[0] == self.text: 
+        if len(regexTexts) == 1 and regexTexts[0] == self.text: 
             if callable(valid.customMethod): return valid.customMethod(self.text)
             return True
+
+        # Invalid based on regex
+        else:
+            if self.validation.invalidPrompt != None:
+                # Tell user is invalid
+                 Alert(
+                    type='notify', 
+                    title='Invalid Input',
+                    content=self.validation.invalidPrompt
+                ).do()
+            return False
 
     def getText(self):
         if self.item.state == 'Selected' and self.editable: return self.prefix+self.text+'_'+self.suffix

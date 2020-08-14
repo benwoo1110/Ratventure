@@ -5,7 +5,7 @@ import time
 from code.api.core import os, log, pg
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat
+from code.api.data.Text import Text, textFormat, textValidate
 from code.logic.playerData import playerData
 from code.logic.difficulty import difficulty
 
@@ -114,7 +114,8 @@ new_game_screen = screen (
                     'text': Text (
                         frame = Frame(x=747, y=341, w=925, h=140),
                         text = 'Benedict',
-                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white),
+                        validation = textValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
                     ),
                 },
             },
