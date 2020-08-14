@@ -48,7 +48,7 @@ class pg:
         '''Loading of file from json'''
         try:
             with open(filepath, 'r') as datafile:
-                data = json.loads(datafile.read())
+                data = json.load(datafile)
 
         except Exception as e: logger.error(e, exc_info=True)
 
@@ -61,7 +61,7 @@ class pg:
         '''Saving file to json'''
         try:
             with open(filepath, 'w') as savefile:
-                savefile.write(json.dumps(data))
+                json.dump(data, savefile)
 
         except Exception as e: logger.error(e, exc_info=True)
 

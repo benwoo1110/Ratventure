@@ -28,6 +28,7 @@ class textFormat(coreFunc):
         self.font = pygame.font.Font(self.fontType, self.fontSize)
 
     def modifyFont(self, fontSize:int = None, fontType:str = None):
+        # set new font size and type (if any)
         if fontSize != None: self.fontSize = fontSize
         if fontType != None: self.fontType = fontType
 
@@ -59,24 +60,29 @@ class Text(coreFunc):
         self.loaded = False
 
     def validateChar(self, char, inAscii = True):
+        # Ensure that character is alloweed for that textfield
         if self.validation.inAscii and not inAscii: char = ord(char)
         elif not self.validation.inAscii and inAscii: char = chr(char)
 
         return char in self.validation.charsAllowed
 
     def validateText(self):
+        # Check for regex matching
         valid = self.validation
         regexTexts = valid.regex.findall(self.text)
 
+        # Mo match at all
         if regexTexts == []: 
             self.text = valid.defaultText
             return False
 
-        if len(regexTexts) > 1: 
+        # Partical match
+        elif len(regexTexts) > 1: 
             self.text = regexTexts[0]
             return False
 
-        if regexTexts[0] == self.text: 
+        # Full match
+        elif regexTexts[0] == self.text: 
             if callable(valid.customMethod): return valid.customMethod(self.text)
             return True
 

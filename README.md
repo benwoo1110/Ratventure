@@ -9,7 +9,7 @@ In this computer role-playing game, you will travel around a grid map searching 
 
 ## How to start the game
 #### macos/linux:
-run `start.sh` file
+Run `start.sh` file
 ```
 chmod +x start.sh
 ./start.sh
