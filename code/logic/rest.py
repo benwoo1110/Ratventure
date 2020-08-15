@@ -51,7 +51,7 @@ class rest:
         player.next_day()
 
         # Cool story
-        if player.stats.isFullHealth(): story.rest_full.display()
+        if player.stats.isFullHealth(): story.rest_ful.display()
         else: story.rest_some.display(rest.stats.health[0])
 
         # Go back to selection menu

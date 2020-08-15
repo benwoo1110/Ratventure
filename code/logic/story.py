@@ -17,13 +17,22 @@ logger.info('Loading up {}...'.format(filename))
 # Gameplay logic #
 ##################
 class Story(coreFunc):
-    def __init__(self, stories:dict):
+    def __init__(self, stories:dict, default:str = 'How is your journey so far?'):
         # Save stories
         self.stories = stories
+
+        # Default fallback
+        setattr(self, '_default', message('_default', [default]))
 
         # Add all the story as attributes
         for name, messages in stories.items():
             setattr(self, name, message(name, messages))
+
+    def __getattr__(self, name): 
+        try: return self.__dict__[name]
+        except:
+            logger.error('Error getting story {}'.format(name), exc_info=True)
+            return self.__dict__['_default']
 
     def getCurrent(self) -> str:
         return screens.game.info.story.message.text

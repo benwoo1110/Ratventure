@@ -20,6 +20,11 @@ except: logger.error('Error initialising pygame sound... Sound effects will not 
 
 class Effect(coreFunc):
     def __init__(self, sound_file):
+        # Default fallback
+        if sound_file == None: 
+            self.soundfile = None
+            return
+        
         try: self.soundfile = pygame.mixer.Sound(sound_file)
         except: 
             self.soundfile = None
@@ -53,11 +58,20 @@ class soundHandler(coreFunc):
         self.sound_dir = sound_dir
         self.fileType = fileType
 
+        # Default fallback
+        setattr(self, '_default', Effect(None))
+
         # Save sound file to attributes
         sound_files = self.getFilesList()
         for sound_file in sound_files:
             sound_name = os.path.basename(sound_file).split('.')[0]
             setattr(self, sound_name, Effect(sound_file))
+
+    def __getattr__(self, name): 
+        try: return self.__dict__[name]
+        except:
+            logger.error('Error getting sound {}'.format(name), exc_info=True)
+            return self.__dict__['_default']
     
     def getFilesList(self) -> list:
         # Define variables
