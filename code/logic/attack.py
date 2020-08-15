@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens, pg
+from code.api.core import os, log, screens, pg, pygame
 from code.api.data.Sound import Sound
 from code.logic.stats import Stats
 from code.logic.story import story
@@ -64,6 +64,11 @@ class attack:
         # Detect enemy present in grid
         for name in enemy.enemies['list']:
             if name in Grid.tiles[player.hero.row][player.hero.column].sprites:
+                # Play rat king music
+                if name == 'king':
+                    pygame.mixer.fadeout(600)
+                    Sound.rat_king.play(loops=-1, withVolume=0.40, fadetime=3000)
+
                 enemy.load(name)
                 # Load attack screen
                 attack.initSurface()
@@ -77,15 +82,14 @@ class attack:
         base = 0
         new_enemy = False
         chance_number = randint(1, 100)
-        
+
         for name in enemy.enemies['list']:
             if base < chance_number <= enemy.enemies[name]['chance']+base:
-                print(enemy.enemies[name])
                 enemy.load(name)
                 new_enemy = True
 
             base += enemy.enemies[name]['chance']
-        
+
         # Add enemy to grid
         if new_enemy:
             Grid.tiles[player.hero.row][player.hero.column].sprites.insert(0, enemy.name)
@@ -149,9 +153,23 @@ class attack:
         # Add run story
         story.run.display()
 
-        # Show back in open
+        # Back to selection
+        attack.back()
+
+
+    @staticmethod
+    def back():
+        # Stop rat king music if its playing
+        if Sound.rat_king.isPlaying():
+            pygame.mixer.fadeout(600)
+            Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=5000)
+
+        # Return to in open selection screen
         screens.game.attack.unload()
-        screens.game.in_open.display()
+        screens.game.map.load(withItems=['grid'], refresh=True)
+        screens.game.info.load(withItems=['stats'], refresh=True)
+        screens.game.in_open.load()
+        screens.game.display()
 
     @staticmethod
     def Attack(counter:int):
@@ -257,10 +275,5 @@ class attack:
                     return True
                 
                 else:
-                    # Return to selection screen
-                    screens.game.attack.unload()
-                    screens.game.map.load(withItems=['grid'], refresh=True)
-                    screens.game.info.load(withItems=['stats'], refresh=True)
-                    screens.game.in_open.load()
-                    screens.game.display()
+                    attack.back()
                     return True

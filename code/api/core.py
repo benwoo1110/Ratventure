@@ -239,6 +239,7 @@ class Screens(coreFunc):
 
                 # End program
                 if screen_result == 'quit':
+                    pygame.mixer.fadeout(500)
                     pg.quit()
                     return
 
