@@ -36,6 +36,18 @@ scale: 0.6
 
 
 # +-+-+-+-+-+-+-+-+-+
+# | Sounds Settings |
+# +-+-+-+-+-+-+-+-+-+
+sound:
+    # Master volume for all effects
+    effects: 1.0
+
+    # Volume range from 0 to 1.0 inclusive, with 1.0 being the loudest
+    button: 0.12
+    background: 0.12
+
+
+# +-+-+-+-+-+-+-+-+-+
 # | Logger Settings |
 # +-+-+-+-+-+-+-+-+-+
 # CRITICAL -> 50

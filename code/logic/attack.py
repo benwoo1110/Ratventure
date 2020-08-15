@@ -67,7 +67,7 @@ class attack:
                 # Play rat king music
                 if name == 'king':
                     pygame.mixer.fadeout(600)
-                    Sound.rat_king.play(loops=-1, withVolume=0.40, fadetime=3000)
+                    Sound.rat_king.play(loops=-1, withVolume=pg.config.sound.background + 0.24, fadetime=3000)
 
                 enemy.load(name)
                 # Load attack screen
@@ -162,7 +162,7 @@ class attack:
         # Stop rat king music if its playing
         if Sound.rat_king.isPlaying():
             pygame.mixer.fadeout(600)
-            Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=5000)
+            Sound.game_background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=5000)
 
         # Return to in open selection screen
         screens.game.attack.unload()

@@ -162,7 +162,7 @@ class events(coreFunc):
         # Check if mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # Play click sound
-            if object_thing.clickSound != None: object_thing.clickSound.play(maxtime=1000, withVolume=0.12)
+            if object_thing.clickSound != None: object_thing.clickSound.play(maxtime=1000, withVolume=pg.config.sound.button)
 
             # Set state to clicked
             click_result = actionResult(name=object_thing.name, type=object_thing.type, outcome='clicked')

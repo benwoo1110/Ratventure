@@ -36,7 +36,7 @@ with open('requirements.txt', 'r') as requirements:
 #############
 # Load code #
 #############
-from code.api.core import log, screens
+from code.api.core import log, screens, pg
 from code.api.data.Sound import Sound
 import code.screens.mainmenu
 import code.screens.new_game
@@ -61,5 +61,5 @@ logger.info('Loading up {}...'.format(filename))
 # Start Game #
 ##############
 logger.info('Program started!')
-Sound.background.play(loops=-1, withVolume=0.12, fadetime=500)
+Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=500)
 screens.mainloop(startScreen='mainmenu')

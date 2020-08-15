@@ -25,7 +25,7 @@ class mainmenu:
         # Play game background music
         if not Sound.background.isPlaying():
             pygame.mixer.fadeout(600)
-            Sound.background.play(loops=-1, withVolume=0.12, fadetime=3000)
+            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
     
     @staticmethod
     def run():

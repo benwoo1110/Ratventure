@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pygame, glob
+from code.api.core import log, coreFunc, os, pg, pygame, glob
 from code.api.data.Frame import Frame
 
 
@@ -30,12 +30,12 @@ class Effect(coreFunc):
             self.soundfile = None
             logger.error('Error loading sound {}'.format(sound_file), exc_info=True)
 
-    def play(self, maxtime:int = -1, loops:int = 0, withVolume:int = -1, fadetime:int = 0):
+    def play(self, maxtime:int = -1, loops:int = 0, withVolume:float = 1.0, fadetime:int = 0):
         # There was error loading sound file
         if self.soundfile == None: return
         
         # Play the sound
-        self.soundfile.set_volume(withVolume)
+        self.soundfile.set_volume(withVolume*pg.config.sound.effects)
         self.soundfile.play(loops=loops, maxtime=maxtime, fade_ms=fadetime)
 
     def stop(self, fadetime:int = 0): 
