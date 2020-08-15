@@ -112,11 +112,11 @@ class Grid(coreFunc):
         new_y = self.size * row + self.spacing * row
 
         # Calculate current animation position
-        if x <= new_x: new_x = min(x+counter*3, new_x)
-        else: new_x = max(x-counter*3, new_x)
+        if x <= new_x: new_x = min(x+counter*2, new_x)
+        else: new_x = max(x-counter*2, new_x)
 
-        if y <= new_y: new_y = min(y+counter*3, new_y)
-        else: new_y = max(y-counter*3, new_y)
+        if y <= new_y: new_y = min(y+counter*2, new_y)
+        else: new_y = max(y-counter*2, new_y)
 
         # Display to grid surface
         self.item.load()

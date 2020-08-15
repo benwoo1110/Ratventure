@@ -80,6 +80,9 @@ class store:
         
         # Not enough elixir
         else:
+            # Play error
+            Sound.error.play()
+            # Tell player
             Alert(
                 type = 'notify',
                 title = 'Awww Snap',

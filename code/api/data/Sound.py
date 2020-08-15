@@ -21,10 +21,31 @@ except: logger.error('Error initialising pygame sound... Sound effects will not 
 class Effect(coreFunc):
     def __init__(self, sound_file):
         try: self.soundfile = pygame.mixer.Sound(sound_file)
-        except: self.soundfile = None
+        except: 
+            self.soundfile = None
+            logger.error('Error loading sound {}'.format(sound_file), exc_info=True)
 
-    def play(self): 
-        if self.soundfile != None: self.soundfile.play()
+    def play(self, maxtime:int = -1, loops:int = 0, withVolume:int = -1, fadetime:int = 0):
+        # There was error loading sound file
+        if self.soundfile == None: return
+        
+        # Play the sound
+        self.soundfile.set_volume(withVolume)
+        self.soundfile.play(loops=loops, maxtime=maxtime, fade_ms=fadetime)
+
+    def stop(self, fadetime:int = 0): 
+        # There was error loading sound file
+        if self.soundfile == None: return
+
+        # Stop the sound with fading if any
+        self.soundfile.fadeout(fadetime)
+
+    def isPlaying(self) -> bool:
+        # There was error loading sound file
+        if self.soundfile == None: return
+
+        # Check if sound is playing in any channel
+        return self.soundfile.get_num_channels() >= 1
 
 
 class soundHandler(coreFunc):
@@ -36,8 +57,7 @@ class soundHandler(coreFunc):
         sound_files = self.getFilesList()
         for sound_file in sound_files:
             sound_name = os.path.basename(sound_file).split('.')[0]
-            try: setattr(self, sound_name, Effect(sound_file))
-            except: logger.error('Error loading sound {}'.format(sound_file), exc_info=True)
+            setattr(self, sound_name, Effect(sound_file))
     
     def getFilesList(self) -> list:
         # Define variables

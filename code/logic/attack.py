@@ -3,6 +3,7 @@
 ######################################
 from random import randint
 from code.api.core import os, log, screens, pg
+from code.api.data.Sound import Sound
 from code.logic.stats import Stats
 from code.logic.story import story
 from code.logic.player import player
@@ -134,6 +135,9 @@ class attack:
         if enemy.name == 'king': story.encounter_king.display()
         else: story.encounter_wild.display(enemy.name.capitalize())
 
+        # Cool sword sound
+        Sound.encounter.play()
+
         # Load attack surface
         screens.game.attack.load(withItems='all', refresh=True)
         
@@ -158,6 +162,9 @@ class attack:
             screens.game.attack.attack.switchState('Disabled')
             screens.game.attack.run.switchState('Disabled')
 
+            # Cool sword battle effect
+            Sound.battle.play(maxtime=3000, withVolume=0.24)
+
             # Enemy is immune without orb of power
             if enemy.Enemy['needOrb'] and not player.weapon.have('orb'):
                 # Hero cannot attack
@@ -169,18 +176,24 @@ class attack:
                 hero_damage = player.stats.calDamage(enemy.stats.defence)
                 story.hero_attack.display(hero_damage, enemy.name)
 
-            enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True, screens.game.attack.enemy)
-            
+            enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True, screens.game.attack.enemy)            
 
         # Next move
         elif counter == 130: 
 
             # Enemy is dead
             if enemy.stats.health[0] <= 0:
+                # Stop battle sound
+                Sound.battle.stop()
+
                 # Show defeat message
                 story.enemy_defeated.display(enemy.name)
+
                 # Remove enemy from grid
                 screens.game.map.grid.Grid.tiles[player.hero.row][player.hero.column].sprites.pop(0)
+                
+                # Cool win sound
+                Sound.attack_win.play()
 
             # Enemy attacks
             else:
@@ -209,6 +222,9 @@ class attack:
                     elixir_gained = randint(*enemy.Enemy['gains'])
                     player.stats.update('elixir', elixir_gained, screens.game.info.stats, True, screens.game.info.hero)
                     story.gain_elixir.display(elixir_gained)
+
+                    # Cool coin sound
+                    Sound.gain_elixir.play()
 
             # Both player and enemy is still alive
             else: 

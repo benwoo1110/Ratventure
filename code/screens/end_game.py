@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 import time
-from code.api.core import os, log, pg, screens
+from code.api.core import os, log, pg, pygame
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat
@@ -29,6 +29,12 @@ class end_game:
     def init():
         # Remove save since game ended
         playerData.delete()
+
+        # Stop game music
+        # Play game background music
+        if not Sound.background.isPlaying():
+            pygame.mixer.fadeout(600)
+            Sound.background.play(loops=-1, withVolume=0.12, fadetime=5000)
 
         # Check if win screen is the one loaded
         if end_game_screen.win.loaded:

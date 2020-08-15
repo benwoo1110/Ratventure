@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import glob
 from code.api.core import os, log, screens
+from code.api.data.Sound import Sound
 from code.logic.playerData import playerData
 from code.logic.board import board
 
@@ -91,13 +92,11 @@ class playerSaves:
 
     @staticmethod
     def playSaved(number:int):
-        list_surface = screens.saves['list_{}'.format(number)]
+        # Get the save file's UUID
+        fileid = screens.saves['list_{}'.format(number)].file.fileid
 
         # Load the the game instance
-        playerData.load(fileid=list_surface.file.fileid)
-
-        # Switch to game screen
-        screens.changeStack(type='load', screen='game')
+        playerData.load(fileid)
 
     @staticmethod
     def deleteSaved(number:int):
@@ -111,6 +110,9 @@ class playerSaves:
         except Exception as e: logger.error(e, exc_info=True)
         else: logger.info('Deleted playerdata "{}"'.format(file_location))
 
+        # Trash sound
+        Sound.trash.play()
+
         # Reload list view
         playerSaves.showList(int(board.currentPage('saves')))
 
@@ -123,5 +125,8 @@ class playerSaves:
         for savefile in files:
             try: os.remove(savefile)
             except Exception as e: logger.error(e, exc_info=True)
+
+        # Trash sound
+        Sound.trash_all.play()
         
         logger.info('Deleted all saved playerdata.')

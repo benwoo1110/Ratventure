@@ -103,7 +103,8 @@ new_game_screen = screen (
             'background': {
                 'type': 'object',
                 'frame': Frame(x=0, y=0, w=1800, h=1080),
-                'action': Info(text='Deselect')
+                'action': Info(text='Deselect'),
+                'clickSound': None
             },
             'nickname': {
                 'type': 'textfield',

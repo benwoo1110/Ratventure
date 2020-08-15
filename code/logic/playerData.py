@@ -4,8 +4,9 @@
 import json
 import uuid
 import time
-from code.api.core import os, log, screens, pg
+from code.api.core import os, log, screens, pg, pygame
 from code.api.actions import Alert
+from code.api.data.Sound import Sound
 from code.logic.player import player
 from code.logic.orb import orb
 from code.logic.story import story
@@ -80,7 +81,11 @@ class playerData:
         screens.game.in_town.load()
 
         # Switch to game screen
-        screens.changeStack(type='load', screen='game') 
+        screens.changeStack(type='load', screen='game')
+
+        # Play game background music
+        pygame.mixer.fadeout(600)
+        Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
 
         logger.info('Created new playerdata.')
 
@@ -103,11 +108,16 @@ class playerData:
         # Check that user did not edit save file
         checkid = str(uuid.uuid3(uuid.NAMESPACE_URL, raw_data))
         if fileid != checkid: 
+            # Error sound
+            Sound.error.play()
+
+            # Tell user issue with file
             Alert (
                 type='notify', 
                 title='Error',
                 content='UUID mismatch for savefile. Did you edit the file?',
             ).do()
+
             logger.error('UUID mismatch for savefile {}'.format(save_location))
             return
 
@@ -144,9 +154,16 @@ class playerData:
         if Grid.heroInTown(): screens.game.in_town.load()
         else: screens.game.in_open.load(withItems=['sense_orb'])
 
-        # Display screen
+        # Load game screen
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')
+
+        # Switch to game screen
+        screens.changeStack(type='load', screen='game')
+
+        # Play game background music
+        pygame.mixer.fadeout(600)
+        Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
 
         logger.info('Loaded playerdata from "{}"'.format(save_location))
 
@@ -179,6 +196,9 @@ class playerData:
 
         # Save to file
         pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
+
+        # Cool beep
+        Sound.saved.play(withVolume=0.5)
 
         # Tell user game is saved
         Alert(type='notify', title='Game Saved', content='You have saved the game.').do()

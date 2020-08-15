@@ -5,6 +5,7 @@ from code.api.core import os, log, screens
 from code.logic.attack import attack, enemy
 from code.logic.story import story
 from code.logic.player import player
+from code.api.data.Sound import Sound
 
 
 #################
@@ -85,12 +86,15 @@ class move:
             elif direction == 'left' and move.new_c > 0: move.new_c -= 1
             elif direction == 'right' and move.new_c < 7: move.new_c += 1
 
+            # Foot steps
+            Sound.walk.play(maxtime=860)
+
         # Run move animation
-        elif counter < 35:
+        elif counter <= 50:
             Grid.move(counter, move.new_r, move.new_c)
 
         # Move is done
-        elif counter >= 35:
+        elif counter > 50:
             # Set new location
             player.hero.setNew((move.new_r, move.new_c))
             move.new_r, move.new_c = -1, -1

@@ -1,9 +1,10 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log
+from code.api.core import os, log, pygame
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
+from code.api.data.Sound import Sound
 
 
 #################
@@ -18,6 +19,13 @@ logger.info('Loading up {}...'.format(filename))
 # Screen main action class #
 ############################
 class mainmenu:
+
+    @staticmethod
+    def init():
+        # Play game background music
+        if not Sound.background.isPlaying():
+            pygame.mixer.fadeout(600)
+            Sound.background.play(loops=-1, withVolume=0.12, fadetime=5000)
     
     @staticmethod
     def run():
