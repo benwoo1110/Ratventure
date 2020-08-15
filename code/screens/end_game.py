@@ -33,8 +33,8 @@ class end_game:
         # Stop game music
         # Play game background music
         if not Sound.background.isPlaying():
-            pygame.mixer.fadeout(600)
-            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=5000)
+            pygame.mixer.fadeout(200)
+            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
 
         # Check if win screen is the one loaded
         if end_game_screen.win.loaded:

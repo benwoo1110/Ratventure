@@ -28,6 +28,7 @@ class enemy:
 
     @staticmethod
     def load(name:str):
+        # Set the enemy
         enemy.name = name
         enemy.Enemy = enemy.enemies[name].copy()
         enemy.stats = Stats (
@@ -153,6 +154,9 @@ class attack:
 
     @staticmethod
     def run():
+        # Play swoosh sound effect
+        Sound.run.play(withVolume=0.6)
+
         # Add run story
         story.run.display()
 
@@ -245,7 +249,7 @@ class attack:
                     story.gain_elixir.display(elixir_gained)
 
                     # Cool coin sound
-                    Sound.gain_elixir.play()
+                    Sound.gain_elixir.play(withVolume=0.8)
 
             # Both player and enemy is still alive
             else: 
