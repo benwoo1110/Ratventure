@@ -96,13 +96,20 @@ class Text(coreFunc):
             return False
 
     def getText(self):
-        if self.item.state == 'Selected' and self.editable: return self.prefix+self.text+'_'+self.suffix
-        else: return self.prefix+self.text+self.suffix
+        # Combine prefix, text and suffix
+        try:
+            if self.item.state == 'Selected' and self.editable: return self.prefix+self.text+'_'+self.suffix
+            else: return self.prefix+self.text+self.suffix
+        
+        # Error, usually due to prefix, text or suffix not being str
+        except:
+            logger.error('Error getting text for {}'.format(self.name), exc_info=True)
+            return 'Error'
 
     def setText(self, text:str = None, prefix:str = None, suffix:str = None, withDisplay: bool = True):
-        if text != None: self.text = text
-        if prefix != None: self.prefix = prefix
-        if suffix != None: self.suffix = suffix
+        if text != None: self.text = str(text)
+        if prefix != None: self.prefix = str(prefix)
+        if suffix != None: self.suffix = str(suffix)
 
         if withDisplay: self.item.display()
         # else: self.item.load()

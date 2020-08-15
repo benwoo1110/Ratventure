@@ -75,6 +75,9 @@ class playerData:
         player.stats.display('health', screens.game.info.stats)
         player.stats.display('elixir', screens.game.info.stats)
 
+        # Reset stats update
+        screens.game.info.hero.stats.setText('', withDisplay=False)
+
         # Load screen
         screens.game.map.load(withItems=['grid'])
         screens.game.info.load(withItems='all')

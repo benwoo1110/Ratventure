@@ -135,6 +135,9 @@ class attack:
         # See chance of run
         attack.runChance()
 
+        # Reset stats update
+        screens.game.attack.enemy.stats.setText('', withDisplay=False)
+
         # Show message
         if enemy.name == 'king': story.encounter_king.display()
         else: story.encounter_wild.display(enemy.name.capitalize())

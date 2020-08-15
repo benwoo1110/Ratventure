@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pygame
+from code.api.core import os, log, pygame, pg
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
 from code.api.data.Sound import Sound
