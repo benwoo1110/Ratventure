@@ -69,6 +69,7 @@ class move:
             screens.game.move.down.switchState('Disabled', withDisplay=False)
             screens.game.move.left.switchState('Disabled', withDisplay=False)
             screens.game.move.right.switchState('Disabled', withDisplay=False)
+            screens.game.move.back.switchState('Disabled', withDisplay=False)
             screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
 
             # Check for enemy to remove
@@ -125,6 +126,7 @@ class move:
             
             # Disable arrows for impossible directions
             move.checkDirection()
+            screens.game.move.back.switchState('', withDisplay=False)
             screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
 
             return True

@@ -53,8 +53,12 @@ class playerSaves:
 
         # No save files
         if len(savefiles) == 0: 
-            screens.saves.display()
+            screens.saves.board.delete_all.switchState('Disabled', True, False)
+            screens.saves.display(withSurfaces=['board'])
             return
+
+        # Enable delete all
+        screens.saves.board.delete_all.switchState('', True, False)
 
         # Load up list
         for i in range(4):
@@ -84,7 +88,7 @@ class playerSaves:
             list_surface.load(withItems=['file'], refresh=True)
 
         # Display new list
-        screens.saves.display()
+        screens.saves.display(withSurfaces=['board'])
 
     @staticmethod
     def updateList(page:int):
