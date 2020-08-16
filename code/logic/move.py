@@ -54,6 +54,7 @@ class move:
         move.checkDirection()
 
         # Display to screen
+        screens.game.move.back.switchState('', withDisplay=False)
         screens.game.move.display()
 
 
@@ -127,7 +128,7 @@ class move:
             # Disable arrows for impossible directions
             move.checkDirection()
             screens.game.move.back.switchState('', withDisplay=False)
-            screens.game.move.display(withItems=['up', 'down', 'left', 'right'], refresh=True)
+            screens.game.move.display(withItems=['up', 'down', 'left', 'right', 'back'], refresh=True)
 
             return True
 

@@ -58,7 +58,7 @@ sound:
 
 logging:
   # For console output
-  console_level: 'DEBUG'
+  console_level: 'INFO'
 
   # App activities logged in './Ratventure/logs/'
   file_level: 'DEBUG'
