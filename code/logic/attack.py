@@ -7,6 +7,8 @@ from code.api.data.Sound import Sound
 from code.logic.stats import Stats
 from code.logic.story import story
 from code.logic.player import player
+from code.logic.playerRank import playerRank
+
 
 
 #################
@@ -268,7 +270,7 @@ class attack:
             if player.stats.health[0] <= 0:
                 screens.end_game.unload()
                 screens.end_game.gameover.load()
-                screens.changeStack(type='load', screen='end_game')
+                attack.game_end()
                 return True
 
             # Enemy is dead
@@ -278,9 +280,41 @@ class attack:
                     # Player won
                     screens.end_game.unload()
                     screens.end_game.win.load()
-                    screens.changeStack(type='load', screen='end_game')
+                    attack.game_end()
                     return True
                 
                 else:
                     attack.back()
                     return True
+
+    @staticmethod
+    def game_end():
+        # Stop game music
+        # Play game background music
+        if not Sound.background.isPlaying():
+            pygame.mixer.fadeout(200)
+            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
+
+        end_game_screen = screens.end_game
+        # Check if win screen is the one loaded
+        if end_game_screen.win.loaded:
+            # Save to leaderboard
+            end_game_screen.win.leaderboard.rankid = playerRank.add()
+
+            # Set player leaderboard on win screen
+            end_game_screen.win.leaderboard.postion.setText(str(playerRank.getPos()), withDisplay=False)
+            end_game_screen.win.leaderboard.nickname.setText(player.nickname, withDisplay=False)
+            end_game_screen.win.leaderboard.days.setText(str(player.stats.day), withDisplay=False)
+
+            # Load the changes
+            end_game_screen.win.load(withItems=['leaderboard'], refresh=True)
+
+            # Play win sound effect
+            Sound.win.play()
+
+        # Check if gameover screen is the one loaded
+        elif end_game_screen.gameover.loaded:
+            # Play gameover sound effect
+            Sound.game_over.play()
+
+        screens.changeStack(type='load', screen='end_game')

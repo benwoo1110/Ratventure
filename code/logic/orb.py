@@ -46,7 +46,7 @@ class orb:
     @staticmethod
     def changeLocation():
         # No change
-        if orb.change == -1: return
+        if orb.change == -1 or player.weapon.have('orb'): return
         
         # Check if its day to change location
         if player.stats.day % orb.change == 0:

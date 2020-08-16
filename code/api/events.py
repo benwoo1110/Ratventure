@@ -112,7 +112,8 @@ class events(coreFunc):
             thing_object = self.thing[loaded_thing]
             
             # If thing is not loaded or selectable, dont check
-            if not (thing_object.loaded and hasattr(thing_object, 'selectable') and thing_object.selectable): continue
+            if not(hasattr(thing_object, 'loaded') and hasattr(thing_object, 'selectable')): continue
+            if not (thing_object.loaded and thing_object.selectable): continue
 
             # Check if thing_object is disabled
             if hasattr(thing_object, 'state') and (thing_object.isState('Disabled') or thing_object.isState('Selected')): continue

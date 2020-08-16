@@ -8,6 +8,7 @@ from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, textFormat, textValidate
 from code.logic.playerData import playerData
 from code.logic.difficulty import difficulty
+from code.logic.attack import attack
 
 
 #################

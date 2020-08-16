@@ -95,6 +95,28 @@ class playerRank:
 
         playerRank.save()
 
+        return rankid
+
+    @staticmethod
+    def rename(newname, rankid) -> str:
+        # Remove the rank with old name
+        update_rank = playerRank.rankData[rankid].copy()
+        del playerRank.rankData[rankid]
+
+        # Change name and add back rank
+        update_rank['nickname'] = newname
+        player.nickname = newname
+        new_rankid = str(uuid.uuid3(uuid.NAMESPACE_URL, json.dumps(update_rank)))
+        playerRank.rankData[new_rankid] = update_rank
+
+        # Sort the rank based on days
+        playerRank.rankData = dict(sorted(playerRank.rankData.items(), key=lambda x: x[1]['days']))
+
+        # Save the updated nickname data
+        playerRank.save()
+
+        return new_rankid
+
     @staticmethod
     def getPos() -> int:
         for postion, data in enumerate(playerRank.rankData.values(), 1):
