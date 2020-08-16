@@ -108,7 +108,7 @@ leaderboard_screen = screen (
                         format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
                     ),
                     'nickname': Text (
-                        frame = Frame(x=316, y=3, w=576, h=140),
+                        frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
                         format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
                     ),
@@ -136,7 +136,7 @@ leaderboard_screen = screen (
                         format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
                     ),
                     'nickname': Text (
-                        frame = Frame(x=316, y=3, w=576, h=140),
+                        frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
                         format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
                     ),
@@ -164,7 +164,7 @@ leaderboard_screen = screen (
                         format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
                     ),
                     'nickname': Text (
-                        frame = Frame(x=316, y=3, w=576, h=140),
+                        frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
                         format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
                     ),
@@ -192,7 +192,7 @@ leaderboard_screen = screen (
                         format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
                     ),
                     'nickname': Text (
-                        frame = Frame(x=316, y=3, w=576, h=140),
+                        frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
                         format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
                     ),

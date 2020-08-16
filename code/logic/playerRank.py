@@ -4,7 +4,7 @@
 import json
 import time
 import uuid
-from code.api.core import os, log, screens
+from code.api.core import os, log, screens, pg
 from code.logic.player import player
 from code.logic.board import board
 
@@ -17,16 +17,8 @@ logger = log.get_logger(filename)
 logger.info('Loading up {}...'.format(filename))
 
 
-# Ensure that leaderboard file is created
+# Location of leaderboard data
 filepath = './appdata/leaderboard.json'
-if not os.path.isfile(filepath):
-    # Create empty leaderboard file
-    try:
-        with open(filepath, 'w') as leaderboardfile:
-            leaderboardfile.write(json.dumps(dict()))
-
-    except Exception as e: logger.error(e, exc_info=True)
-    else: logger.info('Created {} file'.format(filepath))
 
 
 ##################
@@ -34,11 +26,7 @@ if not os.path.isfile(filepath):
 ##################
 class playerRank:
     # Get leaderboard data
-    try:
-        with open(filepath, 'r') as leaderboardfile:
-            rankData = json.loads(leaderboardfile.read())
-
-    except Exception as e: logger.error(e, exc_info=True)
+    rankData = pg.loadJson(filepath, dict())
 
     @staticmethod
     def check():
@@ -55,22 +43,12 @@ class playerRank:
             if checkid != rankid: 
                 del checkedData[rankid]
                 missmatch = True
-                logger.warn('Leaderboard data with rankid {} is tempered. Removing...'.format(rankid))
+                logger.warning('Leaderboard data with rankid {} is tempered. Removing...'.format(rankid))
 
         # Reload data without those tempered with
         if missmatch:
             playerRank.rankData = checkedData
-            playerRank.save()
-
-    @staticmethod
-    def save():
-        # Create empty leaderboard file
-        try:
-            with open(filepath, 'w') as leaderboardfile:
-                leaderboardfile.write(json.dumps(playerRank.rankData, indent=4))
-
-        except Exception as e: logger.error(e, exc_info=True)
-        else: logger.info('Save leaderboard data to {}'.format(filepath))
+            pg.saveJson(filepath, playerRank.rankData)
 
     @staticmethod
     def add() -> int:
@@ -78,6 +56,7 @@ class playerRank:
         win_data = {
             'nickname': player.nickname,
             'win_time': time.time(),
+            'difficulty': player.difficulty,
             'days': player.stats.day
             } 
         
@@ -93,7 +72,9 @@ class playerRank:
         # Sort the rank based on days
         playerRank.rankData = dict(sorted(playerRank.rankData.items(), key=lambda x: x[1]['days']))
 
-        playerRank.save()
+        # playerRank.save()
+        # Save updated back to file
+        pg.saveJson(filepath, playerRank.rankData)
 
         return rankid
 
@@ -113,7 +94,7 @@ class playerRank:
         playerRank.rankData = dict(sorted(playerRank.rankData.items(), key=lambda x: x[1]['days']))
 
         # Save the updated nickname data
-        playerRank.save()
+        pg.saveJson(filepath, playerRank.rankData)
 
         return new_rankid
 

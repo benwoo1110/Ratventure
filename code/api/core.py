@@ -44,11 +44,20 @@ class pg:
         purple = (97, 0, 188)
 
     @staticmethod
-    def loadJson(filepath:str) -> dict:
+    def loadJson(filepath:str, default = None) -> dict:
         '''Loading of file from json'''
         try:
             with open(filepath, 'r') as datafile:
                 data = json.load(datafile)
+
+        except FileNotFoundError:
+            # If no default set
+            if default == None: print('{} file does not exist.')
+
+            # Create file at filepath with the given default variable
+            else: 
+                pg.saveJson(filepath, default)
+                return default
 
         except Exception as e: logger.error(e, exc_info=True)
 
