@@ -22,7 +22,7 @@ logger.info('Loading up {}...'.format(filename))
 ##################
 class screen(coreFunc):
     def __init__(self, name: str, main:any, surfaces:dict = {}, keyboard:dict = {}, 
-    bg_colour:tuple = None, selectable:bool = True, firstLoad:list = 'all'):
+    bg_colour:tuple = None, seperateBackground:bool = False, selectable:bool = True, firstLoad:list = 'all'):
         self.name = name
         self.main = main
         self.bg_colour = bg_colour
@@ -39,6 +39,7 @@ class screen(coreFunc):
         self.Screen = pygame.surface.Surface(window.size(), pygame.SRCALPHA)
 
         # Get background image
+        self.seperateBackground = seperateBackground
         self.bg_image = Images([self.name], (0, 0))
         self.loadBackground()
     
@@ -84,17 +85,32 @@ class screen(coreFunc):
             else: getattr(self, Surface).load(withItems='all', refresh=refresh)
 
     def loadBackground(self):
-        # Fill colour
-        if self.bg_colour != None: self.Screen.fill(self.bg_colour)
-        # Load background image
-        if 'background' in self.bg_image.containerList: 
-            self.Screen.blit(self.bg_image.background, (0, 0))
+        if self.seperateBackground:
+            # Create a seperate background surface
+            self.background = pygame.surface.Surface(window.size(), pygame.SRCALPHA)
+
+            # Fill colour
+            if self.bg_colour != None: self.background.fill(self.bg_colour)
+            
+            # Load background image
+            if 'background' in self.bg_image.containerList: 
+                self.background.blit(self.bg_image.background, (0, 0))
+
+        else:
+            # Fill colour
+            if self.bg_colour != None: self.Screen.fill(self.bg_colour)
+            
+            # Load background image
+            if 'background' in self.bg_image.containerList: 
+                self.Screen.blit(self.bg_image.background, (0, 0))
 
     def display(self, withSurfaces:list = None, refresh:bool = False, withBackground:bool = False):
         # Load surfaces
         if withSurfaces != None: self.load(withSurfaces, refresh, withBackground)
+        
         # Trigger a window update
-        screens.triggerUpdate = True
+        if self.seperateBackground: screens.triggerUpdate(withBackground=withBackground)
+        else: screens.triggerUpdate()
 
 
 class surface(coreFunc):

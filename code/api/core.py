@@ -142,8 +142,13 @@ class windowScreen(coreFunc):
 
     def update(self):
         try:
+            if screens.updateBackground:
+                # Display background
+                resizedSurface = pygame.transform.smoothscale(screens.getBackground(), self.scaled_size())
+                self.Window.blit(resizedSurface, self.coord())
+
             # Display window
-            resizedSurface = pygame.transform.smoothscale(screens.getCurrent(), self.scaled_size())
+            resizedSurface = pygame.transform.smoothscale(screens.getScreen(), self.scaled_size())
             self.Window.blit(resizedSurface, self.coord())
 
             # Update
@@ -152,6 +157,10 @@ class windowScreen(coreFunc):
 
         # Error
         except: logger.critical('Error updating pygame window!', exc_info=True)
+
+        # Reset screen update trigger
+        screens.updateBackground = False
+        screens.update = False
 
     def size(self): return (self.width, self.height)
 
@@ -169,14 +178,21 @@ class Screens(coreFunc):
         self.containerList = []
         self.screensStack = []
         self.stackChange = False
-        self.triggerUpdate = False
+        self.update = False
+        self.updateBackground = True
     
     def add(self, name, screen):
         self.__dict__[name] = screen
         self.containerList.append(name)
         logger.debug('Added screen {}'.format(name))
 
-    def getCurrent(self): return getattr(self, self.screensStack[-1]).Screen
+    def getScreen(self): return getattr(self, self.screensStack[-1]).Screen
+
+    def getBackground(self): return getattr(self, self.screensStack[-1]).background
+
+    def triggerUpdate(self, withBackground:bool = False):
+        self.update = True
+        self.updateBackground = withBackground
 
     def changeStack(self, type:str, screen:str = None):
         # Notify another changeStack() is happening
@@ -231,20 +247,19 @@ class Screens(coreFunc):
             if hasattr(screen.main, 'init'): screen.main.init()
 
             # Display the screen
-            screen.display()
+            screen.display(withBackground=True)
 
             # Log current screen stacks
             logger.debug('New screen stack of {}'.format(self.screensStack))
             
             # Main loop for top screen
             while not self.stackChange:
-                # Get result of screen actions
-                screen_result = screen.main.run()
 
                 # Check for updates wanted to screen
-                if self.triggerUpdate:
-                    window.update()
-                    self.triggerUpdate = False
+                if self.update: window.update()
+
+                # Get result of screen actions
+                screen_result = screen.main.run()
 
                 # End program
                 if screen_result == 'quit':
