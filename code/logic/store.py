@@ -50,7 +50,8 @@ class store:
 
         # Load up weapons stats to screen
         for name, weapon_data in store.weapons.items():
-            if name in player.weapon.weapons: 
+            if name in player.weapon.weapons:
+                store_surface[name].price.setText('', withDisplay=False)
                 store_surface[name].switchState('Disabled', False)
                 continue
 
