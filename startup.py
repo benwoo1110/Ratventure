@@ -60,6 +60,7 @@ logger.info('Loading up {}...'.format(filename))
 ##############
 # Start Game #
 ##############
-logger.info('Program started!')
-Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=500)
-screens.mainloop(startScreen='mainmenu')
+if __name__ == '__main__':
+    logger.info('Program started!')
+    Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=500)
+    screens.mainloop(startScreen='mainmenu')

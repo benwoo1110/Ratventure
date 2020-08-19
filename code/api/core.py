@@ -8,6 +8,7 @@ import glob
 import traceback
 import json
 import pygame
+from functools import wraps
 from datetime import datetime
 from code.config import config
 
@@ -20,6 +21,19 @@ class coreFunc:
     def __setattr__(self, name, value): self.__dict__[name] = value
     def __getitem__(self, name): return self.__dict__[name]
     def __repr__(self): return '{}'.format(self.__dict__)
+
+    def __iter__(self):
+        self.counter = 0
+        return self
+
+    def __next__(self):
+        if self.counter >= len(self.containerList):
+            self.counter = 0
+            raise StopIteration
+
+        current = getattr(self, self.containerList[self.counter])
+        self.counter += 1
+        return current
 
 
 ###################
@@ -290,32 +304,46 @@ log_files = glob.glob("./logs/*.log")
 for index in range(len(log_files) - max(0, pg.config.logging.keep_logs-1)):
     os.remove(log_files[index])
 
-# setup log format and location
+# Setup log format and location
 FORMATTER = logging.Formatter('[%(asctime)s %(levelname)s] [%(name)s] %(message)s', datefmt='%H:%M:%S')
 LOG_FILE = datetime.now().strftime("./logs/%d-%m-%Y_%H-%M-%S.log")
 
+# Console logging
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.console_level.upper()))
+console_handler.setFormatter(FORMATTER)
+
+# Logging to log file
+file_handler = logging.FileHandler(LOG_FILE)
+file_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.file_level.upper()))
+file_handler.setFormatter(FORMATTER)
+
 class log:
-    @staticmethod
-    def get_console_handler():
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.console_level.upper()))
-        console_handler.setFormatter(FORMATTER)
-        return console_handler
 
-    @staticmethod
-    def get_file_handler():
-        file_handler = logging.FileHandler(LOG_FILE)
-        file_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.file_level.upper()))
-        file_handler.setFormatter(FORMATTER)
-        return file_handler
+    def __init__(self, logger_name):
+        self.logger_name = logger_name
 
-    @staticmethod
-    def get_logger(logger_name):
-        logger = logging.getLogger(logger_name)
-        logger.setLevel(logging.DEBUG)
-        logger.addHandler(log.get_console_handler())
-        logger.addHandler(log.get_file_handler())
-        return logger
+        self.logger = logging.getLogger(logger_name)
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(console_handler)
+        self.logger.addHandler(file_handler)
+
+    @classmethod
+    def get_logger(cls, logger_name): return cls(logger_name)
+
+    def debug(self, *args, **kwargs): self.logger.debug(*args, **kwargs)
+    def info(self, *args, **kwargs): self.logger.info(*args, **kwargs)
+    def warn(self, *args, **kwargs): self.logger.warn(*args, **kwargs)
+    def warning(self, *args, **kwargs): self.logger.warning(*args, **kwargs)
+    def error(self, *args, **kwargs): self.logger.error(*args, **kwargs)
+    def critical(self, *args, **kwargs): self.logger.critical(*args, **kwargs)
+
+    def method(self, func):
+        logger = self.logger
+        def log_method(*args, **kwargs):
+            logger.debug('Running {} with arguments {} {}'.format(func.__name__, args, kwargs))
+            return func(*args, **kwargs)
+        return log_method
 
 
 #################

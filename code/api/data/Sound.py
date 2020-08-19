@@ -57,6 +57,7 @@ class soundHandler(coreFunc):
     def __init__(self, sound_dir:str = './sounds/', fileType:str = ''):
         self.sound_dir = sound_dir
         self.fileType = fileType
+        self.containerList = ['_default']
 
         # Default fallback
         setattr(self, '_default', Effect(None))
@@ -66,6 +67,7 @@ class soundHandler(coreFunc):
         for sound_file in sound_files:
             sound_name = os.path.basename(sound_file).split('.')[0]
             setattr(self, sound_name, Effect(sound_file))
+            self.containerList.append(sound_name)
 
     def __getattr__(self, name): 
         try: return self.__dict__[name]

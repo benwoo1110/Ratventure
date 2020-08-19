@@ -107,10 +107,8 @@ class events(coreFunc):
         on_thing = None
 
         # Loop through loaded things
-        for loaded_thing in self.thing.containerList:
-            # Get the object
-            thing_object = self.thing[loaded_thing]
-            
+        for thing_object in self.thing:
+
             # If thing is not loaded or selectable, dont check
             if not(hasattr(thing_object, 'loaded') and hasattr(thing_object, 'selectable')): continue
             if not (thing_object.loaded and thing_object.selectable): continue
@@ -142,11 +140,11 @@ class events(coreFunc):
         # Run events
         event_result = self.Event([
             eventRun(action='click', event=self.click, parameters=[on_thing]),
-            eventRun(action='keydown', event=self.keydown),
             eventRun(action='keyup', event=self.keyup),
+            eventRun(action='keydown', event=self.keydown),
             eventRun(action='game', event=self.game),
             eventRun(action='quit', event=self.quit)
-        ])       
+        ])
         
         # Output event's result if any
         if event_result.didAction(): 

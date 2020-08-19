@@ -99,12 +99,14 @@ class keyboardActions(coreFunc):
 
         # Add keyboard actions
         self.containerList = []
-        for name, action_data in actions.items():
-            self.add(name, action_data)
-            self.containerList.append(name)
+
+        if actions != None:
+            for name, action_data in actions.items(): self.add(name, action_data)
+            
 
     def add(self, name, data):
-        self.__dict__[name] = key(self.screen, name, **data)
+        setattr(self, name, key(self.screen, name, **data))
+        self.containerList.append(name)
 
 
 class key(coreFunc):

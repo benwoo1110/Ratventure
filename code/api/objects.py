@@ -1,6 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
+import concurrent.futures
 from code.api.core import log, coreFunc, os, pygame, pg, screens, window
 from code.api.events import events
 from code.api.actions import keyboardActions
@@ -21,7 +22,7 @@ logger.info('Loading up {}...'.format(filename))
 # Object classes #
 ##################
 class screen(coreFunc):
-    def __init__(self, name: str, main:any, surfaces:dict = {}, keyboard:dict = {}, 
+    def __init__(self, name: str, main:any, surfaces:dict = None, keyboard:dict = None, 
     bg_colour:tuple = None, seperateBackground:bool = False, selectable:bool = True, firstLoad:list = 'all'):
         self.name = name
         self.main = main
@@ -46,8 +47,9 @@ class screen(coreFunc):
         # Load surfaces
         self.loaded = []
         self.containerList = []
-        for name, surfaceData in surfaces.items():
-            self.addSurface(name, surfaceData)
+
+        if surfaces != None:
+            for name, surfaceData in surfaces.items(): self.addSurface(name, surfaceData)
 
         self.load(withSurfaces=firstLoad)
 
