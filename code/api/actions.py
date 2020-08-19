@@ -119,6 +119,69 @@ class key(coreFunc):
         self.action = action
 
 
+
+########################
+# Mouse action classes #
+########################
+class mouse:
+    isTouch = False
+    previous_mouse = None
+
+    @classmethod
+    def checkTouch(cls):
+        if cls.previous_mouse == None: cls.previous_mouse = pygame.mouse.get_pos()
+        
+        else:
+            current_mouse = pygame.mouse.get_pos()
+            move_x, move_y = pygame.mouse.get_rel()
+
+            diff_x = current_mouse[0] - cls.previous_mouse[0]
+            diff_y = current_mouse[1] - cls.previous_mouse[1]
+
+            if diff_x == 0 and diff_y == 0: return
+
+            if diff_x != move_x or diff_y != move_y:
+                cls.isTouch = True
+                print('touching')
+            elif cls.isTouch:
+                cls.isTouch = False
+                print('mousing')
+
+            cls.previous_mouse = current_mouse
+
+    @staticmethod
+    def hoverObject(Object, frame_coord:tuple = None):
+        if frame_coord == None: frame_coord = Object.frame.coord()
+        on_object = None
+
+        # Loop through loaded things
+        for thing_object in Object:
+
+            # If thing is not loaded or selectable, dont check
+            if not(hasattr(thing_object, 'loaded') and hasattr(thing_object, 'selectable')): continue
+            if not (thing_object.loaded and thing_object.selectable): continue
+
+            # Check if thing_object is doesnt have state
+            if hasattr(thing_object, 'state') and (thing_object.isState('Disabled') or thing_object.isState('Selected')): continue
+
+            # Check if object is to do an action
+            if hasattr(thing_object, 'action'):
+                # Check if mouse over object
+                if thing_object.frame.mouseIn(frame_coord):
+                    thing_object.switchState('Hover')
+                    on_object = thing_object
+                # Mouse not over object
+                elif thing_object.isState('Hover'): 
+                    thing_object.switchState('')
+
+            # Look for things in the object
+            if hasattr(thing_object, 'containerList') and thing_object.containerList != []:
+                result_thing = mouse.hoverObject(thing_object, frame_coord=thing_object.frame.coord(frame_coord))
+                if result_thing != None: on_object = result_thing
+
+        return on_object
+
+
 ##########################
 # Action outcome classes #
 ##########################

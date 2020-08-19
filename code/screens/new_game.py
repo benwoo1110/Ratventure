@@ -60,7 +60,7 @@ class new_game:
 
                 # Setup for next key repeat
                 new_game.time_pressed = time.time()
-                if new_game.repeat_interval > 0.025: new_game.repeat_interval /= 2.6
+                if new_game.repeat_interval > 0.05: new_game.repeat_interval /= 2.5
 
         # Get action
         event_result = new_game_screen.events.get()
@@ -70,7 +70,7 @@ class new_game:
 
         # Reset key interval when key is released
         if event_result.didAction('keyup'): 
-            new_game.time_pressed, new_game.repeat_interval = 0, 1.2
+            if nickname.text.validateChar(event_result.keyup.name): new_game.time_pressed, new_game.repeat_interval = 0, 1.2
 
         # Exit for editing textfield when enter/esc is pressed
         if event_result.didAction('keydown') and event_result.keydown.isName(13):

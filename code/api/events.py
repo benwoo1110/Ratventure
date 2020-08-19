@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import log, coreFunc, os, pg, pygame
-from code.api.actions import Info, Runclass, Alert, Switchscreen, actionResult
+from code.api.actions import Info, Runclass, Alert, Switchscreen, actionResult, mouse
 from code.api.data.Sound import Sound
 
 
@@ -85,11 +85,9 @@ class eventResults(coreFunc):
 
 
 class events(coreFunc):
-    isTouch = False
-    previous_mouse = None
-
-    def __init__(self, thing):
-        self.thing = thing
+    def __init__(self, Object):
+        self.Object = Object
+        self.on_object = None
 
     def Event(self, run_events:list):
         # init event result
@@ -104,59 +102,6 @@ class events(coreFunc):
 
         return result
 
-    @classmethod
-    def checkTouch(cls):
-        if cls.previous_mouse == None: cls.previous_mouse = pygame.mouse.get_pos()
-        
-        else:
-            current_mouse = pygame.mouse.get_pos()
-            move_x, move_y = pygame.mouse.get_rel()
-
-            diff_x = current_mouse[0] - cls.previous_mouse[0]
-            diff_y = current_mouse[1] - cls.previous_mouse[1]
-
-            if diff_x == 0 and diff_y == 0: return
-
-            if diff_x != move_x or diff_y != move_y:
-                cls.isTouch = True
-                print('touching')
-            elif cls.isTouch:
-                cls.isTouch = False
-                print('mousing')
-
-            cls.previous_mouse = current_mouse
-
-    def onThing(self, frame_coord:tuple = None):
-        if frame_coord == None: frame_coord = self.thing.frame.coord()
-        on_thing = None
-
-        # Loop through loaded things
-        for thing_object in self.thing:
-
-            # If thing is not loaded or selectable, dont check
-            if not(hasattr(thing_object, 'loaded') and hasattr(thing_object, 'selectable')): continue
-            if not (thing_object.loaded and thing_object.selectable): continue
-
-            # Check if thing_object is doesnt have state
-            if hasattr(thing_object, 'state') and (thing_object.isState('Disabled') or thing_object.isState('Selected')): continue
-
-            # Check if object is to do an action
-            if hasattr(thing_object, 'action'):
-                # Check if mouse over object
-                if thing_object.frame.mouseIn(frame_coord):
-                    thing_object.switchState('Hover')
-                    on_thing = thing_object
-                # Mouse not over object
-                elif thing_object.isState('Hover'): 
-                    thing_object.switchState('')
-
-            # Look for things in the object
-            if hasattr(thing_object, 'containerList') and thing_object.containerList != []:
-                result_thing = events(thing_object).onThing(frame_coord=thing_object.frame.coord(frame_coord))
-                if result_thing != None: on_thing = result_thing
-
-        return on_thing
-
     def get(self):
         # Run events
         event_result = self.Event([
@@ -169,29 +114,34 @@ class events(coreFunc):
         
         # Output event's result if any
         if event_result.didAction(): 
-            logger.debug('[{}] {}'.format(self.thing.name, event_result))
+            logger.debug('[{}] {}'.format(self.Object.name, event_result))
             return event_result
 
     def click(self, event):
-        events.checkTouch()
-        object_thing = self.onThing()
+        # Check for move hover when mouse moves
+        if event.type == pygame.MOUSEMOTION:
+            # events.checkTouch()
+            self.on_object = mouse.hoverObject(self.Object)
 
         # Check if item is valid
-        if object_thing == None: return
+        if self.on_object == None: return
 
         # If item is disabled
-        if hasattr(object_thing, 'state') and object_thing.isState('Disabled'): return
+        if hasattr(self.on_object, 'state') and self.on_object.isState('Disabled'): return
 
         # Check if mouse is clicked
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             # Play click sound
-            if object_thing.clickSound != None: object_thing.clickSound.play(maxtime=1000, withVolume=pg.config.sound.button)
+            if self.on_object.clickSound != None: self.on_object.clickSound.play(maxtime=1000, withVolume=pg.config.sound.button)
 
             # Set state to clicked
-            click_result = actionResult(name=object_thing.name, type=object_thing.type, outcome='clicked')
+            click_result = actionResult(name=self.on_object.name, type=self.on_object.type, outcome='clicked')
+
+            # Object back to normal state
+            self.on_object.switchState('')
             
             # Get the outcome of running
-            click_result.getOutcome(object_thing.action)
+            click_result.getOutcome(self.on_object.action)
 
             # Output result
             return click_result
@@ -244,8 +194,8 @@ class events(coreFunc):
 
     def keyEvent(self, event, keyboard_result):
         # When there was an action
-        if keyboard_result != None and hasattr(self.thing, 'keyboard'):
-            keyboard = self.thing.keyboard
+        if keyboard_result != None and hasattr(self.Object, 'keyboard'):
+            keyboard = self.Object.keyboard
             # Check if key that was pressed have action to run
             for name in keyboard.containerList:
                 key = keyboard[name]

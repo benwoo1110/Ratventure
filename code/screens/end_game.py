@@ -76,7 +76,7 @@ class end_game:
         if end_game_screen.win.loaded:
             # Reset key interval when key is released
             if event_result.didAction('keyup'): 
-                end_game.time_pressed, end_game.repeat_interval = 0, 1.2
+                 if nickname.text.validateChar(event_result.keyup.name): end_game.time_pressed, end_game.repeat_interval = 0, 1.2
 
             # Exit for editing textfield when enter is pressed OR Clicked on other UI elements
             if (event_result.didAction('keydown') and event_result.keydown.isName(13)) or (event_result.didAction('click') and not event_result.click.isName('leaderboard')):
