@@ -190,8 +190,8 @@ class surface(coreFunc):
 
 
 class item(coreFunc):
-    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False,
-data:dict = {}, selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False, clickSound:Sound = Sound.button_click):
+    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False, data:dict = None, 
+    selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False, clickSound:Sound = Sound.button_click):
         self.surface = surface
         self.name = name
         self.selectable = selectable
@@ -216,8 +216,9 @@ data:dict = {}, selectable: bool = True, state:str = '', action:any = None, lock
         # Store data
         self.loaded = False
         self.containerList = []
-        for name, dataData in data.items():
-            self.addData(name, dataData)
+
+        if data != None:
+            for name, dataData in data.items(): self.addData(name, dataData)
 
         # Load up item
         self.load(withData='all')

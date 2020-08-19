@@ -5,10 +5,14 @@ import os
 import pkg_resources
 
 
-########################
-# Environment Settings #
-########################
+##################
+# Setup Settings #
+##################
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
+# Set program path to current file so code import works
+myPath = os.path.dirname(os.path.abspath(__file__))
+os.chdir(myPath)
 
 
 ##########################
@@ -38,15 +42,7 @@ with open('requirements.txt', 'r') as requirements:
 #############
 from code.api.core import log, screens, pg
 from code.api.data.Sound import Sound
-import code.screens.mainmenu
-import code.screens.new_game
-import code.screens.game
-import code.screens.end_game
-import code.screens.saves
-import code.screens.leaderboard
-import code.screens.alert
-import code.screens.shop
-import code.screens.credit
+from code.screens import *
 
 
 #################

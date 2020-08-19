@@ -34,6 +34,9 @@ fullscreen: False
 # Config size of pygame window (Only apply if not fullscreen)
 scale: 0.6
 
+# Uses lots of CPU in a busy loop to make sure that fps timing is more accurate
+tick_busy: False
+
 
 # +-+-+-+-+-+-+-+-+-+
 # | Sounds Settings |

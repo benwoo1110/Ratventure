@@ -20,6 +20,7 @@ class coreFunc:
     def __setitem__(self, name, value): self.__dict__[name] = value
     def __setattr__(self, name, value): self.__dict__[name] = value
     def __getitem__(self, name): return self.__dict__[name]
+    def __str__(self): return '{}'.format(self.__dict__)
     def __repr__(self): return '{}'.format(self.__dict__)
 
     def __iter__(self):
@@ -43,6 +44,7 @@ class pg:
     config = config.get()
     keypressed = []
     clock = pygame.time.Clock()
+    tick = clock.tick_busy_loop if config.tick_busy else clock.tick
 
     class font:
         '''fonts found in fonts folder'''
@@ -167,7 +169,7 @@ class windowScreen(coreFunc):
 
             # Update
             pygame.display.update()
-            pg.clock.tick(pg.config.framerate)
+            pg.tick(pg.config.framerate)
 
         # Error
         except: logger.critical('Error updating pygame window!', exc_info=True)
