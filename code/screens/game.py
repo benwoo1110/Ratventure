@@ -73,8 +73,8 @@ game_screen = screen (
                 title='Exit Game',
                 content='Are you sure you want to exit to main menu?',
                 yes= [
-                    Switchscreen(type='back', screen='mainmenu'),
-                    Runclass(run=game.clear_events)
+                    Runclass(run=game.clear_events),
+                    Switchscreen(type='back', screen='mainmenu')
                 ]
             ),
         }

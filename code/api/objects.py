@@ -50,7 +50,7 @@ class screen(coreFunc):
         if surfaces != None:
             for name, surfaceData in surfaces.items(): self.addSurface(name, surfaceData)
 
-        self.load(withSurfaces=firstLoad)
+        self.load(withSurfaces=firstLoad, refresh=True)
 
         # Adding to data of all screen
         screens.add(self.name, self)
@@ -82,8 +82,8 @@ class screen(coreFunc):
 
         # Load all surfaces defined
         for Surface in toLoad: 
-            if refresh: getattr(self, Surface).load()
-            else: getattr(self, Surface).load(withItems='all', refresh=refresh)
+            if refresh: getattr(self, Surface).load(withItems='all', refresh=refresh)
+            else: getattr(self, Surface).load()
 
     def loadBackground(self):
         if self.seperateBackground:
@@ -145,9 +145,6 @@ class surface(coreFunc):
         else: logger.warn('Surface {} already unloaded.'.format(self.name))
 
     def load(self, withItems:list = None, refresh:bool = False):
-        # Display background
-        # if withBackground: self.loadBackground()
-
         # Get item list to load
         if withItems == None: toLoad = []
         elif withItems == 'all': toLoad = self.containerList
@@ -218,9 +215,6 @@ class item(coreFunc):
 
         if data != None:
             for name, dataData in data.items(): self.addData(name, dataData)
-
-        # Load up item
-        self.load(withData='all')
 
     def addData(self, name, dataData):
         if hasattr(dataData, 'name'): dataData.name = name

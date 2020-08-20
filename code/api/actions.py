@@ -63,7 +63,7 @@ class Alert(coreFunc):
             screens.alert.confirm.no.action = self.no
             screens.alert.confirm.yes.action = self.yes
 
-            screens.alert.confirm.load(withItems='all', refresh=True)
+            # Display to screen
             screens.alert.display(withSurfaces=['back', 'confirm'], refresh=True)
 
         elif self.type == 'notify':
@@ -74,7 +74,7 @@ class Alert(coreFunc):
             # Set actions
             screens.alert.notify.ok.action = self.ok
 
-            screens.alert.notify.load(withItems='all', refresh=True)            
+            # Display to screen
             screens.alert.display(withSurfaces=['back', 'notify'], refresh=True)
 
         # When alert type not found
