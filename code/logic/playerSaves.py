@@ -15,7 +15,6 @@ from code.logic.board import board
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 ##################
@@ -32,6 +31,7 @@ class playerSaves:
         return savefiles
 
     @staticmethod
+    @log.method(logger) # Sample usage
     def showList(page:int = 1):
         # Unload first
         screens.saves.unload()

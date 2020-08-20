@@ -19,18 +19,15 @@ from code.logic.store import store
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 # Ensure that saves folder is created
-filepath = './appdata/saves/'
-if not os.path.isdir(filepath):
-    # Create logs directory
-    try: os.mkdir(filepath)
-    except Exception as e: logger.error(e, exc_info=True)
-    else: logger.info('Created {} directory'.format(filepath))
+pg.createPath('./appdata/saves/')
 
 
+##################
+# Gameplay logic #
+##################
 class playerData:
 
     @staticmethod

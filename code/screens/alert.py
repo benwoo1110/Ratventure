@@ -13,7 +13,6 @@ from code.api.data.Text import Text, textFormat
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 ############################
@@ -49,18 +48,28 @@ alert_screen = screen (
     keyboard = {
         'dismiss': {
             'keys': [27],
-            'action': Switchscreen(type='back')
+            'action': Info(text='dismissed')
         }
     },
 
     surfaces = {
+        'back': {
+            'frame': Frame(x=0, y=0, w=1800, h=1080),
+            'dismiss': {
+                'type': 'object',
+                'frame': Frame(x=0, y=0, w=1800, h=1080),
+                'action': Info(text='dismissed'),
+                'clickSound': None
+            },
+        },
+
         'confirm': {
             'frame': Frame(x=495, y=256, w=811, h=573),
             'message': {
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
                 'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
-                'selectable': False,
+                'clickSound': False,
                 'data': {
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),
@@ -94,7 +103,7 @@ alert_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
                 'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
-                'selectable': False,
+                'clickSound': False,
                 'data': {
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),

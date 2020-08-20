@@ -93,6 +93,15 @@ class pg:
         else: logger.info('Saved data to {}'.format(filepath))
 
     @staticmethod
+    def createPath(path:str):
+        if not os.path.isdir(path):
+            # Create logs directory
+            try: os.mkdir(path)
+            except Exception as e: logger.error(e, exc_info=True)
+            else: logger.info('Created {} directory'.format(path))
+
+
+    @staticmethod
     def updateWindow():
         '''Displays screens/surfaces to pygame window'''
         pygame.display.update()
@@ -291,17 +300,11 @@ class Screens(coreFunc):
 ###########
 # Logging #
 ###########
-# Ensure that logs folder is created
-folderpath = './logs/'
-if not os.path.isdir(folderpath):
-    # Create logs directory
-    try: os.mkdir(folderpath)
-    except Exception as e: logger.error(e, exc_info=True)
-    else: print('Created {} directory'.format(folderpath))
-
+pg.createPath('./logs/')
 
 # Keep only certain number of log files 
 log_files = glob.glob("./logs/*.log")
+log_files.sort(key=os.path.getmtime)
 
 for index in range(len(log_files) - max(0, pg.config.logging.keep_logs-1)):
     os.remove(log_files[index])
@@ -320,32 +323,30 @@ file_handler = logging.FileHandler(LOG_FILE)
 file_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.file_level.upper()))
 file_handler.setFormatter(FORMATTER)
 
+# Create log handlers
 class log:
 
-    def __init__(self, logger_name):
-        self.logger_name = logger_name
+    @staticmethod
+    def get_logger(logger_name):
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
 
-        self.logger = logging.getLogger(logger_name)
-        self.logger.setLevel(logging.DEBUG)
-        self.logger.addHandler(console_handler)
-        self.logger.addHandler(file_handler)
+        logger.info('Loading up {}...'.format(logger_name))
 
-    @classmethod
-    def get_logger(cls, logger_name): return cls(logger_name)
+        return logger
 
-    def debug(self, *args, **kwargs): self.logger.debug(*args, **kwargs)
-    def info(self, *args, **kwargs): self.logger.info(*args, **kwargs)
-    def warn(self, *args, **kwargs): self.logger.warn(*args, **kwargs)
-    def warning(self, *args, **kwargs): self.logger.warning(*args, **kwargs)
-    def error(self, *args, **kwargs): self.logger.error(*args, **kwargs)
-    def critical(self, *args, **kwargs): self.logger.critical(*args, **kwargs)
-
-    def method(self, func):
-        logger = self.logger
-        def log_method(*args, **kwargs):
-            logger.debug('Running {} with arguments {} {}'.format(func.__name__, args, kwargs))
-            return func(*args, **kwargs)
-        return log_method
+    @staticmethod
+    def method(logger):
+        '''Decorator to log all parameters pass through a given function'''
+        def inner_function(func):
+            @wraps(func)
+            def log_method(*args, **kwargs):
+                logger.debug('Running {} with arguments {} {}'.format(func.__name__, args, kwargs))
+                return func(*args, **kwargs)
+            return log_method
+        return inner_function
 
 
 #################
@@ -353,22 +354,13 @@ class log:
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 logger.debug('[config] {}'.format(pg.config))
-
-
-# Ensure that appdata folder is created
-filepath = './appdata/'
-if not os.path.isdir(filepath):
-    # Create logs directory
-    try: os.mkdir(filepath)
-    except Exception as e: logger.error(e, exc_info=True)
-    else: logger.info('Created {} directory'.format(filepath))
 
 
 ################
 # Setup pygame #
 ################
+pg.createPath('./appdata/')
 pygame.init()
 window = windowScreen()
 screens = Screens()

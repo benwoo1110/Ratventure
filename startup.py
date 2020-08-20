@@ -2,12 +2,16 @@
 # Import and initialize the librarys #
 ######################################
 import os
+import time
 import pkg_resources
 
 
 ##################
 # Setup Settings #
 ##################
+start = time.perf_counter()
+
+# Disable pygame message
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 # Set program path to current file so code import works
@@ -40,8 +44,7 @@ with open('requirements.txt', 'r') as requirements:
 #############
 # Load code #
 #############
-from code.api.core import log, screens, pg
-from code.api.data.Sound import Sound
+from code.api.core import log, screens
 from code.screens import *
 
 
@@ -50,13 +53,11 @@ from code.screens import *
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 ##############
 # Start Game #
 ##############
-if __name__ == '__main__':
-    logger.info('Program started!')
-    Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=500)
-    screens.mainloop(startScreen='mainmenu')
+end = time.perf_counter()
+logger.info('Program started in {:.3f} seconds!'.format(end-start))
+screens.mainloop(startScreen='mainmenu')

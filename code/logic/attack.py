@@ -16,7 +16,6 @@ from code.logic.playerRank import playerRank
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 ##################

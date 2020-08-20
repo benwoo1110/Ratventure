@@ -9,7 +9,6 @@ from code.api.core import log, coreFunc, os, screens
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 ########################
@@ -48,7 +47,11 @@ class Alert(coreFunc):
 
     def do(self):
         # Unload first
-        screens.alert.unload()
+        screens.alert.unload(withSurfaces=['confirm', 'notify'])
+
+        # Common dismissed action
+        screens.alert.keyboard.dismiss.action = self.dismiss
+        screens.alert.back.dismiss.action = self.dismiss
 
         # Check type of alert to load
         if self.type == 'confirm': 
@@ -59,9 +62,9 @@ class Alert(coreFunc):
             # Set actions
             screens.alert.confirm.no.action = self.no
             screens.alert.confirm.yes.action = self.yes
-            screens.alert.keyboard.dismiss.action = self.dismiss
 
-            screens.alert.confirm.display(withItems='all', refresh=True)
+            screens.alert.confirm.load(withItems='all', refresh=True)
+            screens.alert.display(withSurfaces=['back', 'confirm'], refresh=True)
 
         elif self.type == 'notify':
             # Set messages
@@ -70,9 +73,9 @@ class Alert(coreFunc):
 
             # Set actions
             screens.alert.notify.ok.action = self.ok
-            screens.alert.keyboard.dismiss.action = self.dismiss            
-            
-            screens.alert.notify.display(withItems='all', refresh=True)
+
+            screens.alert.notify.load(withItems='all', refresh=True)            
+            screens.alert.display(withSurfaces=['back', 'notify'], refresh=True)
 
         # When alert type not found
         else: logger.error('No such alert type: {}'.format(self.type))

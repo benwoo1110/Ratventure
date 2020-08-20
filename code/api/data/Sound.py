@@ -10,7 +10,6 @@ from code.api.data.Frame import Frame
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.info('Loading up {}...'.format(filename))
 
 
 # Try to start sound mixer
