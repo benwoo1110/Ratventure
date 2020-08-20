@@ -13,12 +13,14 @@ logger = log.get_logger(filename)
 
 
 class Images(coreFunc):
-    def __init__(self, imagePage:list, frame:Frame, fileType:str = '.png', scale:bool = False):
+    def __init__(self, imagePage:list, frame:Frame, fileType:str = '.png', scale:bool = False, alpha:bool = False):
         self.imagePage = imagePage
         self.fileType = fileType
         self.frame = frame
+        self.alpha = alpha
         self.containerList = []
-        self.get(scale)
+        self.scale = scale
+        self.get()
 
     def getFilesList(self) -> list:
         # Define variables
@@ -26,7 +28,7 @@ class Images(coreFunc):
         # Get list of image from dir
         return glob.glob(image_dir)
 
-    def get(self, scale:bool = False):
+    def get(self):
         self.image_dir_list = self.getFilesList()
         # get the image
         for image in self.image_dir_list:
@@ -34,10 +36,15 @@ class Images(coreFunc):
             image_name = os.path.basename(image).split('.')[0]
 
             # Load image
-            if scale:
+            if self.alpha: loaded_image = pygame.image.load(image).convert_alpha()
+            else: loaded_image = pygame.image.load(image).convert()
+
+            # With scaling
+            if self.scale:
                 # Load surface
-                image_surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
-                loaded_image = pygame.image.load(image).convert_alpha()
+                if self.alpha: image_surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
+                else: image_surface = pygame.surface.Surface(self.frame.size()) 
+
                 # Width or height is larger, get scale
                 w, h = loaded_image.get_size()
                 if w > h: scale_factor = self.frame.w / w
@@ -46,10 +53,11 @@ class Images(coreFunc):
                 # Scale surface
                 loaded_image = pygame.transform.smoothscale(loaded_image, (int(w * scale_factor), int(h * scale_factor)))
                 w, h = loaded_image.get_size()
+                
                 # Load to image surface
                 image_surface.blit(loaded_image, ((int(self.frame.w-w)/2), (int(self.frame.h-h)/2)))
             
-            else: image_surface = pygame.image.load(image).convert_alpha()
+            else: image_surface = loaded_image
 
             # Store image
             setattr(self, image_name, image_surface)

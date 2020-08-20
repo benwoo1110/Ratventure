@@ -21,13 +21,14 @@ logger = log.get_logger(filename)
 # Object classes #
 ##################
 class screen(coreFunc):
-    def __init__(self, name: str, main:any, surfaces:dict = None, keyboard:dict = None, 
-    bg_colour:tuple = None, seperateBackground:bool = False, selectable:bool = True, firstLoad:list = 'all'):
+    def __init__(self, name: str, main:any, surfaces:dict = None, keyboard:dict = None, bg_colour:tuple = None, 
+    seperateBackground:bool = False, selectable:bool = True, firstLoad:list = 'all', alpha:bool = False):
         self.name = name
         self.main = main
         self.bg_colour = bg_colour
         self.selectable = selectable
         self.frame = Frame(x=window.x, y=window.y, w=window.width, h=window.height)
+        self.alpha = alpha
 
         # Event setup
         self.events = events(self)
@@ -36,7 +37,8 @@ class screen(coreFunc):
         self.keyboard = keyboardActions(self, keyboard)
 
         # Setting up screen
-        self.Screen = pygame.surface.Surface(window.size(), pygame.SRCALPHA)
+        if self.alpha: self.Screen = pygame.surface.Surface(window.size(), pygame.SRCALPHA)
+        else: self.Screen = pygame.surface.Surface(window.size())
 
         # Get background image
         self.seperateBackground = seperateBackground
@@ -116,19 +118,21 @@ class screen(coreFunc):
 
 class surface(coreFunc):
     def __init__(self, screen, name, frame:Frame, selectable:bool = True, 
-    bg_colour:tuple = None, directDisplay:bool = False, **items):
+    bg_colour:tuple = None, directDisplay:bool = False, alpha:bool = False, **items):
         self.screen = screen
         self.name = name
         self.frame = frame
         self.selectable = selectable
         self.bg_colour = bg_colour
         self.directDisplay = directDisplay
+        self.alpha = alpha
 
         # Create surface
-        self.Surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
+        if self.alpha: self.Surface = pygame.surface.Surface(self.frame.size(), pygame.SRCALPHA)
+        else: self.Surface = pygame.surface.Surface(self.frame.size())
         
         # Get background image
-        self.bg_image = Images([self.screen.name, self.name], frame=self.frame)
+        self.bg_image = Images([self.screen.name, self.name], frame=self.frame, alpha=alpha)
         self.loadBackground()
 
         # Store items

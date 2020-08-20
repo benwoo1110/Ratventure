@@ -13,9 +13,9 @@ logger = log.get_logger(filename)
 
 
 class Sprite(coreFunc):
-    def __init__(self, spritePage:list, size:tuple):
+    def __init__(self, spritePage:list, size:tuple, alpha:bool = True):
         # Get sprite images
-        images = Images(frame=Frame(x=0,y=0,w=size[0],h=size[1]), imagePage=spritePage, scale=True)
+        images = Images(frame=Frame(x=0,y=0,w=size[0],h=size[1]), imagePage=spritePage, scale=True, alpha=alpha)
         self.containerList = images.containerList
 
         # Load them to attributes

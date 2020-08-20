@@ -44,6 +44,8 @@ alert_screen = screen (
     main = alert,
     bg_colour = (0, 0, 0, 100),
     seperateBackground = True,
+    alpha = True,
+    firstLoad = [],
 
     keyboard = {
         'dismiss': {
@@ -55,6 +57,7 @@ alert_screen = screen (
     surfaces = {
         'back': {
             'frame': Frame(x=0, y=0, w=1800, h=1080),
+            'alpha': True,
             'dismiss': {
                 'type': 'object',
                 'frame': Frame(x=0, y=0, w=1800, h=1080),
@@ -65,6 +68,7 @@ alert_screen = screen (
 
         'confirm': {
             'frame': Frame(x=495, y=256, w=811, h=573),
+            'alpha': True,
             'message': {
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
@@ -99,6 +103,7 @@ alert_screen = screen (
 
         'notify': {
             'frame': Frame(x=495, y=256, w=811, h=573),
+            'alpha': True,
             'message': {
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
