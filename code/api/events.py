@@ -18,7 +18,8 @@ logger.info('Loading up {}...'.format(filename))
 # Event classes #
 #################
 class Sequence(coreFunc):
-    def __init__(self, n:int, timer:int = 10, withCounter:bool = True, autoRemove:bool = True):
+    def __init__(self, name, n:int, timer:int = 10, withCounter:bool = True, autoRemove:bool = True):
+        self.name = name
         self.Event = pygame.USEREVENT + n
         self.counter = 0
         self.queue = []
@@ -43,12 +44,14 @@ class Sequence(coreFunc):
         self.counter = 0
 
 class gameevent(coreFunc):
-    def __init__(self, Events:dict = {}):
-        for name, Event in Events.items():
-            self.add(name, Event)
+    def __init__(self, Events:dict = None):
+        self.containerList = []
+        if Events != None:
+            for name, Event in Events.items(): self.add(name, Event)
     
     def add(self, name:str, Event:dict):
-        setattr(self, name, Sequence(**Event))
+        setattr(self, name, Sequence(name, **Event))
+        self.containerList.append(name)
 
 
 gameEvent = gameevent(
@@ -119,8 +122,7 @@ class events(coreFunc):
 
     def click(self, event):
         # Check for move hover when mouse moves
-        if event.type == pygame.MOUSEMOTION:
-            # events.checkTouch()
+        if event.type == pygame.MOUSEMOTION or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
             self.on_object = mouse.hoverObject(self.Object)
 
         # Check if item is valid
@@ -147,9 +149,9 @@ class events(coreFunc):
             return click_result
 
     def game(self, event):
-        for name, Event in gameEvent.__dict__.items():
+        for Event in gameEvent:
             # Init result
-            game_result = actionResult(name=name, type='gameEvent')
+            game_result = actionResult(name=Event.name, type='gameEvent')
 
             # Check for event
             if event.type == Event.Event:

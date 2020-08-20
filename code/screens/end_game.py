@@ -5,7 +5,7 @@ import time
 from code.api.core import os, log, pg, pygame
 from code.api.objects import screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat
+from code.api.data.Text import Text, textFormat, textValidate
 from code.api.data.Sound import Sound
 from code.logic.player import player
 from code.logic.playerData import playerData
@@ -76,17 +76,21 @@ class end_game:
         if end_game_screen.win.loaded:
             # Reset key interval when key is released
             if event_result.didAction('keyup'): 
-                 if nickname.text.validateChar(event_result.keyup.name): end_game.time_pressed, end_game.repeat_interval = 0, 1.2
+                 if nickname.nickname.validateChar(event_result.keyup.name): 
+                     end_game.time_pressed, end_game.repeat_interval = 0, 1.2
 
             # Exit for editing textfield when enter is pressed OR Clicked on other UI elements
-            if (event_result.didAction('keydown') and event_result.keydown.isName(13)) or (event_result.didAction('click') and not event_result.click.isName('leaderboard')):
-                # Apply teh new name to leaderboard data
-                end_game_screen.win.leaderboard.rankid = playerRank.rename(
-                    end_game_screen.win.leaderboard.nickname.text,
-                    end_game_screen.win.leaderboard.rankid
-                    )
-                # Revert back to deselected state
-                end_game.rankColour()
+            if (event_result.didAction('keydown') and event_result.keydown.isName(13)) or \
+            (event_result.didAction('click') and not event_result.click.isName('leaderboard')):
+                # Validate nickname
+                if nickname.nickname.validateText():
+                    # Apply teh new name to leaderboard data
+                    end_game_screen.win.leaderboard.rankid = playerRank.rename(
+                        end_game_screen.win.leaderboard.nickname.text,
+                        end_game_screen.win.leaderboard.rankid
+                        )
+                    # Revert back to deselected state
+                    end_game.rankColour()
 
         # Quit program
         if event_result.contains('outcome', 'quit'): return 'quit'
@@ -121,7 +125,6 @@ end_game_screen = screen (
             'background': {
                 'type': 'object',
                 'frame': Frame(x=0, y=0, w=1800, h=1080),
-                'action': Info(text='Deselect'),
                 'clickSound': None
             },
             'new_game': {
@@ -152,7 +155,8 @@ end_game_screen = screen (
                     'nickname': Text (
                         frame = Frame(x=573, y=443, w=497, h=111),
                         text = 'Demo',
-                        format = textFormat(fontSize=68, align='left', pos='center', colour=pg.colour.white)
+                        format = textFormat(fontSize=68, align='left', pos='center', colour=pg.colour.white),
+                        validation = textValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
                     ),
                     'days': Text (
                         editable = False,
