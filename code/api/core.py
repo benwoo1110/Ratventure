@@ -120,15 +120,15 @@ class pg:
 class windowScreen(coreFunc):
     def __init__(self):
         # Set icon
-        if os.path.isfile(pg.config.icon_file): 
-            pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
-
-        elif pg.config.icon_file != '': 
-            logger.warning('Error loading app icon image "{}"'.format(pg.config.icon_file))
+        try: pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
+        except FileNotFoundError: logger.error('No app icon image found at {}'.format(pg.config.icon_file))
+        except Exception: logger.error('Error loading app icon image {}!'.format(pg.config.icon_file), exc_info=True)
 
         # Set title
-        pygame.display.set_caption(pg.config.title)
+        try: pygame.display.set_caption(pg.config.title)
+        except Exception: logger.error('Unable set display caption!', exc_info=True)
 
+        # Set default screen size
         self.width = 1800
         self.height = 1080
 
