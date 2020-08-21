@@ -267,9 +267,7 @@ class attack:
 
             # Player is dead, load game over screen
             if player.stats.health[0] <= 0:
-                screens.end_game.unload()
-                screens.end_game.gameover.load()
-                attack.game_end()
+                attack.game_end('gameover')
                 return True
 
             # Enemy is dead
@@ -277,9 +275,7 @@ class attack:
                 # If king is defeated, load win screen
                 if enemy.name == 'king':
                     # Player won
-                    screens.end_game.unload()
-                    screens.end_game.win.load()
-                    attack.game_end()
+                    attack.game_end('win')
                     return True
                 
                 else:
@@ -287,16 +283,17 @@ class attack:
                     return True
 
     @staticmethod
-    def game_end():
-        # Stop game music
-        # Play game background music
+    def game_end(type:str):
+        screens.end_game.unload()
+
+        # Stop game music, back to normal background music
         if not Sound.background.isPlaying():
             pygame.mixer.fadeout(200)
             Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
 
         end_game_screen = screens.end_game
         # Check if win screen is the one loaded
-        if end_game_screen.win.loaded:
+        if type == 'win':
             # Save to leaderboard
             end_game_screen.win.leaderboard.rankid = playerRank.add()
 
@@ -306,13 +303,16 @@ class attack:
             end_game_screen.win.leaderboard.days.setText(str(player.stats.day), withDisplay=False)
 
             # Load the changes
-            end_game_screen.win.load(withItems=['leaderboard'], refresh=True)
+            end_game_screen.win.load(withItems='all', refresh=True)
 
             # Play win sound effect
             Sound.win.play()
 
         # Check if gameover screen is the one loaded
-        elif end_game_screen.gameover.loaded:
+        elif type == 'gameover':
+            # Load the screen changes
+            end_game_screen.gameover.load(withItems='all', refresh=True)
+
             # Play gameover sound effect
             Sound.game_over.play()
 

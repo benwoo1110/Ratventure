@@ -76,9 +76,7 @@ class playerData:
         screens.game.info.hero.stats.setText('', withDisplay=False)
 
         # Load screen
-        screens.game.map.load(withItems=['grid'])
-        screens.game.info.load(withItems='all')
-        screens.game.in_town.load()
+        screens.game.load(withSurfaces=['map', 'info', 'in_town'], refresh=True)
 
         # Switch to game screen
         screens.changeStack(type='load', screen='game')
@@ -155,8 +153,7 @@ class playerData:
         else: screens.game.in_open.load(withItems=['sense_orb'])
 
         # Load game screen
-        screens.game.map.load(withItems=['grid'])
-        screens.game.info.load(withItems='all')
+        screens.game.load(withSurfaces=['map', 'info'], refresh=True)
 
         # Switch to game screen
         screens.changeStack(type='load', screen='game')

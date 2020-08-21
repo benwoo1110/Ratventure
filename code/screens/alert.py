@@ -73,7 +73,7 @@ alert_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
                 'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
-                'clickSound': False,
+                'clickSound': None,
                 'data': {
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),
@@ -108,7 +108,7 @@ alert_screen = screen (
                 'type': 'text',
                 'frame': Frame(x=57, y=33, w=696, h=465),
                 'imageData': {'frame': Frame(x=57, y=33, w=696, h=465)},
-                'clickSound': False,
+                'clickSound': None,
                 'data': {
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),

@@ -101,7 +101,7 @@ class end_game:
 end_game_screen = screen (
     name = 'end_game',
     main = end_game,
-    # firstLoad = ['win'],
+    firstLoad = [],
     
     surfaces = {
         'gameover': {

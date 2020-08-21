@@ -60,6 +60,7 @@ saves_screen = screen (
     surfaces = {
         'board': {
             'frame': Frame(x=0, y=0, w=1800, h=1080),
+            'alpha': True,
             'back': {
                 'type': 'button',
                 'frame': Frame(x=141, y=58, w=132, h=103),
