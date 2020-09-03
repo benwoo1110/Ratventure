@@ -3,7 +3,7 @@
 ######################################
 import textwrap
 import re
-from code.api.core import os, log, coreFunc, pg, pygame
+from code.api.core import os, log, coreFunc, PgEss, pygame
 from code.api.actions import Alert
 from code.api.data.Frame import Frame
 from code.api.data.Sound import Sound
@@ -16,8 +16,8 @@ filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
 
 
-class textFormat(coreFunc):
-    def __init__(self, fontType:str = pg.font.knigqst, fontSize:int = 36, colour:tuple = pg.colour.black, 
+class TextFormat(coreFunc):
+    def __init__(self, fontType:str = PgEss.font.knigqst, fontSize:int = 36, colour:tuple = PgEss.colour.black, 
     warpText:int = None, align:str = 'left', pos:str = 'top', lineSpacing:int = 1):
         self.fontType = fontType
         self.fontSize = fontSize
@@ -37,7 +37,7 @@ class textFormat(coreFunc):
         self.font = pygame.font.Font(self.fontType, self.fontSize)
 
 
-class textValidate(coreFunc):
+class TextValidate(coreFunc):
     def __init__(self, charsAllowed:list = list(range(32,65)) + list(range(91,127)) + [8], 
     inAscii:bool = True, regex:str = '[\w\D.]+', defaultText:str = 'default', customMethod:any = None, invalidPrompt:str = None):
         self.charsAllowed = charsAllowed
@@ -49,7 +49,7 @@ class textValidate(coreFunc):
 
 class Text(coreFunc):
     def __init__(self, frame:Frame, text:str = '', prefix:str = '', suffix:str = '', name=None, item=None,
-    format:textFormat = textFormat(), validation:textValidate = textValidate(), editable:bool = True):
+    format:TextFormat = TextFormat(), validation:TextValidate = TextValidate(), editable:bool = True):
         self.name = name
         self.item = item
         self.frame = frame

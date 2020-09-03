@@ -6,8 +6,8 @@ from datetime import datetime
 import glob
 from code.api.core import os, log, screens
 from code.api.data.Sound import Sound
-from code.logic.playerData import playerData
-from code.logic.board import board
+from code.logic.playerData import PlayerData
+from code.logic.board import Board
 
 
 #################
@@ -20,7 +20,7 @@ logger = log.get_logger(filename)
 ##################
 # Gameplay logic #
 ##################
-class playerSaves:
+class PlayerSaves:
 
     @staticmethod
     def get() -> list:
@@ -40,13 +40,13 @@ class playerSaves:
         screens.saves.loadBackground()
 
         # Get the savefiles
-        savefiles = playerSaves.get()
+        savefiles = PlayerSaves.get()
 
         # Set board paging
-        page = board.setPage(screen='saves', number_of_files=len(savefiles), page=page)
+        page = Board.setPage(screen='saves', number_of_files=len(savefiles), page=page)
         
         # Set board next and back arrows
-        board.arrowsState('saves')
+        Board.arrowsState('saves')
 
         # Load up board
         screens.saves.board.load(withItems='all', refresh=True)
@@ -92,7 +92,7 @@ class playerSaves:
 
     @staticmethod
     def updateList(page:int):
-        playerSaves.showList(int(board.currentPage('saves')) + page)
+        PlayerSaves.showList(int(Board.currentPage('saves')) + page)
 
     @staticmethod
     def playSaved(number:int):
@@ -100,7 +100,7 @@ class playerSaves:
         fileid = screens.saves['list_{}'.format(number)].file.fileid
 
         # Load the the game instance
-        playerData.load(fileid)
+        PlayerData.load(fileid)
 
     @staticmethod
     def deleteSaved(number:int):
@@ -118,7 +118,7 @@ class playerSaves:
         Sound.trash.play()
 
         # Reload list view
-        playerSaves.showList(int(board.currentPage('saves')))
+        PlayerSaves.showList(int(Board.currentPage('saves')))
 
     @staticmethod
     def deleteAll():

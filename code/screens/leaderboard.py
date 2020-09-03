@@ -1,11 +1,11 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, screens
-from code.api.objects import screen, Frame
+from code.api.core import os, log, PgEss, screens
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat
-from code.logic.playerRank import playerRank
+from code.api.data.Text import Text, TextFormat
+from code.logic.playerRank import PlayerRank
 
 
 #################
@@ -22,7 +22,7 @@ class leaderboard:
 
     @staticmethod
     def init():
-        playerRank.showList()
+        PlayerRank.showList()
 
     @staticmethod
     def run():
@@ -38,7 +38,7 @@ class leaderboard:
 ##################
 # Screen objects #
 ##################
-leaderboard_screen = screen (
+leaderboard_screen = Screen (
     name = 'leaderboard',
     main = leaderboard,
     firstLoad=[],
@@ -50,11 +50,11 @@ leaderboard_screen = screen (
         },
         'page_back': {
             'keys': [1073741904],
-            'action': Runclass(run=playerRank.updateList, parameters={'page': -1})
+            'action': Runclass(run=PlayerRank.updateList, parameters={'page': -1})
         },
         'page_next': {
             'keys': [1073741903],
-            'action': Runclass(run=playerRank.updateList, parameters={'page': 1})
+            'action': Runclass(run=PlayerRank.updateList, parameters={'page': 1})
         },
     },
 
@@ -77,7 +77,7 @@ leaderboard_screen = screen (
                     'pages': Text (
                         frame = Frame(x=769, y=974, w=262, h=75),
                         prefix = '1', text = ' / ', suffix = '10',
-                        format = textFormat(fontSize=68, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=68, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -85,13 +85,13 @@ leaderboard_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=729, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=729, y=984, w=96, h=40)},
-                'action': Runclass(run=playerRank.updateList, parameters={'page': -1})
+                'action': Runclass(run=PlayerRank.updateList, parameters={'page': -1})
             },
             'page_next': {
                 'type': 'button',
                 'frame': Frame(x=1031, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=1031, y=984, w=96, h=40)},
-                'action': Runclass(run=playerRank.updateList, parameters={'page': 1})
+                'action': Runclass(run=PlayerRank.updateList, parameters={'page': 1})
             },
         },
 
@@ -106,18 +106,18 @@ leaderboard_screen = screen (
                     'postion': Text (
                         frame = Frame(x=149, y=3, w=142, h=140),
                         text = '1',
-                        format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                     'nickname': Text (
                         frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'days': Text (
                         frame = Frame(x=1210, y=3, w=379, h=140),
                         text = '100',
                         suffix = ' days',
-                        format = textFormat(fontSize=96, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -134,18 +134,18 @@ leaderboard_screen = screen (
                     'postion': Text (
                         frame = Frame(x=149, y=3, w=142, h=140),
                         text = '1',
-                        format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                     'nickname': Text (
                         frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'days': Text (
                         frame = Frame(x=1210, y=3, w=379, h=140),
                         text = '100',
                         suffix = ' days',
-                        format = textFormat(fontSize=96, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -162,18 +162,18 @@ leaderboard_screen = screen (
                     'postion': Text (
                         frame = Frame(x=149, y=3, w=142, h=140),
                         text = '1',
-                        format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                     'nickname': Text (
                         frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'days': Text (
                         frame = Frame(x=1210, y=3, w=379, h=140),
                         text = '100',
                         suffix = ' days',
-                        format = textFormat(fontSize=96, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -190,18 +190,18 @@ leaderboard_screen = screen (
                     'postion': Text (
                         frame = Frame(x=149, y=3, w=142, h=140),
                         text = '1',
-                        format = textFormat(fontSize=96, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                     'nickname': Text (
                         frame = Frame(x=316, y=3, w=670, h=140),
                         text = 'Demo',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'days': Text (
                         frame = Frame(x=1210, y=3, w=379, h=140),
                         text = '100',
                         suffix = ' days',
-                        format = textFormat(fontSize=96, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },

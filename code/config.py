@@ -26,7 +26,7 @@ framerate: 60
 title: 'Ratventure'
 
 # Application icon file location
-icon_file: './icon.png'
+icon_file: './gamefiles/icon.png'
 
 # Pygame windows fills the entire screen
 fullscreen: False
@@ -86,14 +86,14 @@ class Struct:
 ##################
 # Config actions #
 ##################
-class config:
+class Config:
     file_dir = './config.yml'
 
     @staticmethod
     def check():
         # Create file if it doesnt exist
-        if not os.path.isfile(config.file_dir):
-            with open(config.file_dir, 'w') as config_file:
+        if not os.path.isfile(Config.file_dir):
+            with open(Config.file_dir, 'w') as config_file:
                 config_file.write(default_config_contents)
                 print("Generated new ./config.yml")
 
@@ -101,17 +101,17 @@ class config:
     def get() -> Struct:
         try:
             # Read from config file
-            with open(config.file_dir) as config_file:
+            with open(Config.file_dir) as config_file:
                 parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
                 config_file.close()
 
         except FileNotFoundError: 
             # File not found, run check to create new one
             print('Config not found, trying to create a new one...')
-            config.check()
+            Config.check()
 
             # Try again
-            with open(config.file_dir) as config_file:
+            with open(Config.file_dir) as config_file:
                 parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
                 config_file.close()
 
@@ -119,11 +119,11 @@ class config:
             traceback.print_exc()
             # Possible issue with yaml file formating, try reset config
             print('Config seem broken, renaming it to ./config_broken.yml')
-            os.rename(config.file_dir, './config_broken.yml')
-            config.check()
+            os.rename(Config.file_dir, './config_broken.yml')
+            Config.check()
 
             # Try again
-            with open(config.file_dir) as config_file:
+            with open(Config.file_dir) as config_file:
                 parsed_config_file = yaml.load(config_file, Loader=yaml.FullLoader)
                 config_file.close()
 
@@ -134,4 +134,4 @@ class config:
 ###################
 # Checking config #
 ###################
-config.check()
+Config.check()

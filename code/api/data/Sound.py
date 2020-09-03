@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pg, pygame, glob
+from code.api.core import log, coreFunc, os, PgEss, pygame, glob
 from code.api.data.Frame import Frame
 
 
@@ -34,7 +34,7 @@ class Effect(coreFunc):
         if self.soundfile == None: return
         
         # Play the sound
-        self.soundfile.set_volume(withVolume*pg.config.sound.effects)
+        self.soundfile.set_volume(withVolume*PgEss.config.sound.effects)
         self.soundfile.play(loops=loops, maxtime=maxtime, fade_ms=fadetime)
 
     def stop(self, fadetime:int = 0): 

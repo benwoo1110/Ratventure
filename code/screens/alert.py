@@ -1,11 +1,11 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg, screens
-from code.api.objects import screen, Frame
+from code.api.core import os, log, PgEss, screens
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.events import gameEvent
-from code.api.data.Text import Text, textFormat
+from code.api.data.Text import Text, TextFormat
 
 
 #################
@@ -39,7 +39,7 @@ class alert:
 ##################
 # Screen objects #
 ##################
-alert_screen = screen (
+alert_screen = Screen (
     name = 'alert',
     main = alert,
     bg_colour = (0, 0, 0, 100),
@@ -78,12 +78,12 @@ alert_screen = screen (
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),
                         text = 'Title Here',
-                        format = textFormat(fontSize=88, align='center', pos='center', colour=pg.colour.black)
+                        format = TextFormat(fontSize=88, align='center', pos='center', colour=PgEss.colour.black)
                     ),
                     'content': Text (
                         frame = Frame(x=57, y=156, w=697, h=183),
                         text = 'Content of message here.',
-                        format = textFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=pg.colour.black)
+                        format = TextFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=PgEss.colour.black)
                     ),
                 },
             },
@@ -113,12 +113,12 @@ alert_screen = screen (
                     'title': Text (
                         frame = Frame(x=57, y=48, w=697, h=95),
                         text = 'Title Here',
-                        format = textFormat(fontSize=88, align='center', pos='center', colour=pg.colour.black)
+                        format = TextFormat(fontSize=88, align='center', pos='center', colour=PgEss.colour.black)
                     ),
                     'content': Text (
                         frame = Frame(x=57, y=156, w=697, h=183),
                         text = 'Content of message here.',
-                        format = textFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=pg.colour.black)
+                        format = TextFormat(fontSize=68, align='center', pos='center', warpText=24, lineSpacing=0.8, colour=PgEss.colour.black)
                     ),
                 },
             },

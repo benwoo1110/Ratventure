@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens, coreFunc, pg
+from code.api.core import os, log, screens, coreFunc, PgEss
 from code.api.events import gameEvent
 from code.api.actions import Runclass
 
@@ -87,11 +87,11 @@ class Stats(coreFunc):
             else: text = '+ {}'.format(text)
 
             # Set text colour to represent the stats type
-            if name == 'damage': animate.stats.format.colour = pg.colour.red
-            elif name == 'defence': animate.stats.format.colour = pg.colour.blue
-            elif name == 'health': animate.stats.format.colour = pg.colour.green
-            elif name == 'elixir': animate.stats.format.colour = pg.colour.purple
-            else: animate.stats.format.colour = pg.colour.white
+            if name == 'damage': animate.stats.format.colour = PgEss.colour.red
+            elif name == 'defence': animate.stats.format.colour = PgEss.colour.blue
+            elif name == 'health': animate.stats.format.colour = PgEss.colour.green
+            elif name == 'elixir': animate.stats.format.colour = PgEss.colour.purple
+            else: animate.stats.format.colour = PgEss.colour.white
 
             animate.stats.setText(text, withDisplay=False)
 

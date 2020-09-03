@@ -1,8 +1,8 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pygame, pg
-from code.api.objects import screen, Frame
+from code.api.core import os, log, pygame, PgEss
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
 from code.api.data.Sound import Sound
 
@@ -24,7 +24,7 @@ class mainmenu:
         # Play game background music
         if not Sound.background.isPlaying():
             pygame.mixer.fadeout(600)
-            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
+            Sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
     
     @staticmethod
     def run():
@@ -40,7 +40,7 @@ class mainmenu:
 ##################
 # Screen objects #
 ##################
-mainmenu_screen = screen (
+mainmenu_screen = Screen (
     name = 'mainmenu',
     main = mainmenu,
     surfaces = {

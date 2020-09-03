@@ -4,14 +4,14 @@
 import json
 import uuid
 import time
-from code.api.core import os, log, screens, pg, pygame
+from code.api.core import os, log, screens, PgEss, pygame
 from code.api.actions import Alert
 from code.api.data.Sound import Sound
-from code.logic.player import player
-from code.logic.orb import orb
+from code.logic.player import Player
+from code.logic.orb import Orb
 from code.logic.story import story
-from code.logic.difficulty import difficulty
-from code.logic.store import store
+from code.logic.difficulty import Difficulty
+from code.logic.store import Store
 
 
 #################
@@ -22,13 +22,13 @@ logger = log.get_logger(filename)
 
 
 # Ensure that saves folder is created
-pg.createPath('./appdata/saves/')
+PgEss.createPath('./appdata/saves/')
 
 
 ##################
 # Gameplay logic #
 ##################
-class playerData:
+class PlayerData:
 
     @staticmethod
     def new():
@@ -41,10 +41,10 @@ class playerData:
         screens.game.unload()
 
         # reset player
-        player.reset()
+        Player.reset()
 
         # Set difficulty settings
-        difficulty.set()
+        Difficulty.set()
 
         # Set grid to default hero, town and king
         Grid.clear()
@@ -52,25 +52,25 @@ class playerData:
         Grid.tiles[7][7].sprites = ['king']
 
         # Generate random towns
-        town_settings = difficulty.get()
+        town_settings = Difficulty.get()
         Grid.randomiseTowns(town_settings['town_number'], town_settings['town_space'])
 
         # Calculate orb postion
-        orb.setLocation()
-        orb.canSense()
+        Orb.setLocation()
+        Orb.canSense()
 
         # Set up store
-        store.setWeapons()
+        Store.setWeapons()
 
         # Set starting story
         story.in_town.display()
 
         # Set player stats for game screen
-        player.stats.display('day', screens.game.info.days)
-        player.stats.display('damage', screens.game.info.stats)
-        player.stats.display('defence', screens.game.info.stats)
-        player.stats.display('health', screens.game.info.stats)
-        player.stats.display('elixir', screens.game.info.stats)
+        Player.stats.display('day', screens.game.info.days)
+        Player.stats.display('damage', screens.game.info.stats)
+        Player.stats.display('defence', screens.game.info.stats)
+        Player.stats.display('health', screens.game.info.stats)
+        Player.stats.display('elixir', screens.game.info.stats)
 
         # Reset stats update
         screens.game.info.hero.stats.setText('', withDisplay=False)
@@ -124,26 +124,26 @@ class playerData:
 
         # Loaded stored player
         savedData['player']['fileid'] = fileid
-        player.load(savedData['player'])
+        Player.load(savedData['player'])
 
         # Set player stats for game screen
-        player.stats.display('day', screens.game.info.days)
-        player.stats.display('damage', screens.game.info.stats)
-        player.stats.display('defence', screens.game.info.stats)
-        player.stats.display('health', screens.game.info.stats)
-        player.stats.display('elixir', screens.game.info.stats)
+        Player.stats.display('day', screens.game.info.days)
+        Player.stats.display('damage', screens.game.info.stats)
+        Player.stats.display('defence', screens.game.info.stats)
+        Player.stats.display('health', screens.game.info.stats)
+        Player.stats.display('elixir', screens.game.info.stats)
 
         # Set difficulty settings
-        difficulty.set(player.difficulty)
+        Difficulty.set(Player.difficulty)
 
         # Set weapons
-        store.setWeapons()
+        Store.setWeapons()
 
         # Map
         Grid.generate(savedData['grid'])
 
         # Set if player can sense for orb
-        orb.canSense()
+        Orb.canSense()
 
         # Set story saved
         story.setCurrent(savedData['story'])
@@ -167,13 +167,13 @@ class playerData:
     @staticmethod
     def save():
         # Delete old save file if any
-        playerData.delete()
+        PlayerData.delete()
 
         # Init dictionary to save
         savedData = dict()
 
         # Save player
-        savedData['player'] = player.get()
+        savedData['player'] = Player.get()
 
         # Store save time
         savedData['time_saved'] = time.time()
@@ -189,10 +189,10 @@ class playerData:
 
         # Generate and set UUID
         fileid = str(uuid.uuid3(uuid.NAMESPACE_URL, json_data))
-        player.fileid = fileid
+        Player.fileid = fileid
 
         # Save to file
-        pg.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
+        PgEss.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
 
         # Cool beep
         Sound.saved.play(withVolume=0.5)
@@ -202,13 +202,13 @@ class playerData:
 
     @staticmethod
     def delete():
-        if player.fileid != None: 
+        if Player.fileid != None: 
             # Get file location    
-            file_location = './appdata/saves/{}.json'.format(player.fileid)
+            file_location = './appdata/saves/{}.json'.format(Player.fileid)
 
             # Delete the file
             try: os.remove(file_location)
-            except FileNotFoundError: logger.warning('Looks like {} is already deleted!'.format(player.fileid))
+            except FileNotFoundError: logger.warning('Looks like {} is already deleted!'.format(Player.fileid))
             except Exception as e: logger.error(e, exc_info=True)
             else: logger.info('Deleted old playerdata at {}'.format(file_location))
 

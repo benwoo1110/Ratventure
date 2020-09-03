@@ -2,13 +2,12 @@
 # Import and initialize the librarys #
 ######################################
 import time
-from code.api.core import os, log, pg
-from code.api.objects import screen, Frame
+from code.api.core import os, log, PgEss
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat, textValidate
-from code.logic.playerData import playerData
-from code.logic.difficulty import difficulty
-from code.logic.attack import attack
+from code.api.data.Text import Text, TextFormat, TextValidate
+from code.logic.playerData import PlayerData
+from code.logic.difficulty import Difficulty
 
 
 #################
@@ -30,7 +29,7 @@ class new_game:
         new_game_screen.options.nickname.switchState('', False)
         new_game_screen.options.nickname.text.setText('Player')
 
-        difficulty.setName(0)
+        Difficulty.setName(0)
 
     @staticmethod
     def textfield_selected():
@@ -44,7 +43,7 @@ class new_game:
             pressed_key = None
 
             # Get most recent pressed char
-            for char in pg.keypressed:
+            for char in PgEss.keypressed:
                 if nickname.text.validateChar(char.key): pressed_key = char
 
             # Engage key
@@ -86,7 +85,7 @@ class new_game:
 ##################
 # Screen objects #
 ##################
-new_game_screen = screen (
+new_game_screen = Screen (
     name = 'new_game',
     main = new_game,
 
@@ -114,8 +113,8 @@ new_game_screen = screen (
                     'text': Text (
                         frame = Frame(x=747, y=341, w=925, h=140),
                         text = 'Benedict',
-                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white),
-                        validation = textValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
+                        format = TextFormat(fontSize=116, align='center', pos='center', colour=PgEss.colour.white),
+                        validation = TextValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
                     ),
                 },
             },
@@ -129,7 +128,7 @@ new_game_screen = screen (
                     'mode': Text (
                         frame = Frame(x=1008, y=636, w=405, h=140),
                         text = 'Easy',
-                        format = textFormat(fontSize=116, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=116, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                 },
             },
@@ -143,19 +142,19 @@ new_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=1143, y=875, w=530, h=140),
                 'imageData': {'frame': Frame(x=1143, y=875, w=530, h=140)},
-                'action': Runclass(run=playerData.new)
+                'action': Runclass(run=PlayerData.new)
             },
             'difficulty_back': {
                 'type': 'button',
                 'frame': Frame(x=916, y=660, w=92, h=92),
                 'imageData': {'frame': Frame(x=747, y=636, w=260, h=92)},
-                'action': Runclass(run=difficulty.updateName, parameters={'index': -1})
+                'action': Runclass(run=Difficulty.updateName, parameters={'index': -1})
             },
             'difficulty_next': {
                 'type': 'button',
                 'frame': Frame(x=1412, y=660, w=92, h=92),
                 'imageData': {'frame': Frame(x=1412, y=636, w=260, h=92)},
-                'action': Runclass(run=difficulty.updateName, parameters={'index': 1})
+                'action': Runclass(run=Difficulty.updateName, parameters={'index': 1})
             }
         },
     }

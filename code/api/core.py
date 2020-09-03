@@ -10,7 +10,7 @@ import json
 import pygame
 from functools import wraps
 from datetime import datetime
-from code.config import config
+from code.config import Config
 
 
 #####################
@@ -40,8 +40,8 @@ class coreFunc:
 ###################
 # Common function #
 ###################
-class pg:
-    config = config.get()
+class PgEss:
+    config = Config.get()
     keypressed = []
     clock = pygame.time.Clock()
     tick = clock.tick_busy_loop if config.tick_busy else clock.tick
@@ -72,7 +72,7 @@ class pg:
 
             # Create file at filepath with the given default variable
             else: 
-                pg.saveJson(filepath, default)
+                PgEss.saveJson(filepath, default)
                 return default
 
         except Exception as e: logger.error(e, exc_info=True)
@@ -105,7 +105,7 @@ class pg:
     def updateWindow():
         '''Displays screens/surfaces to pygame window'''
         pygame.display.update()
-        pg.clock.tick(pg.config.framerate)
+        PgEss.clock.tick(PgEss.config.framerate)
 
     @staticmethod
     def quit():
@@ -120,12 +120,12 @@ class pg:
 class windowScreen(coreFunc):
     def __init__(self):
         # Set icon
-        try: pygame.display.set_icon(pygame.image.load(pg.config.icon_file))
-        except FileNotFoundError: logger.error('No app icon image found at {}'.format(pg.config.icon_file))
-        except Exception: logger.error('Error loading app icon image {}!'.format(pg.config.icon_file), exc_info=True)
+        try: pygame.display.set_icon(pygame.image.load(PgEss.config.icon_file))
+        except FileNotFoundError: logger.error('No app icon image found at {}'.format(PgEss.config.icon_file))
+        except Exception: logger.error('Error loading app icon image {}!'.format(PgEss.config.icon_file), exc_info=True)
 
         # Set title
-        try: pygame.display.set_caption(pg.config.title)
+        try: pygame.display.set_caption(PgEss.config.title)
         except Exception: logger.error('Unable set display caption!', exc_info=True)
 
         # Set default screen size
@@ -134,7 +134,7 @@ class windowScreen(coreFunc):
 
         # Set display
         # Full screen mode
-        if pg.config.fullscreen: 
+        if PgEss.config.fullscreen: 
             self.Window = pygame.display.set_mode(self.size(), pygame.FULLSCREEN)
 
             # Get fullscreen window size
@@ -152,7 +152,7 @@ class windowScreen(coreFunc):
         # Window mode, use scale
         else: 
             # Set scaling
-            self.scale = pg.config.scale
+            self.scale = PgEss.config.scale
             self.scaled_width = int(self.width * self.scale)
             self.scaled_height = int(self.height * self.scale)
 
@@ -178,7 +178,7 @@ class windowScreen(coreFunc):
 
             # Update
             pygame.display.update()
-            pg.tick(pg.config.framerate)
+            PgEss.tick(PgEss.config.framerate)
 
         # Error
         except: logger.critical('Error updating pygame window!', exc_info=True)
@@ -289,7 +289,7 @@ class Screens(coreFunc):
                 # End program
                 if screen_result == 'quit':
                     pygame.mixer.fadeout(500)
-                    pg.quit()
+                    PgEss.quit()
                     return
 
             # When screen ends
@@ -300,13 +300,13 @@ class Screens(coreFunc):
 ###########
 # Logging #
 ###########
-pg.createPath('./logs/')
+PgEss.createPath('./logs/')
 
 # Keep only certain number of log files 
 log_files = glob.glob("./logs/*.log")
 log_files.sort(key=os.path.getmtime)
 
-for index in range(len(log_files) - max(0, pg.config.logging.keep_logs-1)):
+for index in range(len(log_files) - max(0, PgEss.config.logging.keep_logs-1)):
     os.remove(log_files[index])
 
 # Setup log format and location
@@ -315,12 +315,12 @@ LOG_FILE = datetime.now().strftime("./logs/%d-%m-%Y_%H-%M-%S.log")
 
 # Console logging
 console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.console_level.upper()))
+console_handler.setLevel(level=os.environ.get("LOGLEVEL", PgEss.config.logging.console_level.upper()))
 console_handler.setFormatter(FORMATTER)
 
 # Logging to log file
 file_handler = logging.FileHandler(LOG_FILE)
-file_handler.setLevel(level=os.environ.get("LOGLEVEL", pg.config.logging.file_level.upper()))
+file_handler.setLevel(level=os.environ.get("LOGLEVEL", PgEss.config.logging.file_level.upper()))
 file_handler.setFormatter(FORMATTER)
 
 # Create log handlers
@@ -354,13 +354,13 @@ class log:
 #################
 filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
-logger.debug('[config] {}'.format(pg.config))
+logger.debug('[config] {}'.format(PgEss.config))
 
 
 ################
 # Setup pygame #
 ################
-pg.createPath('./appdata/')
+PgEss.createPath('./appdata/')
 pygame.init()
 window = windowScreen()
 screens = Screens()

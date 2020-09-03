@@ -1,11 +1,11 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg
-from code.api.objects import screen, Frame
+from code.api.core import os, log, PgEss
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Alert
-from code.api.data.Text import Text, textFormat
-from code.logic.playerSaves import playerSaves
+from code.api.data.Text import Text, TextFormat
+from code.logic.playerSaves import PlayerSaves
 
 
 #################
@@ -22,7 +22,7 @@ class saves:
 
     @staticmethod
     def init():
-        playerSaves.showList()
+        PlayerSaves.showList()
 
     @staticmethod
     def run():
@@ -38,7 +38,7 @@ class saves:
 ##################
 # Screen objects #
 ##################
-saves_screen = screen (
+saves_screen = Screen (
     name = 'saves',
     main = saves,
 
@@ -49,11 +49,11 @@ saves_screen = screen (
         },
         'page_back': {
             'keys': [1073741904],
-            'action': Runclass(run=playerSaves.updateList, parameters={'page': -1})
+            'action': Runclass(run=PlayerSaves.updateList, parameters={'page': -1})
         },
         'page_next': {
             'keys': [1073741903],
-            'action': Runclass(run=playerSaves.updateList, parameters={'page': 1})
+            'action': Runclass(run=PlayerSaves.updateList, parameters={'page': 1})
         },
     },
 
@@ -76,7 +76,7 @@ saves_screen = screen (
                     'pages': Text (
                         frame = Frame(x=769, y=974, w=262, h=75),
                         prefix = '1', text = ' / ', suffix = '10',
-                        format = textFormat(fontSize=68, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=68, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -84,13 +84,13 @@ saves_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=729, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=729, y=984, w=96, h=40)},
-                'action': Runclass(run=playerSaves.updateList, parameters={'page': -1})
+                'action': Runclass(run=PlayerSaves.updateList, parameters={'page': -1})
             },
             'page_next': {
                 'type': 'button',
                 'frame': Frame(x=1031, y=984, w=57, h=40),
                 'imageData': {'frame': Frame(x=1031, y=984, w=96, h=40)},
-                'action': Runclass(run=playerSaves.updateList, parameters={'page': 1})
+                'action': Runclass(run=PlayerSaves.updateList, parameters={'page': 1})
             },
             'delete_all': {
                 'type': 'button',
@@ -100,7 +100,7 @@ saves_screen = screen (
                     type='confirm', 
                     title='Delete All',
                     content='Are you sure you want to delete all saves?',
-                    yes=Runclass(run=playerSaves.deleteAll)
+                    yes=Runclass(run=PlayerSaves.deleteAll)
                 ),
             }
         },
@@ -117,12 +117,12 @@ saves_screen = screen (
                     'nickname': Text (
                         frame = Frame(x=181, y=3, w=576, h=140),
                         text = 'Ben 10',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=62, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -134,14 +134,14 @@ saves_screen = screen (
                     type='confirm', 
                     title='Deleted Saved',
                     content='Are you sure you want to delete the savefile?',
-                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 1})
+                    yes=Runclass(run=PlayerSaves.deleteSaved, parameters={'number': 1})
                 ),
             },
             'play': {
                 'type': 'button',
                 'frame': Frame(x=1532, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1532, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.playSaved, parameters={'number': 1})
+                'action': Runclass(run=PlayerSaves.playSaved, parameters={'number': 1})
             },
         },
 
@@ -157,12 +157,12 @@ saves_screen = screen (
                     'nickname': Text (
                         frame = Frame(x=181, y=3, w=576, h=140),
                         text = 'Ben 10',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=62, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -174,14 +174,14 @@ saves_screen = screen (
                     type='confirm', 
                     title='Deleted Saved',
                     content='Are you sure you want to delete the savefile?',
-                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 2})
+                    yes=Runclass(run=PlayerSaves.deleteSaved, parameters={'number': 2})
                 ),
             },
             'play': {
                 'type': 'button',
                 'frame': Frame(x=1532, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1532, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.playSaved, parameters={'number': 2})
+                'action': Runclass(run=PlayerSaves.playSaved, parameters={'number': 2})
             },
         },
 
@@ -197,12 +197,12 @@ saves_screen = screen (
                     'nickname': Text (
                         frame = Frame(x=181, y=3, w=576, h=140),
                         text = 'Ben 10',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=62, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -214,14 +214,14 @@ saves_screen = screen (
                     type='confirm', 
                     title='Deleted Saved',
                     content='Are you sure you want to delete the savefile?',
-                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 3})
+                    yes=Runclass(run=PlayerSaves.deleteSaved, parameters={'number': 3})
                 ),
             },
             'play': {
                 'type': 'button',
                 'frame': Frame(x=1532, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1532, y=3, w=100, h=100)},
-                'action': Runclass(run=playerSaves.playSaved, parameters={'number': 3})
+                'action': Runclass(run=PlayerSaves.playSaved, parameters={'number': 3})
             },
         },
 
@@ -237,12 +237,12 @@ saves_screen = screen (
                     'nickname': Text (
                         frame = Frame(x=181, y=3, w=576, h=140),
                         text = 'Ben 10',
-                        format = textFormat(fontSize=96, align='left', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=96, align='left', pos='center', colour=PgEss.colour.white)
                     ),
                     'date': Text (
                         frame = Frame(x=794, y=3, w=576, h=140),
                         text = '20/12/2020 10:23pm',
-                        format = textFormat(fontSize=62, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=62, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             },
@@ -254,14 +254,14 @@ saves_screen = screen (
                     type='confirm', 
                     title='Deleted Saved',
                     content='Are you sure you want to delete the savefile?',
-                    yes=Runclass(run=playerSaves.deleteSaved, parameters={'number': 4})
+                    yes=Runclass(run=PlayerSaves.deleteSaved, parameters={'number': 4})
                 ),
             },
             'play': {
                 'type': 'button',
                 'frame': Frame(x=1532, y=22, w=100, h=100),
                 'imageData': {'frame': Frame(x=1532, y=3, w=100, h=100)},
-                'action':  Runclass(run=playerSaves.playSaved, parameters={'number': 4})
+                'action':  Runclass(run=PlayerSaves.playSaved, parameters={'number': 4})
             },
         },
     }

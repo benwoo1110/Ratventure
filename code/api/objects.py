@@ -2,8 +2,8 @@
 # Import and initialize the librarys #
 ######################################
 import concurrent.futures
-from code.api.core import log, coreFunc, os, pygame, pg, screens, window
-from code.api.events import events
+from code.api.core import log, coreFunc, os, pygame, PgEss, screens, window
+from code.api.events import Events
 from code.api.actions import keyboardActions
 from code.api.data.Frame import Frame
 from code.api.data.Images import Images
@@ -20,7 +20,7 @@ logger = log.get_logger(filename)
 ##################
 # Object classes #
 ##################
-class screen(coreFunc):
+class Screen(coreFunc):
     def __init__(self, name: str, main:any, surfaces:dict = None, keyboard:dict = None, bg_colour:tuple = None, 
     seperateBackground:bool = False, selectable:bool = True, firstLoad:list = 'all', alpha:bool = False):
         self.name = name
@@ -31,7 +31,7 @@ class screen(coreFunc):
         self.alpha = alpha
 
         # Event setup
-        self.events = events(self)
+        self.events = Events(self)
 
         # Keyboard actions
         self.keyboard = keyboardActions(self, keyboard)
@@ -58,7 +58,7 @@ class screen(coreFunc):
         screens.add(self.name, self)
 
     def addSurface(self, name, surfaceData:dict = {}):
-        setattr(self, name, surface(screen=self, name=name, **surfaceData))
+        setattr(self, name, Surface(screen=self, name=name, **surfaceData))
         self.containerList.append(name)
 
     def unload(self, withSurfaces:list = 'all'):
@@ -116,7 +116,7 @@ class screen(coreFunc):
         else: screens.triggerUpdate()
 
 
-class surface(coreFunc):
+class Surface(coreFunc):
     def __init__(self, screen, name, frame:Frame, selectable:bool = True, 
     bg_colour:tuple = None, directDisplay:bool = False, alpha:bool = False, **items):
         self.screen = screen
@@ -141,7 +141,7 @@ class surface(coreFunc):
         for name, itemData in items.items(): self.addItem(name, itemData)
 
     def addItem(self, name, itemData:dict):
-        setattr(self, name, item(surface=self, name=name, **itemData))
+        setattr(self, name, Item(surface=self, name=name, **itemData))
         self.containerList.append(name)
 
     def unload(self):
@@ -182,15 +182,15 @@ class surface(coreFunc):
             
             # Output to window
             window.Window.blit(resizedSurface, self.frame.coord(surfaceCoord=window.coord(), scale=window.scale))
-            pg.updateWindow()
+            PgEss.updateWindow()
         
         else:
             # Load to screen
             self.screen.display()
 
 
-class item(coreFunc):
-    def __init__(self, surface:surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False, data:dict = None, 
+class Item(coreFunc):
+    def __init__(self, surface:Surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False, data:dict = None, 
     selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False, clickSound:Sound = Sound.button_click):
         self.surface = surface
         self.name = name

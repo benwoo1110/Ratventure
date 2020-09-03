@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pygame, pg, window
+from code.api.core import log, coreFunc, os, pygame, PgEss, window
 
 #################
 # Setup logging #

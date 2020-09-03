@@ -1,18 +1,18 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, pg
+from code.api.core import os, log, PgEss
 from code.api.events import gameEvent
-from code.api.objects import screen, Frame
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Alert, Info
-from code.api.data.Text import Text, textFormat
+from code.api.data.Text import Text, TextFormat
 from code.api.data.Sprite import Sprite
 from code.api.data.Grid import Grid
-from code.logic.move import move
-from code.logic.playerData import playerData
+from code.logic.move import Move
+from code.logic.playerData import PlayerData
 from code.logic.rest import rest
-from code.logic.orb import orb
-from code.logic.attack import attack
+from code.logic.orb import Orb
+from code.logic.attack import Attack
 
 
 #################
@@ -61,7 +61,7 @@ class game:
 ##################
 # Screen objects #
 ##################
-game_screen = screen (
+game_screen = Screen (
     name = 'game',
     main = game,
 
@@ -111,7 +111,7 @@ game_screen = screen (
                         frame = Frame(x=88, y=110, w=267, h=75),
                         prefix = 'Day: ',
                         text = '1',
-                        format = textFormat(fontSize=68, align='left', pos='center')
+                        format = TextFormat(fontSize=68, align='left', pos='center')
                     )
                 },
             },
@@ -124,7 +124,7 @@ game_screen = screen (
                     'stats': Text (
                         frame = Frame(x=175, y=185, w=112, h=59),
                         text = '',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.red)
                     ),
                     'weapons': Grid (
                         frame=Frame(x=184, y=185, w=120, h=160),
@@ -143,25 +143,25 @@ game_screen = screen (
                         frame = Frame(x=323, y=111, w=307, h=59),
                         prefix = 'Damage: ',
                         text = '2 - 4',
-                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.red)
+                        format = TextFormat(fontSize=52, align='right', pos='center', colour=PgEss.colour.red)
                     ),
                     'defence': Text (
                         frame = Frame(x=323, y=170, w=307, h=59),
                         prefix = 'Defence: ',
                         text = '1',
-                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.blue)
+                        format = TextFormat(fontSize=52, align='right', pos='center', colour=PgEss.colour.blue)
                     ),
                     'health': Text (
                         frame = Frame(x=323, y=229, w=307, h=59),
                         prefix = 'Health: ',
                         text = '20/20',
-                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.green)
+                        format = TextFormat(fontSize=52, align='right', pos='center', colour=PgEss.colour.green)
                     ),
                     'elixir': Text (
                         frame = Frame(x=323, y=288, w=307, h=59),
                         prefix = 'Elixir: ',
                         text = '0',
-                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.purple)
+                        format = TextFormat(fontSize=52, align='right', pos='center', colour=PgEss.colour.purple)
                     ),
                 },
             },
@@ -174,7 +174,7 @@ game_screen = screen (
                     'message': Text (
                         frame = Frame(x=88, y=358, w=542, h=152),
                         text = 'You are in a town.',
-                        format = textFormat(fontSize=56, align='left', pos='center', warpText=24, lineSpacing=0.7, colour=pg.colour.black)
+                        format = TextFormat(fontSize=56, align='left', pos='center', warpText=24, lineSpacing=0.7, colour=PgEss.colour.black)
                     ),
                 },
             },
@@ -198,13 +198,13 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=118, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=118, y=248, w=218, h=167)},
-                'action': Runclass(run=move.initSurface)
+                'action': Runclass(run=Move.initSurface)
             },
             'save': {
                 'type': 'button',
                 'frame': Frame(x=375, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
-                'action': Runclass(run=playerData.save),
+                'action': Runclass(run=PlayerData.save),
             },
         },
 
@@ -214,19 +214,19 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=118, y=40, w=476, h=167),
                 'imageData': {'frame': Frame(x=118, y=40, w=476, h=167)},
-                'action': Runclass(run=orb.initSurface)
+                'action': Runclass(run=Orb.initSurface)
             },
             'move': {
                 'type': 'button',
                 'frame': Frame(x=118, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=118, y=248, w=218, h=167)},
-                'action': Runclass(run=move.initSurface)
+                'action': Runclass(run=Move.initSurface)
             },
             'save': {
                 'type': 'button',
                 'frame': Frame(x=375, y=248, w=218, h=167),
                 'imageData': {'frame': Frame(x=375, y=248, w=218, h=167)},
-                'action': Runclass(run=playerData.save),
+                'action': Runclass(run=PlayerData.save),
             },
         },
 
@@ -242,7 +242,7 @@ game_screen = screen (
                         frame = Frame(x=323, y=108, w=307, h=59),
                         prefix = 'Health: ',
                         text = '+ 0',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.green)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.green)
                     ),
                 },
             },
@@ -268,7 +268,7 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=304, y=33-13, w=104, h=94)},
                 'action': Runclass(
                     run = gameEvent.animate.addQueue, 
-                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'up'})}
+                    parameters = {'Action': Runclass(run=Move.move, parameters={'direction': 'up'})}
                     )
             },
             'down': {
@@ -277,7 +277,7 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=304, y=220-13, w=104, h=94)},
                 'action': Runclass(
                     run = gameEvent.animate.addQueue, 
-                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'down'})}
+                    parameters = {'Action': Runclass(run=Move.move, parameters={'direction': 'down'})}
                     )
             },
             'left': {
@@ -286,7 +286,7 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=200, y=126-13, w=104, h=94)},
                 'action': Runclass(
                     run = gameEvent.animate.addQueue, 
-                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'left'})}
+                    parameters = {'Action': Runclass(run=Move.move, parameters={'direction': 'left'})}
                     )
             },
             'right': {
@@ -295,14 +295,14 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=407, y=126-13, w=104, h=94)},
                 'action': Runclass(
                     run = gameEvent.animate.addQueue, 
-                    parameters = {'Action': Runclass(run=move.Move, parameters={'direction': 'right'})}
+                    parameters = {'Action': Runclass(run=Move.move, parameters={'direction': 'right'})}
                     )
             },
             'back': {
                 'type': 'button',
                 'frame': Frame(x=166, y=377, w=378, h=75),
                 'imageData': {'frame': Frame(x=166, y=377, w=378, h=75)},
-                'action': Runclass(run=move.back)
+                'action': Runclass(run=Move.back)
             },
         },
 
@@ -318,7 +318,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=166, y=364, w=378, h=75),
                 'imageData': {'frame': Frame(x=166, y=364, w=378, h=75)},
-                'action': Runclass(run=orb.back)
+                'action': Runclass(run=Orb.back)
             },
         },
 
@@ -334,13 +334,13 @@ game_screen = screen (
                         frame = Frame(x=323, y=79, w=307, h=59),
                         prefix = 'Damage: ',
                         text = '+ 5',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.red)
                     ),
                     'defence': Text (
                         frame = Frame(x=323, y=138, w=307, h=59),
                         prefix = 'Defence: ',
                         text = '+ 5',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.blue)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.blue)
                     ),
                 },
             },
@@ -348,7 +348,7 @@ game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=88, y=318, w=542, h=98),
                 'imageData': {'frame': Frame(x=88, y=318, w=542, h=98)},
-                'action': Runclass(run=orb.take)
+                'action': Runclass(run=Orb.take)
             },
         },
 
@@ -363,7 +363,7 @@ game_screen = screen (
                     'stats': Text (
                         frame = Frame(x=172, y=17, w=112, h=59),
                         text = '',
-                        format = textFormat(fontSize=52, align='right', pos='center', colour=pg.colour.red)
+                        format = TextFormat(fontSize=52, align='right', pos='center', colour=PgEss.colour.red)
                     ),
                 }
             },
@@ -377,19 +377,19 @@ game_screen = screen (
                         frame = Frame(x=323, y=35, w=307, h=59),
                         prefix = 'Damage: ',
                         text = '1 - 3',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.red)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.red)
                     ),
                     'defence': Text (
                         frame = Frame(x=323, y=94, w=307, h=59),
                         prefix = 'Defence: ',
                         text = '2',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.blue)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.blue)
                     ),
                     'health': Text (
                         frame = Frame(x=323, y=153, w=307, h=59),
                         prefix = 'Health: ',
                         text = '12',
-                        format = textFormat(fontSize=52, align='left', pos='center', colour=pg.colour.green)
+                        format = TextFormat(fontSize=52, align='left', pos='center', colour=PgEss.colour.green)
                     ),
                 },
             },
@@ -399,14 +399,14 @@ game_screen = screen (
                 'imageData': {'frame': Frame(x=88, y=302, w=251, h=104)},
                 'action': Runclass(
                     run = gameEvent.animate.addQueue, 
-                    parameters = {'Action': Runclass(run=attack.Attack)}
+                    parameters = {'Action': Runclass(run=Attack.attack)}
                     )
             },
             'run': {
                 'type': 'button',
                 'frame': Frame(x=380, y=302, w=251, h=104),
                 'imageData': {'frame': Frame(x=380, y=302, w=251, h=104)},
-                'action': Runclass(run=attack.run)
+                'action': Runclass(run=Attack.run)
             },
         }
         

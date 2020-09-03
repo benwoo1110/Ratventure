@@ -1,8 +1,8 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import log, coreFunc, os, pg, pygame
-from code.api.actions import Info, Runclass, Alert, Switchscreen, actionResult, mouse
+from code.api.core import log, coreFunc, os, PgEss, pygame
+from code.api.actions import Info, Runclass, Alert, Switchscreen, ActionResult, Mouse
 from code.api.data.Sound import Sound, Effect
 
 
@@ -42,7 +42,7 @@ class Sequence(coreFunc):
         self.queue = []
         self.counter = 0
 
-class gameevent(coreFunc):
+class GameEvent(coreFunc):
     def __init__(self, Events:dict = None):
         self.containerList = []
         if Events != None:
@@ -53,7 +53,7 @@ class gameevent(coreFunc):
         self.containerList.append(name)
 
 
-gameEvent = gameevent(
+gameEvent = GameEvent(
     {
         'stats': {'n': 1, 'timer': 10},
         'animate': {'n': 2, 'timer': 10},
@@ -86,12 +86,12 @@ class eventResults(coreFunc):
             return any(result[key] in value for result in self.__dict__.values())
 
 
-class events(coreFunc):
+class Events(coreFunc):
     def __init__(self, Object):
         self.Object = Object
         self.on_object = None
 
-    def Event(self, run_events:list):
+    def event(self, run_events:list):
         # init event result
         result = eventResults()
         # check events
@@ -106,7 +106,7 @@ class events(coreFunc):
 
     def get(self):
         # Run events
-        event_result = self.Event([
+        event_result = self.event([
             eventRun(action='click', event=self.click),
             eventRun(action='keyup', event=self.keyup),
             eventRun(action='keydown', event=self.keydown),
@@ -122,7 +122,7 @@ class events(coreFunc):
     def click(self, event):
         # Check for move hover when mouse moves
         if event.type == pygame.MOUSEMOTION or (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
-            self.on_object = mouse.hoverObject(self.Object)
+            self.on_object = Mouse.hoverObject(self.Object)
 
         # Check if item is valid
         if self.on_object == None: return
@@ -134,10 +134,10 @@ class events(coreFunc):
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             # Play click sound
             if isinstance(self.on_object.clickSound, Effect):
-                self.on_object.clickSound.play(maxtime=1000, withVolume=pg.config.sound.button)
+                self.on_object.clickSound.play(maxtime=1000, withVolume=PgEss.config.sound.button)
 
             # Set state to clicked
-            click_result = actionResult(name=self.on_object.name, type=self.on_object.type, outcome='clicked')
+            click_result = ActionResult(name=self.on_object.name, type=self.on_object.type, outcome='clicked')
 
             # Object back to normal state
             self.on_object.switchState('')
@@ -151,7 +151,7 @@ class events(coreFunc):
     def game(self, event):
         for Event in gameEvent:
             # Init result
-            game_result = actionResult(name=Event.name, type='gameEvent')
+            game_result = ActionResult(name=Event.name, type='gameEvent')
 
             # Check for event
             if event.type == Event.Event:
@@ -175,9 +175,9 @@ class events(coreFunc):
         keyboard_result = None
         # When key is pressed
         if event.type == pygame.KEYDOWN:
-            keyboard_result = actionResult(name=event.key, type='down', outcome='pressed')
+            keyboard_result = ActionResult(name=event.key, type='down', outcome='pressed')
             # Add to keypressed
-            pg.keypressed.append(event)
+            PgEss.keypressed.append(event)
 
         return self.keyEvent(event, keyboard_result)
         
@@ -185,11 +185,11 @@ class events(coreFunc):
         keyboard_result = None
         # When key is released
         if event.type == pygame.KEYUP:
-            keyboard_result = actionResult(name=event.key, type='up', outcome='released')
+            keyboard_result = ActionResult(name=event.key, type='up', outcome='released')
             # Remove from keypressed
-            for index, pressed in enumerate(pg.keypressed):
+            for index, pressed in enumerate(PgEss.keypressed):
                 if pressed.key == event.key: 
-                    pg.keypressed.pop(index)
+                    PgEss.keypressed.pop(index)
                     break
         
         return self.keyEvent(event, keyboard_result)

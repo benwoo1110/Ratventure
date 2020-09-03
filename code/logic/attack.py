@@ -2,12 +2,12 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens, pg, pygame
+from code.api.core import os, log, screens, PgEss, pygame
 from code.api.data.Sound import Sound
 from code.logic.stats import Stats
 from code.logic.story import story
-from code.logic.player import player
-from code.logic.playerRank import playerRank
+from code.logic.player import Player
+from code.logic.playerRank import PlayerRank
 
 
 
@@ -21,8 +21,8 @@ logger = log.get_logger(filename)
 ##################
 # Gameplay logic #
 ##################
-class enemy:
-    enemies = pg.loadJson('./gamefiles/enemies.json')
+class Enemy:
+    enemies = PgEss.loadJson('./gamefiles/enemies.json')
     stats = None
     name = None
     Enemy = dict()
@@ -30,73 +30,73 @@ class enemy:
     @staticmethod
     def load(name:str):
         # Set the enemy
-        enemy.name = name
-        enemy.Enemy = enemy.enemies[name].copy()
-        enemy.stats = Stats (
-            damage = enemy.Enemy['stats']['damage'].copy(),
-            defence = enemy.Enemy['stats']['defence'],
-            health = enemy.Enemy['stats']['health'].copy()
+        Enemy.name = name
+        Enemy.Enemy = Enemy.enemies[name].copy()
+        Enemy.stats = Stats (
+            damage = Enemy.Enemy['stats']['damage'].copy(),
+            defence = Enemy.Enemy['stats']['defence'],
+            health = Enemy.Enemy['stats']['health'].copy()
         )
 
         # Set multiplier
-        if enemy.enemies['day_saturation'] == -1: saturation = 0
-        else: saturation = ((player.stats.day // enemy.enemies['day_saturation']) * 0.15)
+        if Enemy.enemies['day_saturation'] == -1: saturation = 0
+        else: saturation = ((Player.stats.day // Enemy.enemies['day_saturation']) * 0.15)
 
-        enemy.stats.multiply(enemy.enemies['start_multiplier'] + saturation)
+        Enemy.stats.multiply(Enemy.enemies['start_multiplier'] + saturation)
 
     @staticmethod
     def reset():
-        enemy.stats = None
-        enemy.name = None
-        enemy.Enemy = dict()
+        Enemy.stats = None
+        Enemy.name = None
+        Enemy.Enemy = dict()
 
 
-class attack:
+class Attack:
     
     @staticmethod
     def haveEnemy():
         Grid = screens.game.map.grid.Grid
         
         # Reset
-        enemy.reset()
+        Enemy.reset()
 
         # Not attack if hero is in town
         if Grid.heroInTown(): return False
 
         # Detect enemy present in grid
-        for name in enemy.enemies['list']:
-            if name in Grid.tiles[player.hero.row][player.hero.column].sprites:
+        for name in Enemy.enemies['list']:
+            if name in Grid.tiles[Player.hero.row][Player.hero.column].sprites:
                 # Play rat king music
                 if name == 'king':
                     pygame.mixer.fadeout(600)
-                    Sound.rat_king.play(loops=-1, withVolume=pg.config.sound.background + 0.24, fadetime=3000)
+                    Sound.rat_king.play(loops=-1, withVolume=PgEss.config.sound.background + 0.24, fadetime=3000)
 
-                enemy.load(name)
+                Enemy.load(name)
                 # Load attack screen
-                attack.initSurface()
+                Attack.initSurface()
                 return True
 
         # Calculate enemy appearing
         chance_number = randint(1, 100)
-        if chance_number > enemy.enemies['appear_chance']: return False
+        if chance_number > Enemy.enemies['appear_chance']: return False
 
         # Get new enemy based on chance
         base = 0
         new_enemy = False
         chance_number = randint(1, 100)
 
-        for name in enemy.enemies['list']:
-            if base < chance_number <= enemy.enemies[name]['chance']+base:
-                enemy.load(name)
+        for name in Enemy.enemies['list']:
+            if base < chance_number <= Enemy.enemies[name]['chance']+base:
+                Enemy.load(name)
                 new_enemy = True
 
-            base += enemy.enemies[name]['chance']
+            base += Enemy.enemies[name]['chance']
 
         # Add enemy to grid
         if new_enemy:
-            Grid.tiles[player.hero.row][player.hero.column].sprites.insert(0, enemy.name)
+            Grid.tiles[Player.hero.row][Player.hero.column].sprites.insert(0, Enemy.name)
             # Show attack screen if there is an enemy
-            attack.initSurface()
+            Attack.initSurface()
             return True
 
         return False
@@ -107,7 +107,7 @@ class attack:
         chance_number = randint(1, 100)
 
         # Player able to run
-        if chance_number <= enemy.enemies['run_chance']:
+        if chance_number <= Enemy.enemies['run_chance']:
             screens.game.attack.run.lock_state = False
             screens.game.attack.run.switchState('', False)
             
@@ -120,12 +120,12 @@ class attack:
     @staticmethod
     def initSurface():
         # Set enemy image
-        screens.game.attack.enemy.switchState(enemy.name.capitalize(), False)
+        screens.game.attack.enemy.switchState(Enemy.name.capitalize(), False)
         
         # Set enemy stats
-        enemy.stats.display('damage', screens.game.attack.stats, False)
-        enemy.stats.display('defence', screens.game.attack.stats, False)
-        enemy.stats.display('health', screens.game.attack.stats, False)
+        Enemy.stats.display('damage', screens.game.attack.stats, False)
+        Enemy.stats.display('defence', screens.game.attack.stats, False)
+        Enemy.stats.display('health', screens.game.attack.stats, False)
 
         # Show enemy in grid
         screens.game.map.load(withItems=['grid'], refresh=True)
@@ -135,14 +135,14 @@ class attack:
         screens.game.attack.run.switchState('', False)
 
         # See chance of run
-        attack.runChance()
+        Attack.runChance()
 
         # Reset stats update
         screens.game.attack.enemy.stats.setText('', withDisplay=False)
 
         # Show message
-        if enemy.name == 'king': story.encounter_king.display()
-        else: story.encounter_wild.display(enemy.name.capitalize())
+        if Enemy.name == 'king': story.encounter_king.display()
+        else: story.encounter_wild.display(Enemy.name.capitalize())
 
         # Cool sword sound
         Sound.encounter.play()
@@ -162,7 +162,7 @@ class attack:
         story.run.display()
 
         # Back to selection
-        attack.back()
+        Attack.back()
 
 
     @staticmethod
@@ -170,7 +170,7 @@ class attack:
         # Stop rat king music if its playing
         if Sound.rat_king.isPlaying():
             pygame.mixer.fadeout(600)
-            Sound.game_background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=5000)
+            Sound.game_background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=5000)
 
         # Return to in open selection screen
         screens.game.attack.unload()
@@ -180,7 +180,7 @@ class attack:
         screens.game.display()
 
     @staticmethod
-    def Attack(counter:int):
+    def attack(counter:int):
         # Start of attack
         if counter == 0: 
 
@@ -192,61 +192,61 @@ class attack:
             Sound.battle.play(maxtime=3000, withVolume=0.24)
 
             # Enemy is immune without orb of power
-            if enemy.Enemy['needOrb'] and not player.weapon.have('orb'):
+            if Enemy.Enemy['needOrb'] and not Player.weapon.have('orb'):
                 # Hero cannot attack
                 hero_damage = 0
                 story.immune.display()
             
             # Hero attacks
             else:
-                hero_damage = player.stats.calDamage(enemy.stats.defence)
-                story.hero_attack.display(hero_damage, enemy.name)
+                hero_damage = Player.stats.calDamage(Enemy.stats.defence)
+                story.hero_attack.display(hero_damage, Enemy.name)
 
-            enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True, screens.game.attack.enemy)            
+            Enemy.stats.update('health', [-hero_damage, 0], screens.game.attack.stats, True, screens.game.attack.enemy)            
 
         # Next move
         elif counter == 130: 
 
             # Enemy is dead
-            if enemy.stats.health[0] <= 0:
+            if Enemy.stats.health[0] <= 0:
                 # Stop battle sound
                 Sound.battle.stop()
 
                 # Show defeat message
-                story.enemy_defeated.display(enemy.name)
+                story.enemy_defeated.display(Enemy.name)
 
                 # Remove enemy from grid
-                screens.game.map.grid.Grid.tiles[player.hero.row][player.hero.column].sprites.pop(0)
+                screens.game.map.grid.Grid.tiles[Player.hero.row][Player.hero.column].sprites.pop(0)
                 
                 # Cool win sound
                 Sound.attack_win.play()
 
             # Enemy attacks
             else:
-                enemy_damage = enemy.stats.calDamage(player.stats.defence)
-                story.enemy_attack.display(enemy.name, enemy_damage)
+                enemy_damage = Enemy.stats.calDamage(Player.stats.defence)
+                story.enemy_attack.display(Enemy.name, enemy_damage)
 
-                player.stats.update('health', [-enemy_damage, 0], screens.game.info.stats, True, screens.game.info.hero)
+                Player.stats.update('health', [-enemy_damage, 0], screens.game.info.stats, True, screens.game.info.hero)
 
         # Next move
         elif counter == 260:
 
             # If player is dead, player loses
-            if player.stats.health[0] <= 0:
+            if Player.stats.health[0] <= 0:
                 story.hero_defeated.display()
 
             # Enemy is dead
-            elif enemy.stats.health[0] <= 0:
+            elif Enemy.stats.health[0] <= 0:
 
                 # If king is defeated, player wins
-                if enemy.name == 'king':
+                if Enemy.name == 'king':
                     story.win.display()
 
                 # Just a wild enemy
                 else:
                     # Gains from defeat
-                    elixir_gained = randint(*enemy.Enemy['gains'])
-                    player.stats.update('elixir', elixir_gained, screens.game.info.stats, True, screens.game.info.hero)
+                    elixir_gained = randint(*Enemy.Enemy['gains'])
+                    Player.stats.update('elixir', elixir_gained, screens.game.info.stats, True, screens.game.info.hero)
                     story.gain_elixir.display(elixir_gained)
 
                     # Cool coin sound
@@ -266,20 +266,20 @@ class attack:
         elif counter >= 390:
 
             # Player is dead, load game over screen
-            if player.stats.health[0] <= 0:
-                attack.game_end('gameover')
+            if Player.stats.health[0] <= 0:
+                Attack.game_end('gameover')
                 return True
 
             # Enemy is dead
-            elif enemy.stats.health[0] <= 0:
+            elif Enemy.stats.health[0] <= 0:
                 # If king is defeated, load win screen
-                if enemy.name == 'king':
+                if Enemy.name == 'king':
                     # Player won
-                    attack.game_end('win')
+                    Attack.game_end('win')
                     return True
                 
                 else:
-                    attack.back()
+                    Attack.back()
                     return True
 
     @staticmethod
@@ -289,18 +289,18 @@ class attack:
         # Stop game music, back to normal background music
         if not Sound.background.isPlaying():
             pygame.mixer.fadeout(200)
-            Sound.background.play(loops=-1, withVolume=pg.config.sound.background, fadetime=3000)
+            Sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
 
         end_game_screen = screens.end_game
         # Check if win screen is the one loaded
         if type == 'win':
             # Save to leaderboard
-            end_game_screen.win.leaderboard.rankid = playerRank.add()
+            end_game_screen.win.leaderboard.rankid = PlayerRank.add()
 
             # Set player leaderboard on win screen
-            end_game_screen.win.leaderboard.postion.setText(str(playerRank.getPos()), withDisplay=False)
-            end_game_screen.win.leaderboard.nickname.setText(player.nickname, withDisplay=False)
-            end_game_screen.win.leaderboard.days.setText(str(player.stats.day), withDisplay=False)
+            end_game_screen.win.leaderboard.postion.setText(str(PlayerRank.getPos()), withDisplay=False)
+            end_game_screen.win.leaderboard.nickname.setText(Player.nickname, withDisplay=False)
+            end_game_screen.win.leaderboard.days.setText(str(Player.stats.day), withDisplay=False)
 
             # Load the changes
             end_game_screen.win.load(withItems='all', refresh=True)

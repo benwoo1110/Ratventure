@@ -2,14 +2,14 @@
 # Import and initialize the librarys #
 ######################################
 import time
-from code.api.core import os, log, pg, pygame
-from code.api.objects import screen, Frame
+from code.api.core import os, log, PgEss, pygame
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
-from code.api.data.Text import Text, textFormat, textValidate
+from code.api.data.Text import Text, TextFormat, TextValidate
 from code.api.data.Sound import Sound
-from code.logic.player import player
-from code.logic.playerData import playerData
-from code.logic.playerRank import playerRank
+from code.logic.player import Player
+from code.logic.playerData import PlayerData
+from code.logic.playerRank import PlayerRank
 
 
 #################
@@ -33,7 +33,7 @@ class end_game:
     @staticmethod
     def rankColour() -> int:
         # Set cool colour for top 3
-        ranking = playerRank.getPos()
+        ranking = PlayerRank.getPos()
         if ranking <= 3: end_game_screen.win.leaderboard.switchState(str(ranking))
         else: end_game_screen.win.leaderboard.switchState('')
         return ranking
@@ -49,7 +49,7 @@ class end_game:
                 pressed_key = None
 
                 # Get most recent pressed char
-                for char in pg.keypressed:
+                for char in PgEss.keypressed:
                     if nickname.nickname.validateChar(char.key): pressed_key = char
 
                 # Engage key
@@ -84,7 +84,7 @@ class end_game:
                 # Validate nickname
                 if nickname.nickname.validateText():
                     # Apply teh new name to leaderboard data
-                    end_game_screen.win.leaderboard.rankid = playerRank.rename(
+                    end_game_screen.win.leaderboard.rankid = PlayerRank.rename(
                         end_game_screen.win.leaderboard.nickname.text,
                         end_game_screen.win.leaderboard.rankid
                         )
@@ -98,7 +98,7 @@ class end_game:
 ##################
 # Screen objects #
 ##################
-end_game_screen = screen (
+end_game_screen = Screen (
     name = 'end_game',
     main = end_game,
     firstLoad = [],
@@ -110,7 +110,7 @@ end_game_screen = screen (
                 'type': 'button',
                 'frame': Frame(x=347, y=708, w=507, h=140),
                 'imageData': {'frame': Frame(x=347, y=708, w=507, h=140)},
-                'action': Runclass(run=playerData.new)
+                'action': Runclass(run=PlayerData.new)
             },
             'mainmenu': {
                 'type': 'button',
@@ -149,20 +149,20 @@ end_game_screen = screen (
                         editable = False,
                         frame = Frame(x=465, y=443, w=105, h=111),
                         text = '1',
-                        format = textFormat(fontSize=68, align='center', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=68, align='center', pos='center', colour=PgEss.colour.white)
                     ),
                     'nickname': Text (
                         frame = Frame(x=573, y=443, w=497, h=111),
                         text = 'Demo',
-                        format = textFormat(fontSize=68, align='left', pos='center', colour=pg.colour.white),
-                        validation = textValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
+                        format = TextFormat(fontSize=68, align='left', pos='center', colour=PgEss.colour.white),
+                        validation = TextValidate(regex='[\w\s]{1,16}', invalidPrompt='Player nickname should be between 1 and 16 character\'s long.')
                     ),
                     'days': Text (
                         editable = False,
                         frame = Frame(x=1073, y=443, w=236, h=111),
                         text = '100',
                         suffix = ' days',
-                        format = textFormat(fontSize=68, align='right', pos='center', colour=pg.colour.white)
+                        format = TextFormat(fontSize=68, align='right', pos='center', colour=PgEss.colour.white)
                     ),
                 }
             }

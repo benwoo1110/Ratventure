@@ -3,7 +3,7 @@
 ######################################
 import webbrowser
 from code.api.core import os, log
-from code.api.objects import screen, Frame
+from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Info, Switchscreen
 
 
@@ -33,7 +33,7 @@ class credit:
 ##################
 # Screen objects #
 ##################
-credits_screen = screen (
+credits_screen = Screen (
     name = 'credit',
     main = credit,
     surfaces = {

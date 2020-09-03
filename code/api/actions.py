@@ -108,11 +108,11 @@ class keyboardActions(coreFunc):
             
 
     def add(self, name, data):
-        setattr(self, name, key(self.screen, name, **data))
+        setattr(self, name, Key(self.screen, name, **data))
         self.containerList.append(name)
 
 
-class key(coreFunc):
+class Key(coreFunc):
     def __init__(self, screen, name, keys:list, action:any, onKey:str = 'down', useAscii:bool = True):
         self.screen = screen
         self.name = name
@@ -126,7 +126,7 @@ class key(coreFunc):
 ########################
 # Mouse action classes #
 ########################
-class mouse:
+class Mouse:
     isTouch = False
     previous_mouse = None
 
@@ -179,7 +179,7 @@ class mouse:
 
             # Look for things in the object
             if hasattr(thing_object, 'containerList') and thing_object.containerList != []:
-                result_thing = mouse.hoverObject(thing_object, frame_coord=thing_object.frame.coord(frame_coord))
+                result_thing = Mouse.hoverObject(thing_object, frame_coord=thing_object.frame.coord(frame_coord))
                 if result_thing != None: on_object = result_thing
 
         return on_object
@@ -188,7 +188,7 @@ class mouse:
 ##########################
 # Action outcome classes #
 ##########################
-class actionResult(coreFunc):
+class ActionResult(coreFunc):
     def __init__(self, name:str = None, type:str = None, outcome:any = None): 
         self.name = name
         self.type = str(type)

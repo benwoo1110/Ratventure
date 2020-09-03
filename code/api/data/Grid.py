@@ -5,7 +5,7 @@ from random import randint
 from code.api.core import os, log, coreFunc
 from code.api.data.Sprite import Sprite
 from code.api.data.Frame import Frame
-from code.logic.player import player
+from code.logic.player import Player
 
 
 #################
@@ -86,7 +86,7 @@ class Grid(coreFunc):
 
     def heroInTown(self):
         # Check if hero in town or open
-        return self.tiles[player.hero.row][player.hero.column].hasSprite('town')
+        return self.tiles[Player.hero.row][Player.hero.column].hasSprite('town')
 
     def load(self):
         # Get surface
@@ -103,8 +103,8 @@ class Grid(coreFunc):
 
     def move(self, counter, row, column):
         # Get current hero location
-        x = self.size * player.hero.column + self.spacing * player.hero.column
-        y = self.size * player.hero.row + self.spacing * player.hero.row
+        x = self.size * Player.hero.column + self.spacing * Player.hero.column
+        y = self.size * Player.hero.row + self.spacing * Player.hero.row
 
         # Get new hero location, that hero is moving to
         new_x = self.size * column + self.spacing * column

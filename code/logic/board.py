@@ -15,7 +15,7 @@ logger = log.get_logger(filename)
 ##################
 # Gameplay logic #
 ##################
-class board:
+class Board:
 
     @staticmethod
     def currentPage(screen:str):
