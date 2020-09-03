@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from random import randint
-from code.api.core import os, log, screens, PgEss, pygame
+from code.api.core import os, log, screens, File, pygame
 from code.api.data.Sound import Sound
 from code.logic.stats import Stats
 from code.logic.story import story
@@ -22,7 +22,7 @@ logger = log.get_logger(filename)
 # Gameplay logic #
 ##################
 class Enemy:
-    enemies = PgEss.loadJson('./gamefiles/enemies.json')
+    enemies = File('./gamefiles/enemies.json').readJson()
     stats = None
     name = None
     Enemy = dict()

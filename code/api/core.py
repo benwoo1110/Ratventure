@@ -60,48 +60,6 @@ class PgEss:
         purple = (97, 0, 188)
 
     @staticmethod
-    def loadJson(filepath:str, default = None) -> dict:
-        '''Loading of file from json'''
-        try:
-            with open(filepath, 'r') as datafile:
-                data = json.load(datafile)
-
-        except FileNotFoundError:
-            # If no default set
-            if default == None: print('{} file does not exist.')
-
-            # Create file at filepath with the given default variable
-            else: 
-                PgEss.saveJson(filepath, default)
-                return default
-
-        except Exception as e: logger.error(e, exc_info=True)
-
-        else: 
-            logger.info('Loaded json file from {}'.format(filepath))
-            return data
-
-    @staticmethod
-    def saveJson(filepath:str, data:dict):
-        '''Saving file to json'''
-        try:
-            with open(filepath, 'w') as savefile:
-                json.dump(data, savefile)
-
-        except Exception as e: logger.error(e, exc_info=True)
-
-        else: logger.info('Saved data to {}'.format(filepath))
-
-    @staticmethod
-    def createPath(path:str):
-        if not os.path.isdir(path):
-            # Create logs directory
-            try: os.mkdir(path)
-            except Exception as e: logger.error(e, exc_info=True)
-            else: logger.info('Created {} directory'.format(path))
-
-
-    @staticmethod
     def updateWindow():
         '''Displays screens/surfaces to pygame window'''
         pygame.display.update()
@@ -112,6 +70,49 @@ class PgEss:
         '''Exit pygame program'''
         logger.info('Exiting program... Goodbye!')
         pygame.quit()
+
+
+###########
+# File IO #
+###########
+class File(coreFunc):
+    def __init__(self, fileName):
+        self.fileName = fileName
+
+    def createPath(self) -> bool:
+        if os.path.isdir(self.fileName): return False
+        try:
+            os.mkdir(self.fileName)
+        except FileExistsError:
+            logger.info(f"Folder '{self.fileName}' already exist!")
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            return False
+        return True
+
+    def writeJson(self, data) -> bool:
+        try:
+            with open(self.fileName, 'w') as datafile:
+                json.dump(data, datafile)
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            return False
+        return True
+
+    def readJson(self, default = None) -> dict:
+        data = None
+        try:
+            with open(self.fileName, 'r') as datafile:
+                data = json.load(datafile)
+        except FileNotFoundError as _:
+            if default != None:
+                self.writeJson(default)
+                data = default
+            else:
+                logger.error(f"File '{self.fileName}' is not found!")
+        except Exception as e:
+            logger.error(e, exc_info=True)
+        return data
 
 
 ##########
@@ -300,7 +301,7 @@ class Screens(coreFunc):
 ###########
 # Logging #
 ###########
-PgEss.createPath('./logs/')
+File('./logs/').createPath()
 
 # Keep only certain number of log files 
 log_files = glob.glob("./logs/*.log")
@@ -360,7 +361,7 @@ logger.debug('[config] {}'.format(PgEss.config))
 ################
 # Setup pygame #
 ################
-PgEss.createPath('./appdata/')
+File('./appdata/').createPath()
 pygame.init()
 window = windowScreen()
 screens = Screens()

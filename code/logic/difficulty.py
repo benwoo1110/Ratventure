@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, screens, PgEss
+from code.api.core import os, log, screens, File
 from code.logic.attack import Enemy
 from code.logic.orb import Orb
 from code.logic.rest import rest
@@ -16,7 +16,7 @@ logger = log.get_logger(filename)
 
 
 class Difficulty:
-    modes = PgEss.loadJson('./gamefiles/difficulty.json')
+    modes = File('./gamefiles/difficulty.json').readJson()
 
     @staticmethod
     def set(mode:str = None):

@@ -4,7 +4,7 @@
 import json
 import time
 import uuid
-from code.api.core import os, log, screens, PgEss
+from code.api.core import os, log, screens, File
 from code.logic.player import Player
 from code.logic.board import Board
 
@@ -25,7 +25,7 @@ filepath = './appdata/leaderboard.json'
 ##################
 class PlayerRank:
     # Get leaderboard data
-    rankData = PgEss.loadJson(filepath, dict())
+    rankData = File(filepath).readJson(dict())
 
     @staticmethod
     def check():
@@ -47,7 +47,7 @@ class PlayerRank:
         # Reload data without those tempered with
         if missmatch:
             PlayerRank.rankData = checkedData
-            PgEss.saveJson(filepath, PlayerRank.rankData)
+            File(filepath).writeJson(PlayerRank.rankData)
 
     @staticmethod
     def add() -> int:
@@ -73,7 +73,7 @@ class PlayerRank:
 
         # playerRank.save()
         # Save updated back to file
-        PgEss.saveJson(filepath, PlayerRank.rankData)
+        File(filepath).writeJson(PlayerRank.rankData)
 
         return rankid
 
@@ -93,7 +93,7 @@ class PlayerRank:
         PlayerRank.rankData = dict(sorted(PlayerRank.rankData.items(), key=lambda x: x[1]['days']))
 
         # Save the updated nickname data
-        PgEss.saveJson(filepath, PlayerRank.rankData)
+        File(filepath).writeJson(PlayerRank.rankData)
 
         return new_rankid
 

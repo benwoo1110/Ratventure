@@ -4,7 +4,7 @@
 import json
 import uuid
 import time
-from code.api.core import os, log, screens, PgEss, pygame
+from code.api.core import os, log, screens, pygame, File
 from code.api.actions import Alert
 from code.api.data.Sound import Sound
 from code.logic.player import Player
@@ -22,7 +22,7 @@ logger = log.get_logger(filename)
 
 
 # Ensure that saves folder is created
-PgEss.createPath('./appdata/saves/')
+File('./appdata/saves/').createPath()
 
 
 ##################
@@ -170,19 +170,12 @@ class PlayerData:
         PlayerData.delete()
 
         # Init dictionary to save
-        savedData = dict()
-
-        # Save player
-        savedData['player'] = Player.get()
-
-        # Store save time
-        savedData['time_saved'] = time.time()
-
-        # Save map
-        savedData['grid'] = screens.game.map.grid.Grid.get()
-
-        # Save story
-        savedData['story'] = story.getCurrent()
+        savedData = {
+            'player': Player.get(),
+            'time_saved': time.time(),
+            'grid': screens.game.map.grid.Grid.get(),
+            'story': story.getCurrent()
+        }
 
         # Generate json text data
         json_data = json.dumps(savedData)
@@ -192,7 +185,7 @@ class PlayerData:
         Player.fileid = fileid
 
         # Save to file
-        PgEss.saveJson('./appdata/saves/{}.json'.format(fileid), savedData)
+        File('./appdata/saves/{}.json'.format(fileid)).writeJson(savedData)
 
         # Cool beep
         Sound.saved.play(withVolume=0.5)

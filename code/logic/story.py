@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 import random
-from code.api.core import os, log, screens, coreFunc, PgEss
+from code.api.core import os, log, screens, coreFunc, File
 
 
 #################
@@ -52,4 +52,4 @@ class message(coreFunc):
 
 
 # Get stories
-story = Story(PgEss.loadJson('./gamefiles/stories.json'))
+story = Story(File('./gamefiles/stories.json').readJson())

@@ -1,7 +1,7 @@
 ######################################
 # Import and initialize the librarys #
 ######################################
-from code.api.core import os, log, screens, PgEss
+from code.api.core import os, log, screens, File, PgEss
 from code.api.actions import Alert, Runclass
 from code.logic.player import Player
 from code.logic.difficulty import Difficulty
@@ -19,7 +19,7 @@ logger = log.get_logger(filename)
 # Gameplay logic #
 ##################
 class Store:
-    weapons = PgEss.loadJson('./gamefiles/weapons.json')
+    weapons = File('./gamefiles/weapons.json').readJson()
 
     @staticmethod
     def gainText(gain_data) -> tuple:
@@ -41,7 +41,6 @@ class Store:
 
     @staticmethod
     def setWeapons():
-        Store.weapons = PgEss.loadJson('./gamefiles/weapons.json')
         store_surface = screens.shop.store
 
         # Get multiplier
