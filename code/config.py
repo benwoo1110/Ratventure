@@ -4,71 +4,7 @@
 import yaml
 import os
 import traceback
-
-
-###################
-# Default setting #
-###################
-default_config_contents = '''\
-# +-+-+-+-+-+-+-+-+-+-+-+-+
-# | Ratventure config.yml |
-# +-+-+-+-+-+-+-+-+-+-+-+-+
-# NOTE: Change only if you know what you are doing!
-
-
-# +-+-+-+-+-+-+-+-+-+-+-+
-# | Pygame GUI Settings |
-# +-+-+-+-+-+-+-+-+-+-+-+
-# Changes the refresh rate of pygame
-framerate: 60
-
-# Window caption
-title: 'Ratventure'
-
-# Application icon file location
-icon_file: './gamefiles/icon.png'
-
-# Pygame windows fills the entire screen
-fullscreen: False
-
-# Config size of pygame window (Only apply if not fullscreen)
-scale: 0.6
-
-# Uses lots of CPU in a busy loop to make sure that fps timing is more accurate
-tick_busy: False
-
-
-# +-+-+-+-+-+-+-+-+-+
-# | Sounds Settings |
-# +-+-+-+-+-+-+-+-+-+
-sound:
-    # Master volume for all effects
-    effects: 1.0
-
-    # Volume range from 0 to 1.0 inclusive, with 1.0 being the loudest
-    button: 0.12
-    background: 0.12
-
-
-# +-+-+-+-+-+-+-+-+-+
-# | Logger Settings |
-# +-+-+-+-+-+-+-+-+-+
-# CRITICAL -> 50
-# ERROR -> 40
-# WARNING -> 30
-# INFO -> 20
-# DEBUG -> 10
-
-logging:
-  # For console output
-  console_level: 'INFO'
-
-  # App activities logged in './Ratventure/logs/'
-  file_level: 'DEBUG'
-
-  # Number of logs to keep in logs folder
-  keep_logs: 5
-'''
+import time
 
 
 ###########################
@@ -87,15 +23,19 @@ class Struct:
 # Config actions #
 ##################
 class Config:
+    default_file_dir = './gamefiles/default_config.yml'
     file_dir = './config.yml'
 
     @staticmethod
     def check():
         # Create file if it doesnt exist
         if not os.path.isfile(Config.file_dir):
+            with open(Config.default_file_dir, 'r') as default_config_file:
+                default_config_contents = default_config_file.read()
+
             with open(Config.file_dir, 'w') as config_file:
                 config_file.write(default_config_contents)
-                print("Generated new ./config.yml")
+                print("Generated new default config at ./config.yml")
 
     @staticmethod
     def get() -> Struct:
@@ -119,7 +59,7 @@ class Config:
             traceback.print_exc()
             # Possible issue with yaml file formating, try reset config
             print('Config seem broken, renaming it to ./config_broken.yml')
-            os.rename(Config.file_dir, './config_broken.yml')
+            os.rename(Config.file_dir, f'./config_broken_{time.time()}.yml')
             Config.check()
 
             # Try again

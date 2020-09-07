@@ -131,6 +131,6 @@ dmypy.json
 # Other files
 *.log
 .DS_Store
-config.yml
+config*.yml
 appdata/
 .vscode/

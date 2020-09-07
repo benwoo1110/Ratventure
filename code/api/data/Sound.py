@@ -22,7 +22,7 @@ class Effect(coreFunc):
         try: self.soundfile = pygame.mixer.Sound(sound_file)
         except: 
             self.soundfile = None
-            logger.error('Error loading sound {}'.format(sound_file), exc_info=True)
+            logger.error('Error loading sound file {}'.format(sound_file), exc_info=True)
 
     def play(self, maxtime:int = -1, loops:int = 0, withVolume:float = 1.0, fadetime:int = 0):
         # There was error loading sound file
@@ -55,7 +55,7 @@ class Sound(coreFunc):
         try:
             pygame.mixer.init()
         except:
-            logger.error('Error initialising pygame sound... Sound effects will not work!', exc_info=True)
+            logger.error('Error initialising pygame sound, sound effects will not work!', exc_info=True)
             Sound.enabled = False
         else:
             Sound.enabled = True
