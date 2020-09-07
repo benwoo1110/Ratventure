@@ -7,7 +7,7 @@ from code.api.events import Events
 from code.api.actions import keyboardActions
 from code.api.data.Frame import Frame
 from code.api.data.Images import Images
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -191,7 +191,7 @@ class Surface(coreFunc):
 
 class Item(coreFunc):
     def __init__(self, surface:Surface, name:str, type:str, frame:Frame, imageData:dict = None, overlayDataFrame:bool = False, data:dict = None, 
-    selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False, clickSound:Sound = Sound.button_click):
+    selectable: bool = True, state:str = '', action:any = None, lock_state:bool = False, clickSound:sound = sound.button_click):
         self.surface = surface
         self.name = name
         self.selectable = selectable

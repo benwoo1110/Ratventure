@@ -6,7 +6,7 @@ from code.api.core import os, log, PgEss, pygame
 from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info
 from code.api.data.Text import Text, TextFormat, TextValidate
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 from code.logic.player import Player
 from code.logic.playerData import PlayerData
 from code.logic.playerRank import PlayerRank

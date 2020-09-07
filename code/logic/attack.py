@@ -3,7 +3,7 @@
 ######################################
 from random import randint
 from code.api.core import os, log, screens, File, pygame
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 from code.logic.stats import Stats
 from code.logic.story import story
 from code.logic.player import Player
@@ -68,8 +68,8 @@ class Attack:
             if name in Grid.tiles[Player.hero.row][Player.hero.column].sprites:
                 # Play rat king music
                 if name == 'king':
-                    pygame.mixer.fadeout(600)
-                    Sound.rat_king.play(loops=-1, withVolume=PgEss.config.sound.background + 0.24, fadetime=3000)
+                    sound.stopAll(600)
+                    sound.rat_king.play(loops=-1, withVolume=PgEss.config.sound.background + 0.24, fadetime=3000)
 
                 Enemy.load(name)
                 # Load attack screen
@@ -145,7 +145,7 @@ class Attack:
         else: story.encounter_wild.display(Enemy.name.capitalize())
 
         # Cool sword sound
-        Sound.encounter.play()
+        sound.encounter.play()
 
         # Load attack surface
         screens.game.attack.load(withItems='all', refresh=True)
@@ -156,7 +156,7 @@ class Attack:
     @staticmethod
     def run():
         # Play swoosh sound effect
-        Sound.run.play(withVolume=0.6)
+        sound.run.play(withVolume=0.6)
 
         # Add run story
         story.run.display()
@@ -168,9 +168,9 @@ class Attack:
     @staticmethod
     def back():
         # Stop rat king music if its playing
-        if Sound.rat_king.isPlaying():
-            pygame.mixer.fadeout(600)
-            Sound.game_background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=5000)
+        if sound.rat_king.isPlaying():
+            sound.stopAll(600)
+            sound.game_background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=5000)
 
         # Return to in open selection screen
         screens.game.attack.unload()
@@ -189,7 +189,7 @@ class Attack:
             screens.game.attack.run.switchState('Disabled')
 
             # Cool sword battle effect
-            Sound.battle.play(maxtime=3000, withVolume=0.24)
+            sound.battle.play(maxtime=3000, withVolume=0.24)
 
             # Enemy is immune without orb of power
             if Enemy.Enemy['needOrb'] and not Player.weapon.have('orb'):
@@ -210,7 +210,7 @@ class Attack:
             # Enemy is dead
             if Enemy.stats.health[0] <= 0:
                 # Stop battle sound
-                Sound.battle.stop()
+                sound.battle.stop()
 
                 # Show defeat message
                 story.enemy_defeated.display(Enemy.name)
@@ -219,7 +219,7 @@ class Attack:
                 screens.game.map.grid.Grid.tiles[Player.hero.row][Player.hero.column].sprites.pop(0)
                 
                 # Cool win sound
-                Sound.attack_win.play()
+                sound.attack_win.play()
 
             # Enemy attacks
             else:
@@ -250,7 +250,7 @@ class Attack:
                     story.gain_elixir.display(elixir_gained)
 
                     # Cool coin sound
-                    Sound.gain_elixir.play(withVolume=0.8)
+                    sound.gain_elixir.play(withVolume=0.8)
 
             # Both player and enemy is still alive
             else: 
@@ -287,9 +287,9 @@ class Attack:
         screens.end_game.unload()
 
         # Stop game music, back to normal background music
-        if not Sound.background.isPlaying():
-            pygame.mixer.fadeout(200)
-            Sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
+        if not sound.background.isPlaying():
+            sound.stopAll(200)
+            sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
 
         end_game_screen = screens.end_game
         # Check if win screen is the one loaded
@@ -306,7 +306,7 @@ class Attack:
             end_game_screen.win.load(withItems='all', refresh=True)
 
             # Play win sound effect
-            Sound.win.play()
+            sound.win.play()
 
         # Check if gameover screen is the one loaded
         elif type == 'gameover':
@@ -314,6 +314,6 @@ class Attack:
             end_game_screen.gameover.load(withItems='all', refresh=True)
 
             # Play gameover sound effect
-            Sound.game_over.play()
+            sound.game_over.play()
 
         screens.changeStack(type='load', screen='end_game')

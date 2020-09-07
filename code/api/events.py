@@ -3,7 +3,7 @@
 ######################################
 from code.api.core import log, coreFunc, os, PgEss, pygame
 from code.api.actions import Info, Runclass, Alert, Switchscreen, ActionResult, Mouse
-from code.api.data.Sound import Sound, Effect
+from code.api.data.Sound import sound, Effect
 
 
 #################

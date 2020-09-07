@@ -4,7 +4,7 @@
 from code.api.core import os, log, pygame, PgEss
 from code.api.objects import Screen, Frame
 from code.api.actions import Runclass, Switchscreen, Info, Alert
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -22,9 +22,9 @@ class mainmenu:
     @staticmethod
     def init():
         # Play game background music
-        if not Sound.background.isPlaying():
-            pygame.mixer.fadeout(600)
-            Sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
+        if not sound.background.isPlaying():
+            sound.stopAll(600)
+            sound.background.play(loops=-1, withVolume=PgEss.config.sound.background, fadetime=3000)
     
     @staticmethod
     def run():

@@ -6,7 +6,7 @@ import re
 from code.api.core import os, log, coreFunc, PgEss, pygame
 from code.api.actions import Alert
 from code.api.data.Frame import Frame
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -83,7 +83,7 @@ class Text(coreFunc):
         else:
             if self.validation.invalidPrompt != None:
                 # Error sound
-                Sound.error.play()
+                sound.error.play()
 
                 # Tell user is invalid
                 Alert(

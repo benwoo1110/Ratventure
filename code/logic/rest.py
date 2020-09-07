@@ -2,7 +2,7 @@
 # Import and initialize the librarys #
 ######################################
 from code.api.core import os, log, screens
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 from code.logic.stats import Bonus
 from code.logic.player import Player
 from code.logic.story import story
@@ -44,7 +44,7 @@ class rest:
         Player.stats.addBonus(rest.stats, screens.game.info.stats, True, screens.game.info.hero)
 
         # Heal sound
-        Sound.heal.play(maxtime=1000, fadetime=100, withVolume=0.8)
+        sound.heal.play(maxtime=1000, fadetime=100, withVolume=0.8)
 
         # Next day
         Player.next_day()

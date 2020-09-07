@@ -6,7 +6,7 @@ import uuid
 import time
 from code.api.core import os, log, screens, pygame, File
 from code.api.actions import Alert
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 from code.logic.player import Player
 from code.logic.orb import Orb
 from code.logic.story import story
@@ -82,8 +82,8 @@ class PlayerData:
         screens.changeStack(type='load', screen='game')
 
         # Play game background music
-        pygame.mixer.fadeout(600)
-        Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
+        sound.stopAll(600)
+        sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
 
         logger.info('Created new playerdata.')
 
@@ -107,7 +107,7 @@ class PlayerData:
         checkid = str(uuid.uuid3(uuid.NAMESPACE_URL, raw_data))
         if fileid != checkid: 
             # Error sound
-            Sound.error.play()
+            sound.error.play()
 
             # Tell user issue with file
             Alert (
@@ -160,7 +160,7 @@ class PlayerData:
 
         # Play game background music
         pygame.mixer.fadeout(600)
-        Sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
+        sound.game_background.play(loops=-1, withVolume=0.12, fadetime=10000)
 
         logger.info('Loaded playerdata from "{}"'.format(save_location))
 
@@ -188,7 +188,7 @@ class PlayerData:
         File('./appdata/saves/{}.json'.format(fileid)).writeJson(savedData)
 
         # Cool beep
-        Sound.saved.play(withVolume=0.5)
+        sound.saved.play(withVolume=0.5)
 
         # Tell user game is saved
         Alert(type='notify', title='Game Saved', content='You have saved the game.').do()

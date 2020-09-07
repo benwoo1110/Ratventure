@@ -12,15 +12,10 @@ filename = os.path.basename(__file__).split('.')[0]
 logger = log.get_logger(filename)
 
 
-# Try to start sound mixer
-try: pygame.mixer.init()
-except: logger.error('Error initialising pygame sound... Sound effects will not work!', exc_info=True)
-
-
 class Effect(coreFunc):
     def __init__(self, sound_file):
         # Default fallback
-        if sound_file == None: 
+        if sound_file == None or not Sound.enabled: 
             self.soundfile = None
             return
         
@@ -52,8 +47,22 @@ class Effect(coreFunc):
         return self.soundfile.get_num_channels() >= 1
 
 
-class soundHandler(coreFunc):
+class Sound(coreFunc):
+    enabled = None
+
+    @staticmethod
+    def checkSoundEnabled():
+        try:
+            pygame.mixer.init()
+        except:
+            logger.error('Error initialising pygame sound... Sound effects will not work!', exc_info=True)
+            Sound.enabled = False
+        else:
+            Sound.enabled = True
+
     def __init__(self, sound_dir:str = './sounds/', fileType:str = ''):
+        Sound.checkSoundEnabled()
+        
         self.sound_dir = sound_dir
         self.fileType = fileType
         self.containerList = ['_default']
@@ -80,4 +89,8 @@ class soundHandler(coreFunc):
         # Get list of image from dir
         return glob.glob(image_dir)
 
-Sound = soundHandler()
+    def stopAll(self, fadetime:int = 0):
+        if Sound.enabled:
+            pygame.mixer.fadeout(fadetime)
+
+sound = Sound()

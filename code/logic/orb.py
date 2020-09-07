@@ -9,7 +9,7 @@ from code.logic.stats import Bonus
 from code.logic.player import Player
 from code.logic.attack import Attack
 from code.logic.story import story
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -116,7 +116,7 @@ class Orb:
         screens.game.map.display(withItems=['grid'], refresh=True)
 
         # Play cool sound
-        Sound.orb_take.play()
+        sound.orb_take.play()
 
         # Return to selection menu
         Orb.back()

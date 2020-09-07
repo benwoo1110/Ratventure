@@ -5,7 +5,7 @@ from code.api.core import os, log, screens
 from code.logic.attack import Attack, Enemy
 from code.logic.story import story
 from code.logic.player import Player
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -88,7 +88,7 @@ class Move:
             elif direction == 'right' and Move.new_c < 7: Move.new_c += 1
 
             # Foot steps
-            Sound.walk.play(maxtime=860)
+            sound.walk.play(maxtime=860)
 
         # Run move animation
         elif counter <= 50:

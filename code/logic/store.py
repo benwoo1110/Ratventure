@@ -5,7 +5,7 @@ from code.api.core import os, log, screens, File, PgEss
 from code.api.actions import Alert, Runclass
 from code.logic.player import Player
 from code.logic.difficulty import Difficulty
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 
 
 #################
@@ -80,7 +80,7 @@ class Store:
         # Not enough elixir
         else:
             # Play error
-            Sound.error.play()
+            sound.error.play()
             # Tell player
             Alert(
                 type = 'notify',
@@ -109,7 +109,7 @@ class Store:
         Player.weapon.add(weapon)
 
         # Play cool sound
-        Sound.weapon_equip.play()
+        sound.weapon_equip.play()
 
         # Alert users on the gains
         Alert(

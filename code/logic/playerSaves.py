@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 import glob
 from code.api.core import os, log, screens
-from code.api.data.Sound import Sound
+from code.api.data.Sound import sound
 from code.logic.playerData import PlayerData
 from code.logic.board import Board
 
@@ -115,7 +115,7 @@ class PlayerSaves:
         else: logger.info('Deleted playerdata "{}"'.format(file_location))
 
         # Trash sound
-        Sound.trash.play()
+        sound.trash.play()
 
         # Reload list view
         PlayerSaves.showList(int(Board.currentPage('saves')))
@@ -131,6 +131,6 @@ class PlayerSaves:
             except Exception as e: logger.error(e, exc_info=True)
 
         # Trash sound
-        Sound.trash_all.play()
+        sound.trash_all.play()
         
         logger.info('Deleted all saved playerdata.')
