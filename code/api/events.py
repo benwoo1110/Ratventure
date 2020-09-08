@@ -164,11 +164,15 @@ class Events(coreFunc):
                     game_result.getOutcome(eventAction)
                     if Event.withCounter: Event.counter += 1
 
+                # Animate error
+                if game_result.isOutcome("__error__"):
+                    Event.queue.pop(0)
+                    return game_result
+
                 # Animate is done, remove it and reset
-                if game_result.withOutcome(True):
+                if game_result.isOutcome(True):
                     Event.counter = 0
                     if Event.autoRemove: Event.queue.pop(0)
-
                     return game_result
 
     def keydown(self, event):

@@ -194,28 +194,36 @@ class ActionResult(coreFunc):
         self.type = str(type)
         self.outcome = outcome
 
-    def getOutcome(self, Action):
+    def getOutcome(self, Actions):
         # Check if have action
-        if Action == None: return
+        if Actions == None: return
 
         # A list of actions
-        if type(Action) == list:
+        if type(Actions) in (list, tuple, set):
             self.outcome = []
-            # Run through all the laction
-            for action in Action:
-                # Run the action
-                try: self.outcome.append(action.do())
-                # There is a error
-                except Exception as e: logger.error(e, exc_info=True)
-
+            # Run through all the actions
+            for action in Actions:
+                self.outcome.append(self.runAction(action))
+        
+        # Just one action
         else:
-            # Run the action
-            try: self.outcome = Action.do()
-            # There is a error
-            except Exception as e: logger.error(e, exc_info=True)
+            self.outcome = self.runAction(Actions)
 
-    def isName(self, name = None) -> bool: return self.name == name
+    @staticmethod
+    def runAction(action):
+        try: return action.do()
+        except Exception as e: 
+            logger.error(e, exc_info=True)
+            return "__error__"
 
-    def isType(self, type = None) -> bool: return self.type == type
+    def isName(self, name) -> bool: return self.name == name
 
-    def withOutcome(self, outcome = None) -> bool: return self.outcome == outcome
+    def isType(self, type) -> bool: return self.type == type
+
+    def isOutcome(self, outcome) -> bool: return self.outcome == outcome
+
+    def containsOutcome(self, outcome) -> bool:
+        if type(self.outcome) == list:
+            return any(outcome)
+        
+        return self.isOutcome(outcome)
