@@ -236,20 +236,22 @@ class Screens(coreFunc):
             # Error
             else:
                 logger.error('"{}" is not a screen.'.format(screen))
-                return
+                return False
         
         # Load a new screen
-        elif type == 'load':  
-            if screen in self.containerList: self.screensStack.append(screen)
-            # Error
+        elif type == 'load':
+            if screen == self.screensStack[-1]:
+                logger.warn('"{}" already the current screen.'.format(screen))
+                return False
             else:
-                logger.error('"{}" is not a screen.'.format(screen))
-                return
-
-        # Error
+                if screen in self.containerList:
+                    self.screensStack.append(screen)
+                else:
+                    logger.error('"{}" is not a screen.'.format(screen))
+                    return False
         else: 
             logger.error('{} type not recognised.'.format(type))
-            return
+            return False
         
         # Log change
         logger.debug('Change stack completed with type:{} screen:{}'.format(type, screen))
