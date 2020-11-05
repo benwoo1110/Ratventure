@@ -13,6 +13,23 @@ namespace RatventureCore.GamePlay
         private int lowerColumnLimit;
         private int upperColumnLimit;
 
+        public int Row => row;
+
+        public int Column => column;
+
+        public int LowerRowLimit => lowerRowLimit;
+
+        public int UpperRowLimit => upperRowLimit;
+
+        public int LowerColumnLimit => lowerColumnLimit;
+
+        public int UpperColumnLimit => upperColumnLimit;
+
+        public Location()
+        {
+            Init(int.MinValue, int.MinValue, int.MinValue, int.MaxValue, int.MinValue, int.MaxValue);
+        }
+
         public Location(ILocation lo)
         {
             Init(lo.Row, lo.Column, lo.LowerRowLimit, lo.UpperRowLimit, lo.LowerColumnLimit, lo.UpperColumnLimit);
@@ -20,7 +37,7 @@ namespace RatventureCore.GamePlay
 
         public Location(int row, int column)
         {
-            Init(row, column, 0, Int32.MaxValue, 0, Int32.MaxValue);
+            Init(row, column, 0, int.MaxValue, 0, int.MaxValue);
         }
 
         public Location(int row, int column, int lowerRowLimit, int upperRowLimit, int lowerColumnLimit, int upperColumnLimit)
@@ -40,36 +57,36 @@ namespace RatventureCore.GamePlay
 
         public bool MoveRow(int r)
         {
-            return this.Move(r, 0);
+            return Move(r, 0);
         }
 
         public bool MoveColumn(int c)
         {
-            return this.Move(0, c);
+            return Move(0, c);
         }
 
         public bool Move(int r, int c)
         {
-            this.row += r;
-            this.column += c;
-            return this.CheckLimits();
+            row += r;
+            column += c;
+            return CheckLimits();
         }
 
         public int DistanceFrom(int r, int c)
         {
-            return Math.Abs(this.row - r) + Math.Abs(this.column - c);
+            return Math.Abs(row - r) + Math.Abs(column - c);
         }
 
         public int DistanceFrom(ILocation other)
         {
-            return Math.Abs(this.row - other.Row) + Math.Abs(this.column - other.Column);
+            return Math.Abs(row - other.Row) + Math.Abs(column - other.Column);
         }
 
         public bool Set(int r, int c)
         {
-            this.row = r;
-            this.column = c;
-            return this.CheckLimits();
+            row = r;
+            column = c;
+            return CheckLimits();
         }
 
         public bool SetLimit(int lowerRowLimit, int upperRowLimit, int lowerColumnLimit, int upperColumnLimit)
@@ -84,39 +101,40 @@ namespace RatventureCore.GamePlay
             this.lowerColumnLimit = lowerColumnLimit;
             this.upperColumnLimit = upperColumnLimit;
 
-            return this.CheckLimits();
+            return CheckLimits();
         }
 
         private bool CheckLimits()
         {
             bool withinLimit = true;
-            if (this.row < this.lowerRowLimit)
+
+            if (row < lowerRowLimit)
             {
                 withinLimit = false;
-                this.row = this.lowerRowLimit;
+                row = lowerRowLimit;
             }
-            else if (this.row > this.upperRowLimit)
+            else if (row > upperRowLimit)
             {
                 withinLimit = false;
-                this.row = upperRowLimit;
+                row = upperRowLimit;
             }
-            if (this.column < this.lowerColumnLimit)
+            if (column < lowerColumnLimit)
             {
                 withinLimit = false;
-                this.column = lowerColumnLimit;
+                column = lowerColumnLimit;
             }
-            else if (this.column > this.upperColumnLimit)
+            else if (column > upperColumnLimit)
             {
                 withinLimit = false;
-                this.column = upperColumnLimit;
+                column = upperColumnLimit;
             }
 
             return withinLimit;
         }
 
-        public bool Equals(int row, int column)
+        public bool Equals(int r, int c)
         {
-            return this.row == row && this.column == column;
+            return row == r && column == c;
         }
 
         public override bool Equals(object? o)
@@ -127,44 +145,32 @@ namespace RatventureCore.GamePlay
             }
 
             ILocation other = (ILocation) o;
-            return this.row == other.Row && this.column == other.Column;
+            return row == other.Row && column == other.Column;
         }
 
         public string GetDirectionTo(ILocation other)
         {
             string direction = "";
 
-            if (this.row > other.Row)
+            if (row > other.Row)
             {
                 direction += "north";
             }
-            else if (this.row < other.Row)
+            else if (row < other.Row)
             {
                 direction += "south";
             }
-            if (this.column > other.Column)
+            if (column > other.Column)
             {
                 direction += "west";
             }
-            else if (this.column < other.Column)
+            else if (column < other.Column)
             {
                 direction += "east";
             }
 
             return direction;
         }
-
-        public int Row => row;
-
-        public int Column => column;
-
-        public int LowerRowLimit => lowerRowLimit;
-
-        public int UpperRowLimit => upperRowLimit;
-
-        public int LowerColumnLimit => lowerColumnLimit;
-
-        public int UpperColumnLimit => upperColumnLimit;
 
         public override int GetHashCode()
         {
@@ -173,7 +179,7 @@ namespace RatventureCore.GamePlay
 
         public override string ToString()
         {
-            return $"r={this.row}, c={this.column}";
+            return $"r={row}, c={column}";
         }
     }
 }

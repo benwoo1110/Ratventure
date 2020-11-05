@@ -9,6 +9,8 @@ namespace RatventureCore.GamePlay
     {
         private IStats stats;
 
+        public IStats Stats => stats;
+
         public LivingEntity(EntityType type, char displayLetter, ILocation location, IStats stats)
             : base(type, displayLetter, location)
         {
@@ -22,25 +24,20 @@ namespace RatventureCore.GamePlay
                 return 0;
             }
 
-            int damageDone = this.stats.GetRandomDamage() - enemy.GetStats().Defence;
+            int damageDone = stats.GetRandomDamage() - enemy.Stats.Defence;
             damageDone = (damageDone < 0) ? 0 : damageDone;
-            enemy.GetStats().UpdateHealth(-damageDone);
+            enemy.Stats.UpdateHealth(-damageDone);
             return damageDone;
         }
 
         public bool CanDealDamageTo(ILivingEntity enemy)
         {
-            return this.stats.HasOrb || !enemy.GetStats().HasOrb;
+            return stats.HasOrb || !enemy.Stats.HasOrb;
         }
 
         public bool IsDead()
         {
             return stats.CurrentHealth <= 0;
-        }
-
-        public IStats GetStats()
-        {
-            return this.stats;
         }
     }
 }

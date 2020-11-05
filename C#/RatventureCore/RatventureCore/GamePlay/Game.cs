@@ -35,37 +35,45 @@ namespace RatventureCore.GamePlay
                 )
         };
 
+        public int DayCount => dayCount;
+
+        public IGrid Grid => grid;
+
+        public ILivingEntity Hero => hero;
+
+        public ILivingEntity Enemy => enemy;
+
         public Game()
         {
-            this.grid = new Grid(8, 8);
-            this.towns = new List<IEntity>();
-            this.victoryLocations = new List<ILocation>();
+            grid = new Grid(8, 8);
+            towns = new List<IEntity>();
+            victoryLocations = new List<ILocation>();
 
-            this.dayCount = 1;
-            this.grid.Clear();
-            this.towns.Clear();
-            this.victoryLocations.Clear();
-            this.enemy = null;
+            dayCount = 1;
+            grid.Clear();
+            towns.Clear();
+            victoryLocations.Clear();
+            enemy = null;
 
-            this.hero = new LivingEntity(
+            hero = new LivingEntity(
                 EntityType.Hero,
                 'H',
                 new Location(0, 0),
                 new Stats(2, 4, 1, 20, 20, false)
             );
-            this.grid.AddEntity(hero);
+            grid.AddEntity(hero);
 
-            this.AddTown(new Entity(EntityType.Town, 'T', new Location(0, 0)));
+            AddTown(new Entity(EntityType.Town, 'T', new Location(0, 0)));
 
-            this.grid.AddEntity(new LivingEntity(
+            grid.AddEntity(new LivingEntity(
                 EntityType.King,
                 'K',
                 new Location(grid.Rows - 1, grid.Columns - 1),
                 new Stats(6, 10, 5, 24, 24, true)
             ));
 
-            this.GenerateOrb();
-            this.GenerateRandomTowns(4, 3);
+            GenerateOrb();
+            GenerateRandomTowns(4, 3);
         }
 
         private void GenerateOrb()
@@ -76,7 +84,7 @@ namespace RatventureCore.GamePlay
                 int rColumn = Random.Next(0, grid.Rows);
                 if (rRow >= 4 || rColumn >= 4)
                 {
-                    this.orbLocation = new Location(rRow, rColumn);
+                    orbLocation = new Location(rRow, rColumn);
                     break;
                 }
             }
@@ -89,9 +97,9 @@ namespace RatventureCore.GamePlay
             {
                 int rRow = Random.Next(0, grid.Rows);
                 int rColumn = Random.Next(0, grid.Rows);
-                if (this.towns.Find(e => grid.HasEntityAt(rRow, rColumn) || e.GetLocation().DistanceFrom(rRow, rColumn) < gap) == null)
+                if (towns.Find(e => grid.HasEntityAt(rRow, rColumn) || e.Location.DistanceFrom(rRow, rColumn) < gap) == null)
                 {
-                    this.AddTown(new Entity(EntityType.Town, 'T', new Location(rRow, rColumn)));
+                    AddTown(new Entity(EntityType.Town, 'T', new Location(rRow, rColumn)));
                     counter++;
                 }
             }
@@ -103,62 +111,58 @@ namespace RatventureCore.GamePlay
             {
                 throw new ArgumentException("Invalid town!");
             }
-            this.towns.Add(town);
-            this.grid.AddEntity(town);
+            towns.Add(town);
+            grid.AddEntity(town);
         }
 
         public bool HeroInTown()
         {
-            return towns.Find(t => t.GetLocation().Equals(hero.GetLocation())) != null;
+            return towns.Find(t => t.Location.Equals(hero.Location)) != null;
         }
 
         public void HeroRest()
         {
-            this.hero.GetStats().ResetHealth();
+            hero.Stats.ResetHealth();
         }
 
         public bool HeroMove(Direction direction)
         {
-            bool moved = false;
-
             switch (direction)
             {
                 case Direction.Up:
-                    moved = this.hero.GetLocation().MoveRow(-1);
+                    return hero.Location.MoveRow(-1);
                     break;
                 case Direction.Left:
-                    moved = this.hero.GetLocation().MoveColumn(-1);
+                    return hero.Location.MoveColumn(-1);
                     break;
                 case Direction.Down:
-                    moved = this.hero.GetLocation().MoveRow(1);
+                    return hero.Location.MoveRow(1);
                     break;
                 case Direction.Right:
-                    moved = this.hero.GetLocation().MoveColumn(1);
+                    return hero.Location.MoveColumn(1);
                     break;
                 default:
                     throw new ArgumentException("Invalid direction: " + direction);
             }
-
-            return moved;
         }
 
         public OrbStatus SenseOrb()
         {
-            if (this.hero.GetStats().HasOrb)
+            if (hero.Stats.HasOrb)
             {
                 return OrbStatus.AlreadyTaken;
             }
 
-            if (this.hero.GetLocation().Equals(this.orbLocation))
+            if (hero.Location.Equals(orbLocation))
             {
-                this.hero.GetStats().HasOrb = true;
-                this.hero.GetStats().UpdateDamage(5);
-                this.hero.GetStats().UpdateDefence(5);
+                hero.Stats.HasOrb = true;
+                hero.Stats.UpdateDamage(5);
+                hero.Stats.UpdateDefence(5);
 
                 return OrbStatus.Found;
             }
 
-            return Enum.Parse<OrbStatus>(this.hero.GetLocation().GetDirectionTo(this.orbLocation), true);
+            return Enum.Parse<OrbStatus>(hero.Location.GetDirectionTo(orbLocation), true);
         }
         public bool EncounterEnemy()
         {
@@ -167,21 +171,21 @@ namespace RatventureCore.GamePlay
                 return true;
             }
 
-            if (this.victoryLocations.Find(l => l.Equals(this.hero.GetLocation())) != null)
+            if (victoryLocations.Find(l => l.Equals(hero.Location)) != null)
             {
                 return false;
             }
 
-            IEntity king = this.grid.GetEntityAt(this.hero.GetLocation(), EntityType.King);
+            IEntity king = grid.GetEntityAt(hero.Location, EntityType.King);
             if (king is ILivingEntity)
             {
-                this.enemy = (ILivingEntity) king;
+                enemy = (ILivingEntity) king;
                 return true;
             }
 
             if (Random.Next(0, 100) >= 40)
             {
-                this.enemy = EnemyList[Random.Next(EnemyList.Count)];
+                enemy = EnemyList[Random.Next(EnemyList.Count)];
                 return true;
             }
 
@@ -192,17 +196,17 @@ namespace RatventureCore.GamePlay
         {
             IAttackOutcome outcome = new AttackOutcome();
 
-            if (!this.hero.CanDealDamageTo(this.enemy))
+            if (!hero.CanDealDamageTo(enemy))
             {
                 outcome.EnemyImmuned = true;
             }
             
-            outcome.DamageToEnemy = this.hero.DealDamageTo(this.enemy);
+            outcome.DamageToEnemy = hero.DealDamageTo(enemy);
 
-            if (this.enemy.IsDead())
+            if (enemy.IsDead())
             {
-                this.victoryLocations.Add(new Location(this.hero.GetLocation()));
-                if (this.enemy.Type.Equals(EntityType.King))
+                victoryLocations.Add(new Location(hero.Location));
+                if (enemy.Type.Equals(EntityType.King))
                 {
                     outcome.Result = AttackResult.HeroWon;
                     return outcome;
@@ -212,9 +216,9 @@ namespace RatventureCore.GamePlay
                 return outcome;
             }
 
-            outcome.DamageToHero = this.enemy.DealDamageTo(this.hero);
+            outcome.DamageToHero = enemy.DealDamageTo(hero);
             
-            if (this.hero.IsDead())
+            if (hero.IsDead())
             {
                 outcome.Result = AttackResult.HeroLost;
                 return outcome;
@@ -224,34 +228,15 @@ namespace RatventureCore.GamePlay
             return outcome;
         }
 
-        public ILivingEntity GetHero()
-        {
-            return this.hero;
-        }
-
         public void ResetEnemy()
         {
-            this.enemy = null;
-        }
-
-        public ILivingEntity GetEnemy()
-        {
-            return this.enemy;
-        }
-
-        public IGrid GetGrid()
-        {
-            return this.grid;
+            enemy = null;
         }
 
         public int NextDay()
         {
-            return ++this.dayCount;
+            return ++dayCount;
         }
 
-        public int GetDay()
-        {
-            return this.dayCount;
-        }
     }
 }

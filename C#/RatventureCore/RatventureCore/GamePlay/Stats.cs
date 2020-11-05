@@ -13,28 +13,7 @@ namespace RatventureCore.GamePlay
         private int maxHealth;
         private bool hasOrb;
         
-        [NonSerialized] private static readonly Random random = new Random();
-
-        public Stats(int minDamage, int maxDamage, int defence, int currentHealth, int maxHealth, bool hasOrb)
-        {
-            this.minDamage = minDamage;
-            this.maxDamage = maxDamage;
-            this.defence = defence;
-            this.currentHealth = currentHealth;
-            this.maxHealth = maxHealth;
-            this.hasOrb = hasOrb;
-        }
-
-        public int GetRandomDamage()
-        {
-            return random.Next(this.minDamage, this.maxDamage+1);
-        }
-
-        public void UpdateDamage(int by)
-        {
-            this.minDamage += by;
-            this.maxDamage += by;
-        }
+        [NonSerialized] private static readonly Random Random = new Random();
 
         public int MinDamage
         {
@@ -48,26 +27,10 @@ namespace RatventureCore.GamePlay
             set => maxDamage = value;
         }
 
-        public void UpdateDefence(int by)
-        {
-            this.defence += by;
-        }
-
         public int Defence
         {
             get => defence;
             set => defence = value;
-        }
-
-        public void ResetHealth()
-        {
-            this.currentHealth = this.maxHealth;
-        }
-
-        public void UpdateHealth(int by)
-        {
-            this.currentHealth += by;
-            this.ValidateNewHealth();
         }
 
         public int CurrentHealth
@@ -76,7 +39,7 @@ namespace RatventureCore.GamePlay
             set
             {
                 currentHealth = value;
-                this.ValidateNewHealth();
+                ValidateNewHealth();
             }
         }
 
@@ -86,22 +49,7 @@ namespace RatventureCore.GamePlay
             set
             {
                 maxHealth = value;
-                this.ValidateNewHealth();
-            }
-        }
-
-        private void ValidateNewHealth()
-        {
-            if (this.maxHealth < 0)
-            {
-                this.maxHealth = 0;
-                this.currentHealth = 0;
-                throw new ArgumentException("Max health must be a non-negative number!");
-            }
-            if (this.currentHealth > this.maxHealth)
-            {
-                this.currentHealth = this.maxHealth;
-                throw new ArgumentException("Current health cannot be more that max health!");
+                ValidateNewHealth();
             }
         }
 
@@ -109,6 +57,58 @@ namespace RatventureCore.GamePlay
         {
             get => hasOrb;
             set => hasOrb = value;
+        }
+
+        public Stats(int minDamage, int maxDamage, int defence, int currentHealth, int maxHealth, bool hasOrb)
+        {
+            this.minDamage = minDamage;
+            this.maxDamage = maxDamage;
+            this.defence = defence;
+            this.currentHealth = currentHealth;
+            this.maxHealth = maxHealth;
+            this.hasOrb = hasOrb;
+        }
+
+        public int GetRandomDamage()
+        {
+            return Random.Next(minDamage, maxDamage+1);
+        }
+
+        public void UpdateDamage(int by)
+        {
+            minDamage += by;
+            maxDamage += by;
+        }
+
+        public void UpdateDefence(int by)
+        {
+            defence += by;
+        }
+
+        public void UpdateHealth(int by)
+        {
+            currentHealth += by;
+            ValidateNewHealth();
+        }
+
+        public void ResetHealth()
+        {
+            currentHealth = maxHealth;
+        }
+
+        private void ValidateNewHealth()
+        {
+            if (maxHealth < 0)
+            {
+                maxHealth = 0;
+                currentHealth = 0;
+                throw new ArgumentException("Max health must be a non-negative number!");
+            }
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+                throw new ArgumentException("Current health cannot be more that max health!");
+            }
         }
     }
 }

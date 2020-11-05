@@ -10,14 +10,6 @@ namespace RatventureCore.GamePlay
         private int damageToHero;
         private int damageToEnemy;
 
-        public AttackOutcome()
-        {
-            this.result = AttackResult.Unknown;
-            this.enemyImmuned = false;
-            this.damageToHero = 0;
-            this.damageToEnemy = 0;
-        }
-
         public bool IsResult(AttackResult result)
         {
             return this.result.Equals(result);
@@ -45,6 +37,22 @@ namespace RatventureCore.GamePlay
         {
             get => damageToEnemy;
             set => damageToEnemy = value;
+        }
+
+        public AttackOutcome()
+        {
+            result = AttackResult.Unknown;
+            enemyImmuned = false;
+            damageToHero = 0;
+            damageToEnemy = 0;
+        }
+
+        public AttackOutcome(AttackResult result, bool enemyImmuned, int damageToHero, int damageToEnemy)
+        {
+            this.result = result;
+            this.enemyImmuned = enemyImmuned;
+            this.damageToHero = damageToHero;
+            this.damageToEnemy = damageToEnemy;
         }
     }
 }

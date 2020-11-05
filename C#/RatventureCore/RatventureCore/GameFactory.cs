@@ -8,7 +8,7 @@ namespace RatventureCore
 {
     public class GameFactory : IGameFactory
     {
-        private static readonly string SaveFileName = @"save.binary";
+        private static readonly string SaveFileName = @"save.bin";
         private static readonly BinaryFormatter Formatter = new BinaryFormatter();
 
 

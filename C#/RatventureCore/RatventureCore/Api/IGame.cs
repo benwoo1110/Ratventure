@@ -4,6 +4,14 @@ namespace RatventureCore.Api
 {
     public interface IGame
     {
+        int DayCount { get; }
+
+        IGrid Grid { get; }
+
+        ILivingEntity Hero { get; }
+
+        ILivingEntity Enemy { get; }
+
         bool HeroInTown();
 
         void HeroRest();
@@ -16,16 +24,8 @@ namespace RatventureCore.Api
 
         IAttackOutcome DoAttack();
 
-        ILivingEntity GetHero();
-
         void ResetEnemy();
 
-        ILivingEntity GetEnemy();
-
-        IGrid GetGrid();
-
         int NextDay();
-
-        int GetDay();
     }
 }

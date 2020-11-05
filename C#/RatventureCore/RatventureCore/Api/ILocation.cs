@@ -2,6 +2,18 @@
 {
     public interface ILocation
     {
+        int Row { get; }
+
+        int Column { get; }
+
+        int LowerRowLimit { get; }
+
+        int UpperRowLimit { get; }
+
+        int LowerColumnLimit { get; }
+
+        int UpperColumnLimit { get; }
+
         bool MoveRow(int r);
 
         bool MoveColumn(int c);
@@ -21,18 +33,6 @@
         bool Equals(object? o);
 
         public string GetDirectionTo(ILocation other);
-
-        int Row { get; }
-
-        int Column { get; }
-
-        int LowerRowLimit { get; }
-
-        int UpperRowLimit { get; }
-
-        int LowerColumnLimit { get; }
-
-        int UpperColumnLimit { get; }
 
         int GetHashCode();
 
