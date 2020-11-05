@@ -1,4 +1,4 @@
-![Alt text](design/banner.png)
+![Alt text](banner.png)
 
 ## About
 Ratventure is a simple and fun role-playing game.
