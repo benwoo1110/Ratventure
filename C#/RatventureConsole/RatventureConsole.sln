@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatventureConsole", "RatventureConsole\RatventureConsole.csproj", "{C9DBD4D4-0A27-4900-AF74-40D3431EE469}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9DBD4D4-0A27-4900-AF74-40D3431EE469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9DBD4D4-0A27-4900-AF74-40D3431EE469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9DBD4D4-0A27-4900-AF74-40D3431EE469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9DBD4D4-0A27-4900-AF74-40D3431EE469}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E76DB9AB-6FFF-4889-B1F4-5C02DD613E14}
+	EndGlobalSection
+EndGlobal
