@@ -9,6 +9,10 @@ namespace RatventureCore.Api
 
         bool HasEntityAt(int r, int c);
 
+        bool HasEntityAt(int r, int c, EntityType entityType);
+
+        bool HasEntityAt(ILocation location, EntityType entityType);
+
         IEntity GetEntityAt(ILocation location, EntityType entityType);
 
         IEntity GetEntityAt(int r, int c, EntityType entityType);

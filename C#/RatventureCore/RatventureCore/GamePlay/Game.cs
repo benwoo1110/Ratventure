@@ -17,7 +17,6 @@ namespace RatventureCore.GamePlay
         private IGrid grid;
         private ILivingEntity hero;
         private ILivingEntity enemy;
-        private List<IEntity> towns;
         private ILocation orbLocation;
         private List<ILocation> victoryLocations;
 
@@ -56,21 +55,17 @@ namespace RatventureCore.GamePlay
             playerName = player;
             dayCount = 1;
             grid = new Grid(8, 8);
-            towns = new List<IEntity>();
             victoryLocations = new List<ILocation>();
 
             hero = new LivingEntity(
                 EntityType.Hero, 'H', new Location(0, 0),
                 new Stats(2, 4, 1, 20, 20, false)
             );
+
             grid.AddEntity(hero);
-
-            AddTown(new Entity(EntityType.Town, 'T', new Location(0, 0)));
-
-            grid.AddEntity(new LivingEntity(
-                EntityType.King, 'K', new Location(grid.Rows - 1, grid.Columns - 1),
-                new Stats(6, 10, 5, 24, 24, true)
-            ));
+            grid.AddEntity(new Entity(EntityType.Town, 'T', new Location(0, 0)));
+            grid.AddEntity(new LivingEntity(EntityType.King, 'K', new Location(grid.Rows - 1, grid.Columns - 1), 
+                new Stats(6, 10, 5, 24, 24, true)));
 
             GenerateOrb();
             GenerateRandomTowns(4, 3);
@@ -93,31 +88,26 @@ namespace RatventureCore.GamePlay
         private void GenerateRandomTowns(int amount, int gap)
         {
             int counter = 0;
+            List<IEntity> cachedTowns = new List<IEntity>();
+
             while (counter < amount)
             {
                 int rRow = RatUtils.RandomNumber(0, grid.Rows);
                 int rColumn = RatUtils.RandomNumber(0, grid.Rows);
-                if (towns.Find(e => grid.HasEntityAt(rRow, rColumn) || e.Location.DistanceFrom(rRow, rColumn) < gap) == null)
+                if (cachedTowns.Find(e => grid.HasEntityAt(rRow, rColumn) || e.Location.DistanceFrom(rRow, rColumn) < gap) == null)
                 {
-                    AddTown(new Entity(EntityType.Town, 'T', new Location(rRow, rColumn)));
+                    IEntity newTown = new Entity(EntityType.Town, 'T', new Location(rRow, rColumn));
+                    cachedTowns.Add(newTown);
                     counter++;
                 }
             }
-        }
 
-        private void AddTown(IEntity town)
-        {
-            if (!town.Type.Equals(EntityType.Town))
-            {
-                throw new ArgumentException("Invalid town!");
-            }
-            towns.Add(town);
-            grid.AddEntity(town);
+            cachedTowns.ForEach(grid.AddEntity);
         }
 
         public bool HeroInTown()
         {
-            return towns.Find(t => t.Location.Equals(hero.Location)) != null;
+            return grid.HasEntityAt(hero.Location, EntityType.Town);
         }
 
         public void HeroRest()

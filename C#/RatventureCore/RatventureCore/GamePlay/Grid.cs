@@ -42,6 +42,16 @@ namespace RatventureCore.GamePlay
             return entityList.Find(e => e.Location.Equals(r, c)) != null;
         }
 
+        public bool HasEntityAt(int r, int c, EntityType entityType)
+        {
+            return entityList.Find(e => e.Location.Equals(r, c) && e.Type.Equals(entityType)) != null;
+        }
+
+        public bool HasEntityAt(ILocation location, EntityType entityType)
+        {
+            return entityList.Find(e => e.Location.Equals(location) && e.Type.Equals(entityType)) != null;
+        }
+
         public IEntity GetEntityAt(ILocation location, EntityType entityType)
         {
             return entityList.Find(e => e.Location.Equals(location) && e.Type.Equals(entityType));
