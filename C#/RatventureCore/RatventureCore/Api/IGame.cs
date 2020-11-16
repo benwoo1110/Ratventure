@@ -1,9 +1,14 @@
-﻿using RatventureCore.Enums;
+﻿using System;
+using RatventureCore.Enums;
 
 namespace RatventureCore.Api
 {
     public interface IGame
     {
+        Guid Guid { get; }
+
+        string PlayerName { get; }
+
         int DayCount { get; }
 
         IGrid Grid { get; }

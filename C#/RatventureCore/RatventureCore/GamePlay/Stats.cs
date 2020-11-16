@@ -13,8 +13,6 @@ namespace RatventureCore.GamePlay
         private int maxHealth;
         private bool hasOrb;
         
-        [NonSerialized] private static readonly Random Random = new Random();
-
         public int MinDamage
         {
             get => minDamage;
@@ -71,7 +69,7 @@ namespace RatventureCore.GamePlay
 
         public int GetRandomDamage()
         {
-            return Random.Next(minDamage, maxDamage+1);
+            return RatUtils.RandomNumber(minDamage, maxDamage+1);
         }
 
         public void UpdateDamage(int by)

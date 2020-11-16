@@ -10,6 +10,9 @@ namespace RatventureCore.GamePlay
     [Serializable]
     class Game : IGame
     {
+        private readonly Guid guid;
+
+        private string playerName;
         private int dayCount;
         private IGrid grid;
         private ILivingEntity hero;
@@ -18,7 +21,6 @@ namespace RatventureCore.GamePlay
         private ILocation orbLocation;
         private List<ILocation> victoryLocations;
 
-        [NonSerialized] private static readonly Random Random = new Random();
         [NonSerialized] private static readonly List<ILivingEntity> EnemyList = new List<ILivingEntity>
         {
             new LivingEntity(
@@ -35,6 +37,10 @@ namespace RatventureCore.GamePlay
                 )
         };
 
+        public Guid Guid => guid;
+
+        public string PlayerName => playerName;
+
         public int DayCount => dayCount;
 
         public IGrid Grid => grid;
@@ -43,22 +49,18 @@ namespace RatventureCore.GamePlay
 
         public ILivingEntity Enemy => enemy;
 
-        public Game()
+        public Game(string player)
         {
+            guid = Guid.NewGuid();
+
+            playerName = player;
+            dayCount = 1;
             grid = new Grid(8, 8);
             towns = new List<IEntity>();
             victoryLocations = new List<ILocation>();
 
-            dayCount = 1;
-            grid.Clear();
-            towns.Clear();
-            victoryLocations.Clear();
-            enemy = null;
-
             hero = new LivingEntity(
-                EntityType.Hero,
-                'H',
-                new Location(0, 0),
+                EntityType.Hero, 'H', new Location(0, 0),
                 new Stats(2, 4, 1, 20, 20, false)
             );
             grid.AddEntity(hero);
@@ -66,9 +68,7 @@ namespace RatventureCore.GamePlay
             AddTown(new Entity(EntityType.Town, 'T', new Location(0, 0)));
 
             grid.AddEntity(new LivingEntity(
-                EntityType.King,
-                'K',
-                new Location(grid.Rows - 1, grid.Columns - 1),
+                EntityType.King, 'K', new Location(grid.Rows - 1, grid.Columns - 1),
                 new Stats(6, 10, 5, 24, 24, true)
             ));
 
@@ -80,8 +80,8 @@ namespace RatventureCore.GamePlay
         {
             while (true)
             {
-                int rRow = Random.Next(0, grid.Rows);
-                int rColumn = Random.Next(0, grid.Rows);
+                int rRow = RatUtils.RandomNumber(0, grid.Rows);
+                int rColumn = RatUtils.RandomNumber(0, grid.Rows);
                 if (rRow >= 4 || rColumn >= 4)
                 {
                     orbLocation = new Location(rRow, rColumn);
@@ -95,8 +95,8 @@ namespace RatventureCore.GamePlay
             int counter = 0;
             while (counter < amount)
             {
-                int rRow = Random.Next(0, grid.Rows);
-                int rColumn = Random.Next(0, grid.Rows);
+                int rRow = RatUtils.RandomNumber(0, grid.Rows);
+                int rColumn = RatUtils.RandomNumber(0, grid.Rows);
                 if (towns.Find(e => grid.HasEntityAt(rRow, rColumn) || e.Location.DistanceFrom(rRow, rColumn) < gap) == null)
                 {
                     AddTown(new Entity(EntityType.Town, 'T', new Location(rRow, rColumn)));
@@ -131,16 +131,12 @@ namespace RatventureCore.GamePlay
             {
                 case Direction.Up:
                     return hero.Location.MoveRow(-1);
-                    break;
                 case Direction.Left:
                     return hero.Location.MoveColumn(-1);
-                    break;
                 case Direction.Down:
                     return hero.Location.MoveRow(1);
-                    break;
                 case Direction.Right:
                     return hero.Location.MoveColumn(1);
-                    break;
                 default:
                     throw new ArgumentException("Invalid direction: " + direction);
             }
@@ -183,9 +179,9 @@ namespace RatventureCore.GamePlay
                 return true;
             }
 
-            if (Random.Next(0, 100) >= 40)
+            if (RatUtils.RandomNumber(0, 100) >= 40)
             {
-                enemy = EnemyList[Random.Next(EnemyList.Count)];
+                enemy = EnemyList[RatUtils.RandomNumber(0, EnemyList.Count)];
                 return true;
             }
 
@@ -196,35 +192,20 @@ namespace RatventureCore.GamePlay
         {
             IAttackOutcome outcome = new AttackOutcome();
 
-            if (!hero.CanDealDamageTo(enemy))
-            {
-                outcome.EnemyImmuned = true;
-            }
-            
+            outcome.EnemyImmuned = !hero.CanDealDamageTo(enemy);
+
             outcome.DamageToEnemy = hero.DealDamageTo(enemy);
 
             if (enemy.IsDead())
             {
                 victoryLocations.Add(new Location(hero.Location));
-                if (enemy.Type.Equals(EntityType.King))
-                {
-                    outcome.Result = AttackResult.HeroWon;
-                    return outcome;
-                }
-
-                outcome.Result = AttackResult.EnemyDied;
+                outcome.Result = (enemy.Type.Equals(EntityType.King)) ? AttackResult.HeroWon : AttackResult.EnemyDied;
                 return outcome;
             }
 
             outcome.DamageToHero = enemy.DealDamageTo(hero);
-            
-            if (hero.IsDead())
-            {
-                outcome.Result = AttackResult.HeroLost;
-                return outcome;
-            }
 
-            outcome.Result = AttackResult.EnemyStillAlive;
+            outcome.Result = (hero.IsDead()) ? AttackResult.HeroLost : AttackResult.EnemyStillAlive;
             return outcome;
         }
 

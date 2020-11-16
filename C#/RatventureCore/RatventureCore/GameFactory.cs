@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using RatventureCore.Api;
 using RatventureCore.GamePlay;
@@ -8,43 +11,60 @@ namespace RatventureCore
 {
     public class GameFactory : IGameFactory
     {
-        private static readonly string SaveFileName = @"save.bin";
-        private static readonly BinaryFormatter Formatter = new BinaryFormatter();
+        private SortedSet<IBoardItem> leaderBoard;
 
+        private static readonly string LeaderBoardFileName = @"leaderboard.bin";
 
-        public IGame New()
+        public GameFactory()
         {
-            return new Game();
+            LoadLeaderBoard();
         }
 
-        public IGame Load()
+        public IGame New(string playerName)
         {
-            try
-            {
-                using FileStream saveFile = new FileStream(SaveFileName, FileMode.Open, FileAccess.Read, FileShare.None);
-                return (Game)Formatter.Deserialize(saveFile);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            return new Game(playerName);
+        }
 
-            return null;
+        public IGame Load(Guid guid)
+        {
+            return (IGame) RatUtils.LoadFile(ParseSaveName(guid));
         }
 
         public bool Save(IGame game)
         {
-            try
-            {
-                using Stream saveFile = new FileStream(SaveFileName, FileMode.Create, FileAccess.Write);
-                Formatter.Serialize(saveFile, game);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return RatUtils.SaveFile(ParseSaveName(game.Guid), game);
+        }
 
-            return true;
+        private string ParseSaveName(Guid guid)
+        {
+            return @$"{guid}.bin";
+        }
+
+        public bool AddGameResult(string playerName, int dayCount)
+        {
+            leaderBoard.Add(new BoardItem(playerName, dayCount));
+            return SaveLeaderBoard();
+        }
+
+        public bool AddGameResult(IGame game)
+        {
+            leaderBoard.Add(new BoardItem(game));
+            return SaveLeaderBoard();
+        }
+
+        public IEnumerable<IBoardItem> GetTopFive()
+        {
+            return leaderBoard.ToList().GetRange(0, 5);
+        }
+
+        private void LoadLeaderBoard()
+        {
+            leaderBoard = (SortedSet<IBoardItem>) RatUtils.LoadFile(LeaderBoardFileName) ?? new SortedSet<IBoardItem>();
+        }
+
+        private bool SaveLeaderBoard()
+        {
+            return RatUtils.SaveFile(LeaderBoardFileName, leaderBoard);
         }
     }
 }
