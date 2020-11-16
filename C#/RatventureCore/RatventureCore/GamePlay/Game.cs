@@ -190,7 +190,7 @@ namespace RatventureCore.GamePlay
 
         public IAttackOutcome DoAttack()
         {
-            IAttackOutcome outcome = new AttackOutcome();
+            AttackOutcome outcome = new AttackOutcome();
 
             outcome.EnemyImmuned = !hero.CanDealDamageTo(enemy);
 

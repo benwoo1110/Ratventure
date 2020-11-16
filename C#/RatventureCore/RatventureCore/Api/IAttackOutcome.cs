@@ -6,12 +6,12 @@ namespace RatventureCore.Api
     {
         bool IsResult(AttackResult result);
 
-        AttackResult Result { get; set; }
+        AttackResult Result { get; }
 
-        bool EnemyImmuned { get; set; }
+        bool EnemyImmuned { get; }
 
-        int DamageToHero { get; set; }
+        int DamageToHero { get; }
 
-        int DamageToEnemy { get; set; }
+        int DamageToEnemy { get; }
     }
 }
