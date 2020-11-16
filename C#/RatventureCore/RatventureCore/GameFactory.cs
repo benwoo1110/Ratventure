@@ -11,13 +11,15 @@ namespace RatventureCore
 {
     public class GameFactory : IGameFactory
     {
-        private SortedSet<IBoardItem> leaderBoard;
+        private readonly SortedSet<IBoardItem> leaderBoard;
+        private readonly Dictionary<Guid, IGame> cachedSaves;
 
         private static readonly string LeaderBoardFileName = @"leaderboard.bin";
 
         public GameFactory()
         {
-            LoadLeaderBoard();
+            leaderBoard = LoadLeaderBoard();
+            cachedSaves = new Dictionary<Guid, IGame>();
         }
 
         public IGame New(string playerName)
@@ -57,9 +59,9 @@ namespace RatventureCore
             return leaderBoard.ToList().GetRange(0, 5);
         }
 
-        private void LoadLeaderBoard()
+        private SortedSet<IBoardItem> LoadLeaderBoard()
         {
-            leaderBoard = (SortedSet<IBoardItem>) RatUtils.LoadFile(LeaderBoardFileName) ?? new SortedSet<IBoardItem>();
+            return (SortedSet<IBoardItem>) RatUtils.LoadFile(LeaderBoardFileName) ?? new SortedSet<IBoardItem>();
         }
 
         private bool SaveLeaderBoard()

@@ -1,5 +1,4 @@
-﻿/*
-using System;
+﻿using System;
 using System.Collections.Generic;
 using RatventureCore;
 using RatventureCore.Api;
@@ -21,33 +20,33 @@ namespace RatventureConsole
 
         public GameRunner()
         {
-            this.gameFactory = new GameFactory();
-            this.console = new ConsoleHandler(null);
+            gameFactory = new GameFactory();
+            console = new ConsoleHandler(null);
         }
 
         public void Start()
         {
             while (true)
             {
-                this.console.PrintStart();
-                int menuOption = this.console.GetOption(this.menuOptions);
+                console.PrintStart();
+                int menuOption = console.GetOption(menuOptions);
                 switch (menuOption)
                 {
                     case 1:
-                        this.game = this.gameFactory.New();
-                        this.console = new ConsoleHandler(game);
-                        this.RunGame();
+                        game = gameFactory.New("test player");
+                        console = new ConsoleHandler(game);
+                        RunGame();
                         break;
                     case 2:
-                        this.game = this.gameFactory.Load();
-                        this.console = new ConsoleHandler(game);
-                        if (this.game != null)
+                        game = gameFactory.Load();
+                        console = new ConsoleHandler(game);
+                        if (game != null)
                         {
-                            this.RunGame();
+                            RunGame();
                         }
                         break;
                     case 3:
-                        if (this.console.ConfirmSelection("quit game"))
+                        if (console.ConfirmSelection("quit game"))
                         {
                             Environment.Exit(0);
                             return;
@@ -65,29 +64,29 @@ namespace RatventureConsole
             {
                 if (game.HeroInTown())
                 {
-                    this.console.TellStory($"Day {game.GetDay()}: You are in a town.");
+                    console.TellStory($"Day {game.DayCount}: You are in a town.");
                     int townOption = console.GetOption(townOptions);
                     switch (townOption)
                     {
                         case 1:
-                            this.console.PrintHeroInfo();
+                            console.PrintHeroInfo();
                             continue;
                         case 2:
-                            this.console.PrintGrid();
+                            console.PrintGrid();
                             continue;
                         case 3:
-                            this.Move();
+                            Move();
                             break;
                         case 4:
-                            this.game.HeroRest();
+                            game.HeroRest();
                             break;
                         case 5:
-                            this.gameFactory.Save(game);
+                            gameFactory.Save(game);
                             break;
                         case 6:
-                            if (this.console.ConfirmSelection("exit to main menu"))
+                            if (console.ConfirmSelection("exit to main menu"))
                             {
-                                this.console.BackToMainMenu();
+                                console.BackToMainMenu();
                                 return;
                             }
                             break;
@@ -97,14 +96,14 @@ namespace RatventureConsole
                 }
                 else
                 {
-                    this.console.TellStory($"Day {game.GetDay()}: You are out in the open.");
+                    console.TellStory($"Day {game.DayCount}: You are out in the open.");
                     if (game.EncounterEnemy())
                     {
-                        switch (this.RunAttack())
+                        switch (RunAttack())
                         {
                             case AttackResult.HeroLost:
                             case AttackResult.HeroWon:
-                                this.console.BackToMainMenu();
+                                console.BackToMainMenu();
                                 return;
                         }
                     }
@@ -112,21 +111,21 @@ namespace RatventureConsole
                     switch (openOption)
                     {
                         case 1:
-                            this.console.PrintHeroInfo();
+                            console.PrintHeroInfo();
                             continue;
                         case 2:
-                            this.console.PrintGrid();
+                            console.PrintGrid();
                             continue;
                         case 3:
-                            this.Move();
+                            Move();
                             break;
                         case 4:
-                            this.console.PrintOrbState(game.SenseOrb());
+                            console.PrintOrbState(game.SenseOrb());
                             break;
                         case 5:
-                            if (this.console.ConfirmSelection("exit to main menu"))
+                            if (console.ConfirmSelection("exit to main menu"))
                             {
-                                this.console.BackToMainMenu();
+                                console.BackToMainMenu();
                                 return;
                             }
                             break;
@@ -141,12 +140,12 @@ namespace RatventureConsole
 
         private void Move()
         {
-            this.console.PrintGrid();
+            console.PrintGrid();
 
             bool moved = false;
             while (!moved)
             {
-                moved = this.game.HeroMove(this.console.GetMoveDirection());
+                moved = game.HeroMove(console.GetMoveDirection());
                 if (!moved)
                 {
                     console.TellStory("You cannot move out of the map!");
@@ -154,34 +153,34 @@ namespace RatventureConsole
             }
 
             game.ResetEnemy();
-            this.console.PrintGrid();
+            console.PrintGrid();
         }
 
         private AttackResult RunAttack()
         {
-            if (game.GetEnemy() == null)
+            if (game.Enemy == null)
             {
                 throw new NullReferenceException("Cannot attack a null enemy!");
             }
 
-            game.GetEnemy().GetStats().ResetHealth();
+            game.Enemy.Stats.ResetHealth();
             while (true)
             {
-                this.console.TellStory($"Encounter! - {game.GetEnemy().Type}");
-                this.console.PrintStats(game.GetEnemy());
-                int attackOption = this.console.GetOption(attackOptions);
+                console.TellStory($"Encounter! - {game.Enemy.Type}");
+                console.PrintStats(game.Enemy);
+                int attackOption = console.GetOption(attackOptions);
                 switch (attackOption)
                 {
                     case 1:
                         IAttackOutcome outcome = game.DoAttack();
-                        this.console.PrintAttackOutcome(outcome);
+                        console.PrintAttackOutcome(outcome);
                         if (!outcome.IsResult(AttackResult.EnemyStillAlive))
                         {
                             return outcome.Result;
                         }
                         break;
                     case 2:
-                        this.console.TellStory("You ran and hide...");
+                        console.TellStory("You ran and hide...");
                         return AttackResult.Run;
                     default:
                         throw new ArgumentException("No such option: " + attackOption);
@@ -190,4 +189,3 @@ namespace RatventureConsole
         }
     }
 }
-*/

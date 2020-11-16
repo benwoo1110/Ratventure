@@ -32,8 +32,9 @@ namespace RatventureCore
                 using Stream saveFile = new FileStream(filePath, FileMode.Create, FileAccess.Write);
                 Formatter.Serialize(saveFile, item);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return false;
             }
 

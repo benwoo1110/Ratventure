@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using RatventureCore.Api;
@@ -17,11 +17,11 @@ namespace RatventureConsole
 
         public int GetOption(List<string> options)
         {
-            this.PrintOptions(options);
+            PrintOptions(options);
             string invalidMessage = $"Please enter a number from 1-{options.Count}!";
             while (true)
             {
-                int input = this.GetInput("Enter choice: ", Convert.ToInt32, invalidMessage);
+                int input = GetInput("Enter choice: ", Convert.ToInt32, invalidMessage);
                 if (input > 0 && input <= options.Count)
                 {
                     return input;
@@ -33,7 +33,7 @@ namespace RatventureConsole
         public Direction GetMoveDirection()
         {
             Console.WriteLine("W = up; A = left; S = down; D = right");
-            return this.GetInput("You move: ", ParseMoveDirection, "Invalid direction! Please enter W, A, S or D.");
+            return GetInput("You move: ", ParseMoveDirection, "Invalid direction! Please enter W, A, S or D.");
         }
 
         private Direction ParseMoveDirection(string direction)
@@ -55,7 +55,7 @@ namespace RatventureConsole
 
         public bool ConfirmSelection(string action)
         {
-            return this.GetInput($"Are you sure you want to {action}? [y/n] ", Convert.ToString, "So... yea or no?")
+            return GetInput($"Are you sure you want to {action}? [y/n] ", Convert.ToString, "So... yea or no?")
                 .ToUpper()
                 .Equals("Y");
         }
@@ -101,13 +101,13 @@ namespace RatventureConsole
         public void PrintGrid()
         {
             Console.WriteLine("+---+---+---+---+---+---+---+---+");
-            for (int r = 0; r < game.GetGrid().Rows; r++)
+            for (int r = 0; r < game.Grid.Rows; r++)
             {
                 StringBuilder row = new StringBuilder("|");
-                for (int c = 0; c < game.GetGrid().Columns; c++)
+                for (int c = 0; c < game.Grid.Columns; c++)
                 {
                     string tileText = "";
-                    List<IEntity> entities = game.GetGrid().GetEntitiesAt(r, c);
+                    List<IEntity> entities = game.Grid.GetEntitiesAt(r, c);
                     if (entities != null)
                     {
                         foreach (IEntity entity in entities)
@@ -137,17 +137,17 @@ namespace RatventureConsole
         public void PrintHeroInfo()
         {
             Console.WriteLine("--The Hero--");
-            this.PrintStats(game.GetHero());
+            PrintStats(game.Hero);
         }
 
         public void PrintStats(ILivingEntity livingEntity)
         {
-            this.PrintStats(livingEntity.GetStats(), false);
+            PrintStats(livingEntity.Stats, false);
         }
 
         public void PrintStats(ILivingEntity livingEntity, bool showOrb)
         {
-           this.PrintStats(livingEntity.GetStats(), showOrb);
+           PrintStats(livingEntity.Stats, showOrb);
         }
 
         public void PrintStats(IStats stats, bool showOrb)
@@ -192,14 +192,14 @@ namespace RatventureConsole
         {
             if (outcome.EnemyImmuned)
             {
-                Console.WriteLine($"You do not have the OrbStatus of Power - the {game.GetEnemy().Type} is immune!");
+                Console.WriteLine($"You do not have the OrbStatus of Power - the {game.Enemy.Type} is immune!");
             }
 
-            Console.WriteLine($"You deal {outcome.DamageToEnemy} damage to the {game.GetEnemy().Type}");
+            Console.WriteLine($"You deal {outcome.DamageToEnemy} damage to the {game.Enemy.Type}");
 
             if (outcome.IsResult(AttackResult.EnemyDied))
             {
-                Console.WriteLine($"The {game.GetEnemy().Type} is dead! You are victorious!");
+                Console.WriteLine($"The {game.Enemy.Type} is dead! You are victorious!");
             }
             if (outcome.IsResult(AttackResult.HeroWon))
             {
@@ -208,18 +208,18 @@ namespace RatventureConsole
                 return;
             }
 
-            Console.WriteLine($"Ouch! The  {game.GetEnemy().Type} hit you for {outcome.DamageToHero} damage!");
+            Console.WriteLine($"Ouch! The  {game.Enemy.Type} hit you for {outcome.DamageToHero} damage!");
 
             if (outcome.IsResult(AttackResult.HeroLost))
             {
-                Console.WriteLine($"Oh no! You were defeated by {game.GetEnemy().Type}...");
+                Console.WriteLine($"Oh no! You were defeated by {game.Enemy.Type}...");
                 Console.WriteLine("Game Over.");
                 return;
             }
 
             if (outcome.IsResult(AttackResult.EnemyStillAlive))
             {
-                Console.WriteLine($"You have {this.game.GetHero().GetStats().CurrentHealth} health left.");
+                Console.WriteLine($"You have {game.Enemy.Stats.CurrentHealth} health left.");
             }
         }
 
@@ -248,4 +248,3 @@ namespace RatventureConsole
         }
     }
 }
-*/
