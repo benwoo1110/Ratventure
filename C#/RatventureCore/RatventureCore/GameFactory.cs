@@ -11,14 +11,14 @@ namespace RatventureCore
 {
     public class GameFactory : IGameFactory
     {
-        private readonly SortedSet<IBoardItem> leaderBoard;
+        private readonly ILeaderBoard leaderBoard;
         private readonly Dictionary<Guid, IGame> cachedSaves;
 
-        private static readonly string LeaderBoardFileName = @"leaderboard.bin";
+        public ILeaderBoard LeaderBoard => leaderBoard;
 
         public GameFactory()
         {
-            leaderBoard = LoadLeaderBoard();
+            leaderBoard = new LeaderBoard();
             cachedSaves = new Dictionary<Guid, IGame>();
         }
 
@@ -40,33 +40,6 @@ namespace RatventureCore
         private string ParseSaveName(Guid guid)
         {
             return @$"{guid}.bin";
-        }
-
-        public bool AddGameResult(string playerName, int dayCount)
-        {
-            leaderBoard.Add(new BoardItem(playerName, dayCount));
-            return SaveLeaderBoard();
-        }
-
-        public bool AddGameResult(IGame game)
-        {
-            leaderBoard.Add(new BoardItem(game));
-            return SaveLeaderBoard();
-        }
-
-        public IEnumerable<IBoardItem> GetTopFive()
-        {
-            return leaderBoard.ToList().GetRange(0, 5);
-        }
-
-        private SortedSet<IBoardItem> LoadLeaderBoard()
-        {
-            return (SortedSet<IBoardItem>) RatUtils.LoadFile(LeaderBoardFileName) ?? new SortedSet<IBoardItem>();
-        }
-
-        private bool SaveLeaderBoard()
-        {
-            return RatUtils.SaveFile(LeaderBoardFileName, leaderBoard);
         }
     }
 }
