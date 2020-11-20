@@ -10,11 +10,6 @@ namespace RatventureCore.GamePlay
         private int damageToHero;
         private int damageToEnemy;
 
-        public bool IsResult(AttackResult result)
-        {
-            return this.result.Equals(result);
-        }
-
         public AttackResult Result
         {
             get => result;

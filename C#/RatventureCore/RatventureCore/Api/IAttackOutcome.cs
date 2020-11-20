@@ -4,8 +4,6 @@ namespace RatventureCore.Api
 {
     public interface IAttackOutcome
     {
-        bool IsResult(AttackResult result);
-
         AttackResult Result { get; }
 
         bool EnemyImmuned { get; }
