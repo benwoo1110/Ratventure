@@ -2,6 +2,7 @@
 {
     public enum EntityType
     {
+        Any,
         Hero,
         Town,
         Enemy,

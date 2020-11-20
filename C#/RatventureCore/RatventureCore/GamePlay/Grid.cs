@@ -36,45 +36,66 @@ namespace RatventureCore.GamePlay
 
             entityList.Add(entity);
         }
+        
+        public bool HasEntityAt(ILocation location)
+        {
+            return HasEntityAt(location.Row, location.Column);
+        }
 
         public bool HasEntityAt(int r, int c)
         {
-            return entityList.Find(e => e.Location.Equals(r, c)) != null;
+            return HasEntityAt(r, c, EntityType.Any);
+        }
+        
+        public bool HasEntityAt(ILocation location, EntityType entityType)
+        {
+            return HasEntityAt(location.Row, location.Column, entityType);
         }
 
         public bool HasEntityAt(int r, int c, EntityType entityType)
         {
-            return entityList.Find(e => e.Location.Equals(r, c) && e.Type.Equals(entityType)) != null;
+            return GetEntityAt(r, c, entityType) != null;
         }
 
-        public bool HasEntityAt(ILocation location, EntityType entityType)
+        public IEntity GetEntityAt(ILocation location)
         {
-            return entityList.Find(e => e.Location.Equals(location) && e.Type.Equals(entityType)) != null;
+            return GetEntityAt(location.Row, location.Column);
         }
 
+        public IEntity GetEntityAt(int r, int c)
+        {
+            return GetEntityAt(r, c, EntityType.Any);
+        }
+        
         public IEntity GetEntityAt(ILocation location, EntityType entityType)
         {
-            return entityList.Find(e => e.Location.Equals(location) && e.Type.Equals(entityType));
+            return GetEntityAt(location.Row, location.Column, entityType);
         }
 
         public IEntity GetEntityAt(int r, int c, EntityType entityType)
         {
-            return entityList.Find(e => e.Location.Equals(r, c) && e.Type.Equals(entityType));
+            return entityList.Find(e => EntityMatcher(e, r, c, entityType));
+        }
+        
+        public List<IEntity> GetEntitiesAt(ILocation location)
+        {
+            return GetEntitiesAt(location.Row, location.Column);
         }
 
         public List<IEntity> GetEntitiesAt(int r, int c)
         {
-            return entityList.FindAll(e => e.Location.Equals(r, c));
+            return entityList.FindAll(e => EntityMatcher(e, r, c, EntityType.Any));
         }
 
-        public List<IEntity> GetEntitiesAt(ILocation location)
-        {
-            return entityList.FindAll(e => e.Location.Equals(location));
-        }
-
-        public void Clear()
+        public void ClearAll()
         {
             entityList.Clear();
+        }
+
+        private bool EntityMatcher(IEntity e, int r, int c, EntityType entityType)
+        {
+            return e.Location.Equals(r, c) 
+                   && (entityType.Equals(EntityType.Any) || e.Type.Equals(entityType));
         }
     }
 }
