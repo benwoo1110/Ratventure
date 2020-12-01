@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ratventure.Core", "Ratventure.Core\Ratventure.Core.csproj", "{6F4FD6BE-3767-4B2D-A7F5-7FF5AE71D4A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ratventure.ConsoleApp", "Ratventure.ConsoleApp\Ratventure.ConsoleApp.csproj", "{B6814717-8F24-410C-8CDD-CF7248E7E610}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F4FD6BE-3767-4B2D-A7F5-7FF5AE71D4A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4FD6BE-3767-4B2D-A7F5-7FF5AE71D4A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4FD6BE-3767-4B2D-A7F5-7FF5AE71D4A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4FD6BE-3767-4B2D-A7F5-7FF5AE71D4A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6814717-8F24-410C-8CDD-CF7248E7E610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6814717-8F24-410C-8CDD-CF7248E7E610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6814717-8F24-410C-8CDD-CF7248E7E610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6814717-8F24-410C-8CDD-CF7248E7E610}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
